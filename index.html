@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bardol Estética Center</title>
+    <title>Generador de Enlaces Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Estilos generales y reseteo */
@@ -17,657 +17,328 @@
         body {
             background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%); /* Fondo degradado suave */
             color: #4a2c5e; /* Color de texto principal */
-            min-height: 100vh; /* Altura mínima para ocupar toda la pantalla */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px; /* Espaciado alrededor del cuerpo */
-        }
-        
-        /* Contenedor principal de la tarjeta */
-        .container {
-            max-width: 500px; /* Ancho máximo */
-            width: 100%; /* Ocupa el 100% del ancho disponible hasta el max-width */
-            background: white; /* Fondo blanco */
-            border-radius: 20px; /* Bordes redondeados */
-            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15); /* Sombra suave */
-            overflow: hidden; /* Oculta contenido que se desborda */
-            margin: 20px 0; /* Margen superior e inferior */
-            position: relative;
-        }
-        
-        /* Sección del encabezado */
-        .header {
-            background: linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 100%); /* Fondo rosa pastel con degradado */
-            color: white; /* Texto blanco */
-            padding: 30px 20px; /* Espaciado interno */
-            text-align: center; /* Centra el contenido */
-            position: relative;
-        }
-        
-        /* >>>>>> INICIO DE LA MODIFICACIÓN PARA EL LOGO <<<<<< */
-        .header-logo { /* Nueva clase para la imagen del logo */
-            display: block; /* La convierte en un bloque para que margin: auto funcione */
-            margin: 0 auto 15px; /* Centra horizontalmente y da un margen inferior */
-            max-width: 250px; /* Tamaño máximo para el logo, ajusta si es necesario */
-            width: 100%; /* Asegura que la imagen sea responsiva */
-            height: auto; /* Mantiene la proporción de la imagen */
-        }
-        /* >>>>>> FIN DE LA MODIFICACIÓN PARA EL LOGO <<<<<< */
-        
-        h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        .subtitle {
-            font-size: 18px;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-        
-        /* Tarjeta de oferta */
-        .offer-card {
-            background: #fff9c4; /* Fondo amarillo claro */
-            color: #5d4037; /* Color de texto oscuro */
-            border-radius: 15px; /* Bordes redondeados */
-            padding: 15px; /* Espaciado interno */
-            margin: 20px; /* Margen externo */
-            text-align: center; /* Centra el contenido */
-            border: 2px dashed #ffd54f; /* Borde punteado */
-            position: relative;
-        }
-        
-        .offer-card h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #e91e63; /* Color de título de oferta */
-        }
-        
-        .offer-card p {
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        
-        /* Contador regresivo */
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 10px; /* Espacio entre los elementos del contador */
-            margin: 15px 0;
-        }
-        
-        .countdown-box {
-            background: #4a2c5e; /* Fondo oscuro */
-            color: white; /* Texto blanco */
-            width: 60px;
-            height: 60px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .countdown-value {
-            font-size: 22px;
-        }
-        
-        .countdown-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-        
-        /* Contenedor del formulario */
-        .form-container {
             padding: 20px;
         }
         
+        /* Contenedor principal del generador */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            overflow: hidden;
+            margin: 20px 0;
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #8a2be2;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        
         .form-group {
-            margin-bottom: 20px; /* Espacio entre grupos de formulario */
+            margin-bottom: 20px;
         }
         
         label {
-            display: block; /* La etiqueta ocupa su propia línea */
-            margin-bottom: 8px; /* Espacio debajo de la etiqueta */
-            font-weight: 600; /* Negrita */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: #4a2c5e;
         }
         
-        /* Estilos para input de texto */
-        input[type="text"] {
-            width: 100%; /* Ocupa todo el ancho disponible */
-            padding: 14px; /* Espaciado interno */
-            border: 2px solid #e0c8f0; /* Borde suave */
-            border-radius: 12px; /* Bordes redondeados */
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0c8f0;
+            border-radius: 10px;
             font-size: 16px;
-            background: #f9f0ff; /* Fondo ligeramente coloreado */
-            transition: all 0.3s; /* Transición suave para focus */
+            background: #f9f0ff;
+            transition: all 0.3s;
         }
         
-        input[type="text"]:focus {
-            outline: none; /* Quita el contorno por defecto */
-            border-color: #8a2be2; /* Cambia el color del borde al enfocar */
-            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2); /* Sombra al enfocar */
+        input[type="text"]:focus,
+        input[type="datetime-local"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #8a2be2;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
 
-        /* Estilo para mostrar la fecha de turno (que ahora se rellenará por JS) */
-        #displayDate {
-            background: #e0f2f7; /* Fondo azul muy claro */
-            padding: 14px;
-            border: 2px solid #a7d9f7;
-            border-radius: 12px;
-            font-size: 18px; /* Un poco más grande para destacar */
-            font-weight: bold;
-            color: #007bb6; /* Color azul para la fecha */
-            display: block; /* Para que ocupe su propia línea */
-            text-align: center;
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-        
-        /* Estilos de botones */
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
         .btn {
             display: block;
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: none;
-            border-radius: 12px;
-            font-size: 18px;
+            border-radius: 10px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
-            margin: 10px 0;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         
-        .btn-confirm {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); /* Verde */
+        .btn-generate {
+            background: linear-gradient(135deg, #a855f7 0%, #8a2be2 100%);
             color: white;
-        }
-        
-        .btn-invite {
-            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%); /* Rosa oscuro */
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .btn:hover:not(:disabled) {
-            transform: translateY(-3px); /* Efecto de elevación al pasar el ratón */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn:active:not(:disabled) {
-            transform: translateY(1px); /* Efecto de clic al presionar */
-        }
-        
-        /* Notificación emergente */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #4caf50; /* Verde */
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateX(110%); /* Inicialmente fuera de pantalla */
-            transition: transform 0.4s ease; /* Animación de entrada/salida */
-            z-index: 1000;
-        }
-        
-        .notification.show {
-            transform: translateX(0); /* Muestra la notificación */
-        }
-        
-        /* Icono flotante de WhatsApp */
-        .whatsapp-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: #25d366; /* Color de WhatsApp */
-            border-radius: 50%; /* Círculo */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 28px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-            animation: pulse 2s infinite; /* Animación de pulsación */
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        /* Pie de página */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #7b68ee; /* Color morado suave */
-            font-size: 14px;
             margin-top: 20px;
         }
         
-        /* Disclaimer o aviso */
-        .disclaimer {
-            background: #e0f7fa; /* Fondo azul muy claro */
-            border-left: 4px solid #00bcd4; /* Borde izquierdo azul */
-            padding: 10px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
-            font-size: 14px;
+        .btn-copy {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            margin-top: 15px;
+            display: none; /* Oculto por defecto */
         }
-
-        /* Nueva tarjeta de referido para difusión */
-        .referral-promo-diffusion {
-            background: #e0f7fa; /* Fondo azul claro */
-            color: #00796b; /* Texto verde oscuro */
-            border-radius: 15px;
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .generated-link-container {
+            margin-top: 25px;
             padding: 15px;
-            margin: 20px;
+            background: #e0f0ff;
+            border: 1px dashed #a7d9f7;
+            border-radius: 10px;
+            word-break: break-all; /* Para asegurar que el enlace largo se ajuste */
             text-align: center;
-            border: 2px dashed #00bcd4;
-        }
-
-        .referral-promo-diffusion h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #00bcd4;
-        }
-
-        .referral-promo-diffusion p {
             font-size: 15px;
-            margin-bottom: 15px;
+            color: #007bb6;
+            font-weight: 500;
+        }
+
+        /* Notificación de copia */
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(110%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <div>
-          <address>
-            <img src="logo lb.png" alt="le bardol " title="le bardol logo " class="header-logo">
-          </address>
-          <br>
-        </div>
-        <h1 id="mainTitle">Le Bardol Estética Center</h1>
-        <p class="subtitle">Tu belleza, nuestra pasión</p>
+      <h1>Generador de Enlaces Le Bardol</h1>
+
+      <div class="form-group radio-group">
+        <label>
+          <input type="radio" name="linkType" value="reminder" checked>
+          Recordatorio de Turno
+        </label>
+        <label>
+          <input type="radio" name="linkType" value="promotion">
+          Difusión / Promoción
+        </label>
       </div>
-      <div class="offer-card" id="mainOfferCard">
-        <h2 id="offerTitle">¡Oferta Especial de Referidos!</h2>
-        <p id="offerDescription">Confirma tu turno y si invitas a tus amigos en las próximas 24
-          horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada
-          uno que contrate un servicio, ¡y ellos un <strong>50% DE
-            DESCUENTO</strong> en su primer tratamiento!</p>
-        <div class="countdown">
-          <div class="countdown-box">
-            <span id="hours" class="countdown-value">24</span>
-            <span class="countdown-label">Horas</span>
-          </div>
-          <div class="countdown-box">
-            <span id="minutes" class="countdown-value">00</span>
-            <span class="countdown-label">Minutos</span>
-          </div>
-          <div class="countdown-box">
-            <span id="seconds" class="countdown-value">00</span>
-            <span class="countdown-label">Segundos</span>
-          </div>
-        </div>
-      </div>
-      <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
-        <h3>¡Invita a un amigo y GANA!</h3>
-        <p>Si reservas un turno y nos recomiendas a un amigo, obtendrás un **5% DE DESCUENTO ADICIONAL** en tu próxima sesión cuando tu amigo contrate su primer servicio.</p>
-        <button class="btn btn-invite" id="inviteBtnDiffusion">
-            <i class="fas fa-user-plus"></i> Invitar a un amigo
-        </button>
-      </div>
-      
-      <div class="form-container">
-        <div class="disclaimer" id="disclaimerMessage">
-          <i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado.
-          ¡No olvides la increíble promoción de referidos!
+
+      <div id="reminderFields">
+        <div class="form-group">
+          <label for="clientName">Nombre del Cliente (opcional)</label>
+          <input type="text" id="clientName" placeholder="Ej: Juan Pérez">
         </div>
         <div class="form-group">
-          <label for="name">Nombre completo</label>
-          <input id="name" placeholder="Ingresa tu nombre completo" type="text" readonly>
+          <label for="appointmentDate">Fecha y Hora del Turno</label>
+          <input type="datetime-local" id="appointmentDate">
         </div>
-        <div class="form-group" id="appointmentDisplayGroup">
-          <label>Tu turno está asignado para:</label>
-          <div id="displayDate"></div> 
-        </div>
-        <button class="btn btn-confirm" id="confirmBtn">
-          <i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO
-        </button>
-        <button class="btn btn-invite" id="inviteBtn">
-          <i class="fas fa-user-plus"></i> INVITAR A UN AMIGO (50% OFF)
-        </button>
       </div>
+
+      <div id="promotionFields" style="display: none;">
+        <div class="form-group">
+          <label for="promoClientName">Nombre para la Promo (opcional)</label>
+          <input type="text" id="promoClientName" placeholder="Ej: María">
+        </div>
+        <div class="form-group">
+          <label for="discountPercentage">Descuento (%) (opcional)</label>
+          <input type="number" id="discountPercentage" placeholder="Ej: 20" min="1" max="100">
+        </div>
+        <div class="form-group">
+          <label for="treatmentType">Tipo de Tratamiento (opcional)</label>
+          <input type="text" id="treatmentType" placeholder="Ej: Limpieza Facial">
+        </div>
+      </div>
+      
+      <button class="btn btn-generate" id="generateLinkBtn">Generar Enlace</button>
+      
+      <div class="generated-link-container" id="generatedLink">
+        Aquí aparecerá el enlace generado
+      </div>
+      
+      <button class="btn btn-copy" id="copyLinkBtn">Copiar Enlace</button>
     </div>
-    <div class="notification" id="notification">
-      <i class="fas fa-check-circle"></i>
-      <span>¡Turno confirmado con éxito! Te hemos enviado un mensaje por
-        WhatsApp.</span>
+
+    <div class="copy-notification" id="copyNotification">
+      <i class="fas fa-check-circle"></i> Enlace copiado
     </div>
-    <a href="https://wa.me/5493415216025?text=Hola%20Le%20Bardol%2C%20quisiera%20consultar%20sobre%20un%20turno." class="whatsapp-icon" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-    <div class="footer">
-      <p>© 2023 Le Bardol Estética Center. Todos los derechos reservados.</p>
-    </div>
+
     <script>
-        // Script para el contador regresivo de 24 horas
-        function startCountdown() {
-            const savedTime = localStorage.getItem('countdownEndTime');
-            let endTime;
-            
-            // La fecha actual de Rosario, Santa Fe, Argentina
-            const nowRosario = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Argentina/Rosario"}));
-
-            if (savedTime) {
-                endTime = parseInt(savedTime);
-                // Si el tiempo guardado ya pasó, reinícialo a 24 horas desde ahora
-                if (endTime < nowRosario.getTime()) {
-                    endTime = nowRosario.getTime() + 24 * 60 * 60 * 1000;
-                    localStorage.setItem('countdownEndTime', endTime.toString());
-                }
-            } else {
-                endTime = nowRosario.getTime() + 24 * 60 * 60 * 1000;
-                localStorage.setItem('countdownEndTime', endTime.toString());
-            }
-            
-            const timer = setInterval(() => {
-                const now = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Argentina/Rosario"})); // Hora actual de Rosario
-                const timeLeft = endTime - now.getTime();
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    document.getElementById('hours').textContent = '00';
-                    document.getElementById('minutes').textContent = '00';
-                    document.getElementById('seconds').textContent = '00';
-                    // El botón de invitar se deshabilita si el contador llega a cero, excepto en modo difusión
-                    const isReminderLink = getUrlParameter('fecha') !== '';
-                    if (isReminderLink) { // Solo si es recordatorio de turno, el contador afecta al botón
-                         document.getElementById('inviteBtn').disabled = true;
-                    }
-                    return;
-                }
-                
-                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-            }, 1000);
-        }
-        
-        // Función para mostrar la notificación de confirmación
-        function showNotification() {
-            const notification = document.getElementById('notification');
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-        
-        // Función para validar el formulario antes de enviar (depende del tipo de enlace)
-        function validateForm(isReminder) {
-            const name = document.getElementById('name').value;
-            const displayedDate = document.getElementById('displayDate').textContent;
-            
-            if (isReminder) { // Si es un recordatorio de turno, se necesitan nombre y fecha
-                if (!name || name === "Estimado/a cliente/a" || displayedDate === '' || displayedDate === 'Fecha y hora no válidas' || displayedDate === 'Fecha y hora no asignadas') { 
-                    alert('Faltan datos para confirmar tu turno. Por favor, asegúrate de que tu nombre y fecha de turno estén visibles y sean correctos.');
-                    return false;
-                }
-            } else { // Si es difusión, el nombre es opcional
-                // No se requiere validación estricta para difusión ya que puede ser solo para información
-            }
-            return true;
-        }
-        
-        // Función para enviar el mensaje por WhatsApp
-        function sendWhatsAppMessage(isReminder, discount, treatment) {
-            const name = document.getElementById('name').value;
-            const whatsappNumber = '5493415216025'; // NÚMERO DE WHATSAPP REAL DE LE BARDOL
-            let message = '';
-            
-            if (isReminder) {
-                const displayedDate = document.getElementById('displayDate').textContent; 
-                message = `¡Hola Le Bardol! Soy ${name}. Confirmo mi turno asignado para el ${displayedDate}. Agradezco su confirmación. ¡Saludos!`;
-            } else {
-                // Mensaje para difusión con descuento/tratamiento
-                let offerText = "";
-                if (discount && treatment) {
-                    offerText = `Estoy interesado/a en la promo de ${discount}% de descuento en ${treatment}.`;
-                } else if (discount) {
-                    offerText = `Estoy interesado/a en la promo de ${discount}% de descuento.`;
-                } else if (treatment) {
-                    offerText = `Estoy interesado/a en la promo de ${treatment}.`;
-                } else {
-                    offerText = `Estoy interesado/a en sus servicios y promociones.`;
-                }
-                message = `¡Hola Le Bardol! Mi nombre es ${name}. ${offerText} ¿Podrían brindarme más información o ayudarme a sacar un turno? ¡Gracias!`;
-            }
-            
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        
-        // Función para compartir la invitación (botón 50% OFF)
-        function shareInvitation() {
-            const referrerName = document.getElementById('name').value;
-            
-            if (!referrerName || referrerName.trim() === '' || referrerName.trim() === 'Estimado/a cliente/a' || referrerName.trim() === 'Hola!') { 
-                alert('Por favor, ingresa tu nombre completo para que tus amigos sepan quién los envía.');
-                document.getElementById('name').focus();
-                return;
-            }
-
-            const whatsappNumberLeBardol = '5493415216025'; // Número de WhatsApp de Le Bardol
-            
-            // Mensaje que el AMIGO enviará a Le Bardol
-            const messageForFriend = `¡Hola Le Bardol! Me interesa la promo del 50% de descuento en mi primer servicio. Me recomendó ${referrerName}. ¡Quisiera más información!`;
-            
-            // Enlace de WhatsApp que el CLIENTE EXISTENTE (referente) enviará a sus AMIGOS.
-            const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
-            
-            // Mensaje que el CLIENTE EXISTENTE (referente) compartirá en WhatsApp con sus contactos.
-            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Están ofreciendo un 50% de descuento en tu primer tratamiento! Solo tienes que contactarlos mencionando que te envió ${referrerName} para obtener la promo.\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
-        }
-
-        // Función para compartir la invitación desde la nueva tarjeta de difusión (5% OFF)
-        function shareInvitationDiffusion() {
-            const whatsappNumberLeBardol = '5493415216025'; // Número de WhatsApp de Le Bardol
-            const nameFromInput = document.getElementById('name').value;
-            const referrerName = (nameFromInput && nameFromInput.trim() !== '' && nameFromInput.trim() !== 'Hola!') ? nameFromInput : 'un amigo/a';
-
-            // Mensaje que el AMIGO enviará a Le Bardol (para el 5% off)
-            const messageForFriend = `¡Hola Le Bardol! Me interesa la promo de referido. Me envió ${referrerName} y quiero mi 5% de descuento en mi primer servicio.`;
-            
-            // Enlace de WhatsApp que el CLIENTE EXISTENTE (referente) enviará a sus AMIGOS.
-            const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
-            
-            // Mensaje que el CLIENTE EXISTENTE (referente) compartirá en WhatsApp con sus contactos.
-            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Si mencionas que te envié, obtienes un 5% de descuento en tu primer servicio, y yo también gano en mi próxima sesión!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
-        }
-
-        // Función para habilitar/deshabilitar el botón de invitación del recordatorio
-        function toggleInviteButton() {
-            const nameInput = document.getElementById('name');
-            const inviteBtn = document.getElementById('inviteBtn');
-            // Deshabilita si el campo de nombre está vacío o tiene valores por defecto
-            if (nameInput.value.trim() === '' || nameInput.value.trim() === 'Estimado/a cliente/a' || nameInput.value.trim() === 'Hola!') {
-                inviteBtn.disabled = true;
-            } else {
-                inviteBtn.disabled = false;
-            }
-        }
-
-        // Función para obtener parámetros de la URL
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-        
-        // Inicializar la página cuando el DOM esté completamente cargado
         document.addEventListener('DOMContentLoaded', () => {
-            startCountdown();
-            
-            const nameInput = document.getElementById('name');
-            const displayDateDiv = document.getElementById('displayDate');
-            const appointmentDisplayGroup = document.getElementById('appointmentDisplayGroup'); // El div que contiene la fecha
-            const confirmBtn = document.getElementById('confirmBtn');
-            const inviteBtn = document.getElementById('inviteBtn'); // Botón de invitar de recordatorio
-            const inviteBtnDiffusion = document.getElementById('inviteBtnDiffusion'); // Nuevo botón de invitar de difusión
-            const disclaimerMessage = document.getElementById('disclaimerMessage');
-            
-            // Elementos de la oferta para actualizar
-            const mainOfferCard = document.getElementById('mainOfferCard');
-            const offerTitle = document.getElementById('offerTitle');
-            const offerDescription = document.getElementById('offerDescription');
-            const referralPromoDiffusion = document.getElementById('referralPromoDiffusion'); // Nueva tarjeta de referido para difusión
+            const linkTypeRadios = document.querySelectorAll('input[name="linkType"]');
+            const reminderFields = document.getElementById('reminderFields');
+            const promotionFields = document.getElementById('promotionFields');
 
-            // Leer parámetros de la URL
-            const urlName = getUrlParameter('nombre');
-            const urlDate = getUrlParameter('fecha'); // Formato AAAA-MM-DDTHH:MM
-            const urlDiscount = getUrlParameter('descuento'); // Nuevo
-            const urlTreatment = getUrlParameter('tratamiento'); // Nuevo
+            const clientNameInput = document.getElementById('clientName');
+            const appointmentDateInput = document.getElementById('appointmentDate');
+            const promoClientNameInput = document.getElementById('promoClientName');
+            const discountPercentageInput = document.getElementById('discountPercentage');
+            const treatmentTypeInput = document.getElementById('treatmentType');
 
-            let isReminderLink = false; // Bandera para saber si es un enlace de recordatorio
+            const generateLinkBtn = document.getElementById('generateLinkBtn');
+            const generatedLinkDiv = document.getElementById('generatedLink');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const copyNotification = document.getElementById('copyNotification');
 
-            // Pre-llenar campos si están en la URL y configurar el tipo de enlace
-            if (urlDate) { // Si hay fecha, es un enlace de recordatorio de turno
-                isReminderLink = true;
-                if (urlName) {
-                    nameInput.value = urlName;
+            // URL base de tu página principal. Asume que 'index.html' está en la misma carpeta.
+            // Si subes tus archivos a un dominio y 'index.html' está en la raíz, esta ruta sigue siendo válida.
+            const baseUrl = 'index.html'; 
+
+            function toggleLinkType(type) {
+                if (type === 'reminder') {
+                    reminderFields.style.display = 'block';
+                    promotionFields.style.display = 'none';
+                    // Limpiar campos de promo al cambiar
+                    promoClientNameInput.value = '';
+                    discountPercentageInput.value = '';
+                    treatmentTypeInput.value = '';
                 } else {
-                    nameInput.value = "Estimado/a cliente/a"; // Valor por defecto si no viene nombre pero sí fecha
+                    reminderFields.style.display = 'none';
+                    promotionFields.style.display = 'block';
+                    // Limpiar campos de recordatorio al cambiar
+                    clientNameInput.value = '';
+                    appointmentDateInput.value = '';
                 }
-                
-                try {
-                    const dateObj = new Date(urlDate);
-                    // Ajuste para la zona horaria de Argentina (Rosario)
-                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Rosario' };
-                    displayDateDiv.textContent = dateObj.toLocaleDateString('es-ES', options) + ' hs';
-                } catch (e) {
-                    console.error("Error al parsear la fecha de la URL:", e);
-                    displayDateDiv.textContent = "Fecha y hora no válidas";
-                }
-                confirmBtn.innerHTML = '<i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO';
-                disclaimerMessage.innerHTML = '<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado. ¡No olvides la increíble promoción de referidos!';
-                
-                // Mostrar oferta principal de referidos, a menos que haya una promo específica para el recordatorio
-                if (urlDiscount && urlTreatment) {
-                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
-                    mainOfferCard.style.display = 'block'; // Asegurarse de que la tarjeta de oferta esté visible
-                } else if (urlDiscount) {
-                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TU PRÓXIMO SERVICIO!`;
-                    offerDescription.innerHTML = `Como cliente especial, disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en tu próximo tratamiento. ¡Tu momento de relajación y belleza te espera!`;
-                    mainOfferCard.style.display = 'block';
-                } else if (urlTreatment) {
-                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Como cliente especial, descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                    mainOfferCard.style.display = 'block';
-                } else {
-                    // Por defecto en recordatorio, la oferta principal es la de referidos
-                    offerTitle.textContent = '¡Oferta Especial de Referidos!';
-                    offerDescription.innerHTML = 'Confirma tu turno y si invitas a tus amigos en las próximas 24 horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada uno que contrate un servicio, ¡y ellos un <strong>50% DE DESCUENTO</strong> en su primer tratamiento!';
-                    mainOfferCard.style.display = 'block';
-                }
-                referralPromoDiffusion.style.display = 'none'; // Ocultar la tarjeta de referido de difusión
-                inviteBtn.style.display = 'block'; // Mostrar el botón de invitar normal
-                inviteBtnDiffusion.style.display = 'none'; // Ocultar el botón de invitar de difusión
-
-            } else { // Si no hay fecha, es un enlace de difusión/promoción
-                isReminderLink = false;
-                appointmentDisplayGroup.style.display = 'none'; // Oculta el grupo de la fecha
-                if (urlName) {
-                    nameInput.value = urlName;
-                } else {
-                    nameInput.value = "Hola!"; // Saludo más genérico si no hay nombre ni fecha
-                }
-                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
-
-                // Adaptar la tarjeta de oferta si hay descuento o tratamiento
-                if (urlDiscount && urlTreatment) {
-                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Aprovecha esta oportunidad única y obtén un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
-                    mainOfferCard.style.display = 'block'; // Mostrar la tarjeta de oferta si hay promo específica
-                    referralPromoDiffusion.style.display = 'block'; // Mostrar también la nueva tarjeta de referido de difusión
-                    inviteBtnDiffusion.style.display = 'block'; // Mostrar el botón de invitar de difusión
-                } else if (urlDiscount) {
-                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TODOS LOS SERVICIOS!`;
-                    offerDescription.innerHTML = `Disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en cualquiera de nuestros tratamientos. ¡Tu momento de relajación y belleza te espera!`;
-                    mainOfferCard.style.display = 'block';
-                    referralPromoDiffusion.style.display = 'block';
-                    inviteBtnDiffusion.style.display = 'block';
-                } else if (urlTreatment) {
-                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                    mainOfferCard.style.display = 'block';
-                    referralPromoDiffusion.style.display = 'block';
-                    inviteBtnDiffusion.style.display = 'block';
-                } else {
-                    // Si no hay descuento ni tratamiento específicos, ocultar la tarjeta de oferta principal
-                    mainOfferCard.style.display = 'none';
-                    // Pero sí mostrar la tarjeta de referido de difusión
-                    referralPromoDiffusion.style.display = 'block';
-                    inviteBtnDiffusion.style.display = 'block';
-                }
-                inviteBtn.style.display = 'none'; // Ocultar el botón de invitar normal
+                generatedLinkDiv.textContent = 'Aquí aparecerá el enlace generado';
+                copyLinkBtn.style.display = 'none';
             }
 
-            // Asignar eventos a los botones
-            document.getElementById('confirmBtn').addEventListener('click', () => {
-                if (validateForm(isReminderLink)) {
-                    sendWhatsAppMessage(isReminderLink, urlDiscount, urlTreatment);
-                    showNotification();
+            linkTypeRadios.forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    toggleLinkType(event.target.value);
+                });
+            });
+
+            generateLinkBtn.addEventListener('click', () => {
+                const selectedType = document.querySelector('input[name="linkType"]:checked').value;
+                const params = [];
+
+                if (selectedType === 'reminder') {
+                    const clientName = clientNameInput.value.trim();
+                    const appointmentDate = appointmentDateInput.value.trim();
+
+                    if (clientName) {
+                        params.push(`nombre=${encodeURIComponent(clientName)}`);
+                    }
+                    if (appointmentDate) {
+                        params.push(`fecha=${encodeURIComponent(appointmentDate)}`);
+                    } else {
+                        alert('Para un Recordatorio de Turno, la fecha y hora del turno son obligatorias.');
+                        return;
+                    }
+                    // Opcional: Si es recordatorio, también podemos pasar descuento y tratamiento si el generador lo permite
+                    const discount = discountPercentageInput.value.trim();
+                    const treatment = treatmentTypeInput.value.trim();
+                    if (discount) {
+                        params.push(`descuento=${encodeURIComponent(discount)}`);
+                    }
+                    if (treatment) {
+                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    }
+
+                } else { // promotion
+                    const promoClientName = promoClientNameInput.value.trim();
+                    const discount = discountPercentageInput.value.trim();
+                    const treatment = treatmentTypeInput.value.trim();
+
+                    if (promoClientName) {
+                        params.push(`nombre=${encodeURIComponent(promoClientName)}`);
+                    }
+                    if (discount) {
+                        params.push(`descuento=${encodeURIComponent(discount)}`);
+                    }
+                    if (treatment) {
+                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    }
+                    
+                    // Asegurar que al menos uno de los campos de promo esté lleno
+                    if (!promoClientName && !discount && !treatment) {
+                        alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
+                        return;
+                    }
+                }
+
+                let generatedUrl = baseUrl;
+                if (params.length > 0) {
+                    generatedUrl += `?${params.join('&')}`;
+                }
+
+                generatedLinkDiv.textContent = generatedUrl;
+                copyLinkBtn.style.display = 'inline-block'; // Mostrar botón de copiar
+            });
+
+            // Copiar el enlace al portapapeles
+            copyLinkBtn.addEventListener('click', () => {
+                const linkToCopy = generatedLinkDiv.textContent;
+                if (linkToCopy) {
+                    navigator.clipboard.writeText(linkToCopy).then(() => {
+                        copyNotification.classList.add('show');
+                        setTimeout(() => {
+                            copyNotification.classList.remove('show');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Error al copiar el texto: ', err);
+                        alert('Hubo un error al copiar el enlace. Inténtalo manualmente.');
+                    });
                 }
             });
-            
-            document.getElementById('inviteBtn').addEventListener('click', shareInvitation); // Botón de recordatorio
-            document.getElementById('inviteBtnDiffusion').addEventListener('click', shareInvitationDiffusion); // Nuevo botón de difusión
 
-            // Escuchar cambios en el campo de nombre para habilitar/deshabilitar el botón de invitación
-            // Esto solo aplica al botón de invitar en el modo recordatorio de turno
-            document.getElementById('name').addEventListener('input', toggleInviteButton);
-            
-            // Llamar al inicio para establecer el estado inicial del botón (importante si los campos vienen pre-llenados)
-            if (isReminderLink) {
-                toggleInviteButton(); // Solo si es recordatorio de turno se evalúa el nombre para el botón de invitar
-            } else {
-                 inviteBtn.disabled = false; // En difusión, el botón de invitar siempre está activo si visible
-            }
+            // Asegurarse de que al cargar la página se muestren los campos correctos (recordatorio por defecto)
+            toggleLinkType('reminder');
         });
     </script>
   </body>
