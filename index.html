@@ -45,20 +45,15 @@
             position: relative;
         }
         
-        /* Estilos para el logo (si fuera un div con background, pero ahora es una imagen) */
-        .logo {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(45deg, #ffb6c1, #dda0dd);
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            border: 3px solid white;
+        /* >>>>>> INICIO DE LA MODIFICACIÓN PARA EL LOGO <<<<<< */
+        .header-logo { /* Nueva clase para la imagen del logo */
+            display: block; /* La convierte en un bloque para que margin: auto funcione */
+            margin: 0 auto 15px; /* Centra horizontalmente y da un margen inferior */
+            max-width: 250px; /* Tamaño máximo para el logo, ajusta si es necesario */
+            width: 100%; /* Asegura que la imagen sea responsiva */
+            height: auto; /* Mantiene la proporción de la imagen */
         }
+        /* >>>>>> FIN DE LA MODIFICACIÓN PARA EL LOGO <<<<<< */
         
         h1 {
             font-size: 28px;
@@ -316,7 +311,7 @@
       <div class="header">
         <div>
           <address>
-            <img src="logo lb.png" alt="le bardol " title="le bardol logo " style="width: 393px; height: 134px;">
+            <img src="logo lb.png" alt="le bardol " title="le bardol logo " class="header-logo">
           </address>
           <br>
         </div>
@@ -536,7 +531,7 @@
 
             // Leer parámetros de la URL
             const urlName = getUrlParameter('nombre');
-            const urlDate = getUrlParameter('fecha'); // Formato YYYY-MM-DDTHH:MM
+            const urlDate = getUrlParameter('fecha'); // Formato AAAA-MM-DDTHH:MM
             const urlDiscount = getUrlParameter('descuento'); // Nuevo
             const urlTreatment = getUrlParameter('tratamiento'); // Nuevo
 
