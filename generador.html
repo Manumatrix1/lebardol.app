@@ -238,9 +238,11 @@
             const copyLinkBtn = document.getElementById('copyLinkBtn');
             const copyNotification = document.getElementById('copyNotification');
 
-            // URL base dinámica para index.html
-            // Esto asegura que funcione tanto con 'file://' (abriendo directamente) como con 'http://' (en un servidor)
-            const baseUrl = window.location.origin + window.location.pathname.replace('generador.html', 'index.html'); 
+            // URL base simplificada, asumiendo que index.html está en la misma carpeta.
+            // NOTA: Para un comportamiento consistente y enlaces compartibles,
+            // es recomendable subir estos archivos a un servidor web (aunque sea local).
+            // La funcionalidad completa con "file:///" puede variar entre navegadores.
+            const baseUrl = 'index.html'; 
 
             function toggleLinkType(type) {
                 if (type === 'reminder') {
@@ -306,3 +308,44 @@
                         params.push(`descuento=${encodeURIComponent(discount)}`);
                     }
                     if (treatment) {
+                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    }
+                    
+                    // Asegurar que al menos uno de los campos de promo esté lleno
+                    if (!promoClientName && !discount && !treatment) {
+                        alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
+                        return;
+                    }
+                }
+
+                let generatedUrl = baseUrl;
+                if (params.length > 0) {
+                    generatedUrl += `?${params.join('&')}`;
+                }
+
+                generatedLinkDiv.textContent = generatedUrl;
+                copyLinkBtn.style.display = 'inline-block'; // Mostrar botón de copiar
+            });
+
+            // Copiar el enlace al portapapeles
+            copyLinkBtn.addEventListener('click', () => {
+                const linkToCopy = generatedLinkDiv.textContent;
+                if (linkToCopy) {
+                    navigator.clipboard.writeText(linkToCopy).then(() => {
+                        copyNotification.classList.add('show');
+                        setTimeout(() => {
+                            copyNotification.classList.remove('show');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Error al copiar el texto: ', err);
+                        alert('Hubo un error al copiar el enlace. Inténtalo manualmente.');
+                    });
+                }
+            });
+
+            // Asegurarse de que al cargar la página se muestren los campos correctos (recordatorio por defecto)
+            toggleLinkType('reminder');
+        });
+    </script>
+  </body>
+</html>
