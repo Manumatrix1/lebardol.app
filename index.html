@@ -317,3 +317,357 @@
         <p id="offerDescription">Confirma tu turno y si invitas a tus amigos en las próximas 24
           horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada
           uno que contrate un servicio, ¡y ellos un <strong>50% DE
+            DESCUENTO</strong> en su primer tratamiento!</p>
+        <div class="countdown">
+          <div class="countdown-box">
+            <span id="hours" class="countdown-value">24</span>
+            <span class="countdown-label">Horas</span>
+          </div>
+          <div class="countdown-box">
+            <span id="minutes" class="countdown-value">00</span>
+            <span class="countdown-label">Minutos</span>
+          </div>
+          <div class="countdown-box">
+            <span id="seconds" class="countdown-value">00</span>
+            <span class="countdown-label">Segundos</span>
+          </div>
+        </div>
+      </div>
+      <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
+        <h3>¡Invita a un amigo y GANA!</h3>
+        <p>Si reservas un turno y nos recomiendas a un amigo, obtendrás un **5% DE DESCUENTO ADICIONAL** en tu próxima sesión cuando tu amigo contrate su primer servicio.</p>
+        <button class="btn btn-invite" id="inviteBtnDiffusion">
+            <i class="fas fa-user-plus"></i> Invitar a un amigo
+        </button>
+      </div>
+      
+      <div class="form-container">
+        <div class="disclaimer" id="disclaimerMessage">
+          <i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado.
+          ¡No olvides la increíble promoción de referidos!
+        </div>
+        <div class="form-group">
+          <label for="name">Nombre completo</label>
+          <input id="name" placeholder="Ingresa tu nombre completo" type="text" readonly>
+        </div>
+        <div class="form-group" id="appointmentDisplayGroup">
+          <label>Tu turno está asignado para:</label>
+          <div id="displayDate"></div> 
+        </div>
+        <button class="btn btn-confirm" id="confirmBtn">
+          <i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO
+        </button>
+        <button class="btn btn-invite" id="inviteBtn">
+          <i class="fas fa-user-plus"></i> INVITAR A UN AMIGO (50% OFF)
+        </button>
+      </div>
+    </div>
+    <div class="notification" id="notification">
+      <i class="fas fa-check-circle"></i>
+      <span>¡Turno confirmado con éxito! Te hemos enviado un mensaje por
+        WhatsApp.</span>
+    </div>
+    <a href="https://wa.me/5493415216025?text=Hola%20Le%20Bardol%2C%20quisiera%20consultar%20sobre%20un%20turno." class="whatsapp-icon" target="_blank">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <div class="footer">
+      <p>© 2023 Le Bardol Estética Center. Todos los derechos reservados.</p>
+    </div>
+    <script>
+        // Script para el contador regresivo de 24 horas
+        function startCountdown() {
+            const savedTime = localStorage.getItem('countdownEndTime');
+            let endTime;
+            
+            // La fecha actual de Rosario, Santa Fe, Argentina
+            const nowRosario = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Argentina/Rosario"}));
+
+            if (savedTime) {
+                endTime = parseInt(savedTime);
+                // Si el tiempo guardado ya pasó, reinícialo a 24 horas desde ahora
+                if (endTime < nowRosario.getTime()) {
+                    endTime = nowRosario.getTime() + 24 * 60 * 60 * 1000;
+                    localStorage.setItem('countdownEndTime', endTime.toString());
+                }
+            } else {
+                endTime = nowRosario.getTime() + 24 * 60 * 60 * 1000;
+                localStorage.setItem('countdownEndTime', endTime.toString());
+            }
+            
+            const timer = setInterval(() => {
+                const now = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Argentina/Rosario"})); // Hora actual de Rosario
+                const timeLeft = endTime - now.getTime();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    // El botón de invitar se deshabilita si el contador llega a cero, excepto en modo difusión
+                    const isReminderLink = getUrlParameter('fecha') !== '';
+                    if (isReminderLink) { // Solo si es recordatorio de turno, el contador afecta al botón
+                         document.getElementById('inviteBtn').disabled = true;
+                    }
+                    return;
+                }
+                
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+        
+        // Función para mostrar la notificación de confirmación
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Función para validar el formulario antes de enviar (depende del tipo de enlace)
+        function validateForm(isReminder) {
+            const name = document.getElementById('name').value;
+            const displayedDate = document.getElementById('displayDate').textContent;
+            
+            if (isReminder) { // Si es un recordatorio de turno, se necesitan nombre y fecha
+                if (!name || name === "Estimado/a cliente/a" || displayedDate === '' || displayedDate === 'Fecha y hora no válidas' || displayedDate === 'Fecha y hora no asignadas') { 
+                    alert('Faltan datos para confirmar tu turno. Por favor, asegúrate de que tu nombre y fecha de turno estén visibles y sean correctos.');
+                    return false;
+                }
+            } else { // Si es difusión, el nombre es opcional. No se requiere validación estricta.
+                // No se requiere validación estricta para difusión ya que puede ser solo para información
+            }
+            return true;
+        }
+        
+        // Función para enviar el mensaje por WhatsApp
+        function sendWhatsAppMessage(isReminder, discount, treatment) {
+            const name = document.getElementById('name').value;
+            const whatsappNumber = '5493415216025'; // NÚMERO DE WHATSAPP REAL DE LE BARDOL
+            let message = '';
+            
+            if (isReminder) {
+                const displayedDate = document.getElementById('displayDate').textContent; 
+                message = `¡Hola Le Bardol! Soy ${name}. Confirmo mi turno asignado para el ${displayedDate}. Agradezco su confirmación. ¡Saludos!`;
+            } else {
+                // Mensaje para difusión con descuento/tratamiento
+                let offerText = "";
+                if (discount && treatment) {
+                    offerText = `Estoy interesado/a en la promo de ${discount}% de descuento en ${treatment}.`;
+                } else if (discount) {
+                    offerText = `Estoy interesado/a en la promo de ${discount}% de descuento.`;
+                } else if (treatment) {
+                    offerText = `Estoy interesado/a en la promo de ${treatment}.`;
+                } else {
+                    offerText = `Estoy interesado/a en sus servicios y promociones.`;
+                }
+                message = `¡Hola Le Bardol! Mi nombre es ${name}. ${offerText} ¿Podrían brindarme más información o ayudarme a sacar un turno? ¡Gracias!`;
+            }
+            
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Función para compartir la invitación (botón 50% OFF)
+        function shareInvitation() {
+            const referrerName = document.getElementById('name').value;
+            
+            if (!referrerName || referrerName.trim() === '' || referrerName.trim() === 'Estimado/a cliente/a' || referrerName.trim() === 'Hola!') { 
+                alert('Por favor, ingresa tu nombre completo para que tus amigos sepan quién los envía.');
+                document.getElementById('name').focus();
+                return;
+            }
+
+            const whatsappNumberLeBardol = '5493415216025'; // Número de WhatsApp de Le Bardol
+            
+            // Mensaje que el AMIGO enviará a Le Bardol
+            const messageForFriend = `¡Hola Le Bardol! Me interesa la promo del 50% de descuento en mi primer servicio. Me recomendó ${referrerName}. ¡Quisiera más información!`;
+            
+            // Enlace de WhatsApp que el CLIENTE EXISTENTE (referente) enviará a sus AMIGOS.
+            const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
+            
+            // Mensaje que el CLIENTE EXISTENTE (referente) compartirá en WhatsApp con sus contactos.
+            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Están ofreciendo un 50% de descuento en tu primer tratamiento! Solo tienes que contactarlos mencionando que te envió ${referrerName} para obtener la promo.\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
+        }
+
+        // Función para compartir la invitación desde la nueva tarjeta de difusión (5% OFF)
+        function shareInvitationDiffusion() {
+            const whatsappNumberLeBardol = '5493415216025'; // Número de WhatsApp de Le Bardol
+            const nameFromInput = document.getElementById('name').value;
+            const referrerName = (nameFromInput && nameFromInput.trim() !== '' && nameFromInput.trim() !== 'Hola!') ? nameFromInput : 'un amigo/a';
+
+            // Mensaje que el AMIGO enviará a Le Bardol (para el 5% off)
+            const messageForFriend = `¡Hola Le Bardol! Me interesa la promo de referido. Me envió ${referrerName} y quiero mi 5% de descuento en mi primer servicio.`;
+            
+            // Enlace de WhatsApp que el CLIENTE EXISTENTE (referente) enviará a sus AMIGOS.
+            const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
+            
+            // Mensaje que el CLIENTE EXISTENTE (referente) compartirá en WhatsApp con sus contactos.
+            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Si mencionas que te envié, obtienes un 5% de descuento en tu primer servicio, y yo también gano en mi próxima sesión!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
+        }
+
+        // Función para habilitar/deshabilitar el botón de invitación del recordatorio
+        function toggleInviteButton() {
+            const nameInput = document.getElementById('name');
+            const inviteBtn = document.getElementById('inviteBtn');
+            // Deshabilita si el campo de nombre está vacío o tiene valores por defecto
+            if (nameInput.value.trim() === '' || nameInput.value.trim() === 'Estimado/a cliente/a' || nameInput.value.trim() === 'Hola!') {
+                inviteBtn.disabled = true;
+            } else {
+                inviteBtn.disabled = false;
+            }
+        }
+
+        // Función para obtener parámetros de la URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+        
+        // Inicializar la página cuando el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', () => {
+            startCountdown();
+            
+            const nameInput = document.getElementById('name');
+            const displayDateDiv = document.getElementById('displayDate');
+            const appointmentDisplayGroup = document.getElementById('appointmentDisplayGroup'); // El div que contiene la fecha
+            const confirmBtn = document.getElementById('confirmBtn');
+            const inviteBtn = document.getElementById('inviteBtn'); // Botón de invitar de recordatorio
+            const inviteBtnDiffusion = document.getElementById('inviteBtnDiffusion'); // Nuevo botón de invitar de difusión
+            const disclaimerMessage = document.getElementById('disclaimerMessage');
+            
+            // Elementos de la oferta para actualizar
+            const mainOfferCard = document.getElementById('mainOfferCard');
+            const offerTitle = document.getElementById('offerTitle');
+            const offerDescription = document.getElementById('offerDescription');
+            const referralPromoDiffusion = document.getElementById('referralPromoDiffusion'); // Nueva tarjeta de referido para difusión
+
+            // Leer parámetros de la URL
+            const urlName = getUrlParameter('nombre');
+            const urlDate = getUrlParameter('fecha'); // Formato AAAA-MM-DDTHH:MM
+            const urlDiscount = getUrlParameter('descuento'); // Nuevo
+            const urlTreatment = getUrlParameter('tratamiento'); // Nuevo
+
+            let isReminderLink = false; // Bandera para saber si es un enlace de recordatorio
+
+            // Pre-llenar campos si están en la URL y configurar el tipo de enlace
+            if (urlDate) { // Si hay fecha, es un enlace de recordatorio de turno
+                isReminderLink = true;
+                if (urlName) {
+                    nameInput.value = urlName;
+                } else {
+                    nameInput.value = "Estimado/a cliente/a"; // Valor por defecto si no viene nombre pero sí fecha
+                }
+                
+                try {
+                    const dateObj = new Date(urlDate);
+                    // Ajuste para la zona horaria de Argentina (Rosario)
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Rosario' };
+                    displayDateDiv.textContent = dateObj.toLocaleDateString('es-ES', options) + ' hs';
+                } catch (e) {
+                    console.error("Error al parsear la fecha de la URL:", e);
+                    displayDateDiv.textContent = "Fecha y hora no válidas";
+                }
+                confirmBtn.innerHTML = '<i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO';
+                disclaimerMessage.innerHTML = '<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado. ¡No olvides la increíble promoción de referidos!';
+                
+                // Mostrar oferta principal de referidos, a menos que haya una promo específica para el recordatorio
+                if (urlDiscount && urlTreatment) {
+                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
+                    mainOfferCard.style.display = 'block'; // Asegurarse de que la tarjeta de oferta esté visible
+                } else if (urlDiscount) {
+                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TU PRÓXIMO SERVICIO!`;
+                    offerDescription.innerHTML = `Como cliente especial, disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en tu próximo tratamiento. ¡Tu momento de relajación y belleza te espera!`;
+                    mainOfferCard.style.display = 'block';
+                } else if (urlTreatment) {
+                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Como cliente especial, descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
+                    mainOfferCard.style.display = 'block';
+                } else {
+                    // Por defecto en recordatorio, la oferta principal es la de referidos
+                    offerTitle.textContent = '¡Oferta Especial de Referidos!';
+                    offerDescription.innerHTML = 'Confirma tu turno y si invitas a tus amigos en las próximas 24 horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada uno que contrate un servicio, ¡y ellos un <strong>50% DE DESCUENTO</strong> en su primer tratamiento!';
+                    mainOfferCard.style.display = 'block';
+                }
+                referralPromoDiffusion.style.display = 'none'; // Ocultar la tarjeta de referido de difusión
+                inviteBtn.style.display = 'block'; // Mostrar el botón de invitar normal
+                inviteBtnDiffusion.style.display = 'none'; // Ocultar el botón de invitar de difusión
+
+            } else { // Si no hay fecha, es un enlace de difusión/promoción
+                isReminderLink = false;
+                appointmentDisplayGroup.style.display = 'none'; // Oculta el grupo de la fecha
+                if (urlName) {
+                    nameInput.value = urlName;
+                } else {
+                    nameInput.value = "Hola!"; // Saludo más genérico si no hay nombre ni fecha
+                }
+                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
+                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
+
+                // Adaptar la tarjeta de oferta si hay descuento o tratamiento
+                if (urlDiscount && urlTreatment) {
+                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Aprovecha esta oportunidad única y obtén un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
+                    mainOfferCard.style.display = 'block'; // Mostrar la tarjeta de oferta si hay promo específica
+                    referralPromoDiffusion.style.display = 'block'; // Mostrar también la nueva tarjeta de referido de difusión
+                    inviteBtnDiffusion.style.display = 'block'; // Mostrar el botón de invitar de difusión
+                } else if (urlDiscount) {
+                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TODOS LOS SERVICIOS!`;
+                    offerDescription.innerHTML = `Disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en cualquiera de nuestros tratamientos. ¡Tu momento de relajación y belleza te espera!`;
+                    mainOfferCard.style.display = 'block';
+                    referralPromoDiffusion.style.display = 'block';
+                    inviteBtnDiffusion.style.display = 'block';
+                } else if (urlTreatment) {
+                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
+                    mainOfferCard.style.display = 'block';
+                    referralPromoDiffusion.style.display = 'block';
+                    inviteBtnDiffusion.style.display = 'block';
+                } else {
+                    // Si no hay descuento ni tratamiento específicos, ocultar la tarjeta de oferta principal
+                    mainOfferCard.style.display = 'none';
+                    // Pero sí mostrar la tarjeta de referido de difusión
+                    referralPromoDiffusion.style.display = 'block';
+                    inviteBtnDiffusion.style.display = 'block';
+                }
+                inviteBtn.style.display = 'none'; // Ocultar el botón de invitar normal
+            }
+
+            // Asignar eventos a los botones
+            document.getElementById('confirmBtn').addEventListener('click', () => {
+                if (validateForm(isReminderLink)) {
+                    sendWhatsAppMessage(isReminderLink, urlDiscount, urlTreatment);
+                    showNotification();
+                }
+            });
+            
+            document.getElementById('inviteBtn').addEventListener('click', shareInvitation); // Botón de recordatorio
+            document.getElementById('inviteBtnDiffusion').addEventListener('click', shareInvitationDiffusion); // Nuevo botón de difusión
+
+            // Escuchar cambios en el campo de nombre para habilitar/deshabilitar el botón de invitación
+            // Esto solo aplica al botón de invitar en el modo recordatorio de turno
+            document.getElementById('name').addEventListener('input', toggleInviteButton);
+            
+            // Llamar al inicio para establecer el estado inicial del botón (importante si los campos vienen pre-llenados)
+            if (isReminderLink) {
+                toggleInviteButton(); // Solo si es recordatorio de turno se evalúa el nombre para el botón de invitar
+            } else {
+                 inviteBtn.disabled = false; // En difusión, el botón de invitar siempre está activo si visible
+            }
+        });
+    </script>
+  </body>
+</html>
