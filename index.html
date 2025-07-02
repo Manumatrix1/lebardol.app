@@ -594,7 +594,7 @@
                     mainOfferCard.style.display = 'block';
                 } else if (urlTreatment) {
                     offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Como cliente especial, descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
+                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
                     mainOfferCard.style.display = 'block';
                 } else {
                     // Por defecto en recordatorio, la oferta principal es la de referidos
@@ -659,13 +659,13 @@
 
             // Escuchar cambios en el campo de nombre para habilitar/deshabilitar el botón de invitación
             // Esto solo aplica al botón de invitar en el modo recordatorio de turno
-            document.getElementById('name').addEventListener('input', toggleInviteButton);
+            nameInput.addEventListener('input', toggleInviteButton);
             
             // Llamar al inicio para establecer el estado inicial del botón (importante si los campos vienen pre-llenados)
             if (isReminderLink) {
                 toggleInviteButton(); // Solo si es recordatorio de turno se evalúa el nombre para el botón de invitar
             } else {
-                 inviteBtn.disabled = false; // En difusión, el botón de invitar siempre está activo si visible
+                inviteBtn.disabled = false; // En difusión, el botón de invitar siempre está activo si visible
             }
         });
     </script>
