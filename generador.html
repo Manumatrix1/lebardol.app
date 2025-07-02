@@ -128,6 +128,10 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
         
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
         .generated-link-container {
             margin-top: 25px;
             padding: 15px;
@@ -234,8 +238,8 @@
             const copyLinkBtn = document.getElementById('copyLinkBtn');
             const copyNotification = document.getElementById('copyNotification');
 
-            // URL base de tu página principal. Asegúrate que 'index.html' sea la ruta correcta.
-            // Si subes tus archivos a un dominio, la URL sería 'https://tudominio.com/index.html'
+            // URL base de tu página principal. Asume que 'index.html' está en la misma carpeta.
+            // Si subes tus archivos a un dominio y 'index.html' está en la raíz, esta ruta sigue siendo válida.
             const baseUrl = 'index.html'; 
 
             function toggleLinkType(type) {
@@ -280,6 +284,16 @@
                         alert('Para un Recordatorio de Turno, la fecha y hora del turno son obligatorias.');
                         return;
                     }
+                    // Opcional: Si es recordatorio, también podemos pasar descuento y tratamiento si el generador lo permite
+                    const discount = discountPercentageInput.value.trim();
+                    const treatment = treatmentTypeInput.value.trim();
+                    if (discount) {
+                        params.push(`descuento=${encodeURIComponent(discount)}`);
+                    }
+                    if (treatment) {
+                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    }
+
                 } else { // promotion
                     const promoClientName = promoClientNameInput.value.trim();
                     const discount = discountPercentageInput.value.trim();
