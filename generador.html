@@ -144,6 +144,12 @@
             color: #007bb6;
             font-weight: 500;
         }
+        /* Estilo para el enlace generado dentro del contenedor */
+        .generated-link-container a {
+            color: #007bb6; /* Mismo color que el texto del contenedor */
+            text-decoration: underline; /* Subrayado para indicar que es un enlace */
+        }
+
 
         /* Notificación de copia */
         .copy-notification {
@@ -239,9 +245,12 @@
             const copyNotification = document.getElementById('copyNotification');
 
             // URL base simplificada, asumiendo que index.html está en la misma carpeta.
-            // NOTA: Para un comportamiento consistente y enlaces compartibles,
-            // es recomendable subir estos archivos a un servidor web (aunque sea local).
-            // La funcionalidad completa con "file:///" puede variar entre navegadores.
+            // NOTA IMPORTANTE:
+            // Cuando abres estos archivos directamente desde tu computadora (con "file:///"),
+            // los navegadores pueden restringir la forma en que funcionan los enlaces con parámetros.
+            // Si el enlace no se abre correctamente al hacer CLIC en él, por favor, COPIA el texto
+            // del enlace y PÉGALO directamente en la barra de direcciones de una nueva pestaña.
+            // Para un comportamiento 100% fiable y enlaces compartibles, lo ideal es usar un servidor web (local o remoto).
             const baseUrl = 'index.html'; 
 
             function toggleLinkType(type) {
@@ -259,7 +268,7 @@
                     clientNameInput.value = '';
                     appointmentDateInput.value = '';
                 }
-                generatedLinkDiv.textContent = 'Aquí aparecerá el enlace generado';
+                generatedLinkDiv.innerHTML = 'Aquí aparecerá el enlace generado'; // Limpiar y poner texto por defecto
                 copyLinkBtn.style.display = 'none';
             }
 
@@ -323,13 +332,21 @@
                     generatedUrl += `?${params.join('&')}`;
                 }
 
-                generatedLinkDiv.textContent = generatedUrl;
+                // Limpiar contenido previo y crear el enlace clicable
+                generatedLinkDiv.innerHTML = ''; 
+                const linkElement = document.createElement('a');
+                linkElement.href = generatedUrl;
+                linkElement.textContent = generatedUrl;
+                linkElement.target = '_blank'; // Abrir en una nueva pestaña
+
+                generatedLinkDiv.appendChild(linkElement); // Agregar el enlace al div
                 copyLinkBtn.style.display = 'inline-block'; // Mostrar botón de copiar
             });
 
             // Copiar el enlace al portapapeles
             copyLinkBtn.addEventListener('click', () => {
-                const linkToCopy = generatedLinkDiv.textContent;
+                // Obtener el href del enlace generado para copiar la URL completa y correcta
+                const linkToCopy = generatedLinkDiv.querySelector('a').href;
                 if (linkToCopy) {
                     navigator.clipboard.writeText(linkToCopy).then(() => {
                         copyNotification.classList.add('show');
