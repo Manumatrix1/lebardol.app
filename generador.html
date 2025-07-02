@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Enlaces Le Bardol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos generales y reseteo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%); /* Fondo degradado suave */
+            color: #4a2c5e; /* Color de texto principal */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* Contenedor principal del generador */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #e91e63; /* Rosa fuerte */
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+        
+        /* Grupo de botones para tipo de enlace */
+        .type-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .type-btn {
+            padding: 12px 25px;
+            border: 2px solid #e91e63;
+            border-radius: 10px;
+            background-color: white;
+            color: #e91e63;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .type-btn.active, .type-btn:hover {
+            background-color: #e91e63;
+            color: white;
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
+        }
+        
+        /* Grupos de formulario */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a2c5e;
+        }
+        
+        input[type="text"], input[type="datetime-local"], input[type="number"], select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0c8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f9f0ff;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="datetime-local"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #8a2be2;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+        }
+
+        input[type="number"] {
+            /* Ocultar flechas en input type="number" */
+            -moz-appearance: textfield; /* Firefox */
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* Área de resultado */
+        .result-area {
+            background: #e0f7fa; /* Azul claro */
+            border: 2px dashed #00bcd4; /* Borde punteado azul */
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            word-break: break-all; /* Para que la URL larga se ajuste */
+        }
+        
+        #generatedLink {
+            font-size: 1.1em;
+            color: #007bb6; /* Azul más oscuro */
+            font-weight: 500;
+        }
+        
+        /* Botón de copiar */
+        .copy-btn {
+            background: #4caf50; /* Verde */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background-color: #388e3c; /* Verde más oscuro al pasar el ratón */
+        }
+        
+        /* Notificación de copiado */
+        .copy-notification {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 1000;
+        }
+        
+        .copy-notification.show {
+            opacity: 1;
+        }
+
+        /* Botón general para generar enlace */
+        .generate-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            margin: 25px 0 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #8a2be2 0%, #a200ff 100%); /* Morado vibrante */
+            color: white;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .generate-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* Media Queries para responsividad */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .type-selector {
+                flex-direction: column;
+            }
+            .type-btn {
+                width: 100%;
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Generador de Enlaces Le Bardol</h1>
+      
+      <div class="type-selector">
+        <button id="reminderBtn" class="type-btn active">
+          <i class="fas fa-calendar-alt"></i> Recordatorio de Turno
+        </button>
+        <button id="diffusionBtn" class="type-btn">
+          <i class="fas fa-bullhorn"></i> Difusión/Promo
+        </button>
+      </div>
+      
+      <div class="form-group">
+        <label for="clientName">Nombre del Cliente (Opcional para Difusión)</label>
+        <input type="text" id="clientName" placeholder="Ej: Maria Perez">
+      </div>
+      
+      <div id="reminderFields">
+        <div class="form-group">
+          <label for="appointmentDate">Fecha y Hora del Turno</label>
+          <input type="datetime-local" id="appointmentDate">
+        </div>
+      </div>
+
+      <div id="promotionFields" style="display: none;">
+        <div class="form-group">
+          <label for="discount">Descuento (%) (Opcional)</label>
+          <input type="number" id="discount" placeholder="Ej: 20">
+        </div>
+        <div class="form-group">
+          <label for="treatment">Tipo de Tratamiento (Opcional)</label>
+          <input type="text" id="treatment" placeholder="Ej: Limpieza Facial, Masajes Relax">
+        </div>
+      </div>
+      
+      <button class="generate-btn" id="generateLinkBtn">
+        <i class="fas fa-link"></i> Generar Enlace
+      </button>
+
+      <div class="result-area">
+        <p>Tu enlace se generará aquí:</p>
+        <div id="generatedLink"></div>
+        <button class="copy-btn" id="copyLinkBtn" style="display: none;">
+          <i class="fas fa-copy"></i> Copiar Enlace
+        </button>
+      </div>
+    </div>
+
+    <div id="copyNotification" class="copy-notification">
+      ¡Enlace copiado!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reminderBtn = document.getElementById('reminderBtn');
+            const diffusionBtn = document.getElementById('diffusionBtn');
+            const reminderFields = document.getElementById('reminderFields');
+            const promotionFields = document.getElementById('promotionFields');
+            const clientNameInput = document.getElementById('clientName');
+            const appointmentDateInput = document.getElementById('appointmentDate');
+            const discountInput = document.getElementById('discount');
+            const treatmentInput = document.getElementById('treatment');
+            const generateLinkBtn = document.getElementById('generateLinkBtn');
+            const generatedLinkDiv = document.getElementById('generatedLink');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const copyNotification = document.getElementById('copyNotification');
+
+            let isReminder = true; // Por defecto, es recordatorio
+
+            // Función para alternar entre Recordatorio y Difusión
+            function toggleLinkType(type) {
+                isReminder = (type === 'reminder');
+                
+                if (isReminder) {
+                    reminderBtn.classList.add('active');
+                    diffusionBtn.classList.remove('active');
+                    reminderFields.style.display = 'block';
+                    promotionFields.style.display = 'none';
+                    clientNameInput.placeholder = 'Ej: Maria Perez';
+                } else {
+                    diffusionBtn.classList.add('active');
+                    reminderBtn.classList.remove('active');
+                    reminderFields.style.display = 'none';
+                    promotionFields.style.display = 'block';
+                    clientNameInput.placeholder = 'Ej: Cliente Interesado';
+                }
+                generatedLinkDiv.textContent = ''; // Limpiar enlace anterior
+                copyLinkBtn.style.display = 'none'; // Ocultar botón de copiar
+            }
+
+            // Event Listeners para los botones de tipo
+            reminderBtn.addEventListener('click', () => toggleLinkType('reminder'));
+            diffusionBtn.addEventListener('click', () => toggleLinkType('diffusion'));
+
+            // Función para generar el enlace
+            generateLinkBtn.addEventListener('click', () => {
+                let baseUrl = window.location.origin; // Obtiene el protocolo y dominio (ej: http://127.0.0.1:5500)
+                let clientName = encodeURIComponent(clientNameInput.value.trim());
+                let params = [];
+
+                // Asegúrate de que apunte a index.html, ya sea en el mismo directorio o en un subdirectorio
+                // Si ambos archivos están en la misma carpeta raíz, sería:
+                baseUrl += '/index.html'; 
+                
+                // Si estuvieran en una subcarpeta llamada 'cliente', por ejemplo, sería:
+                // baseUrl += '/cliente/index.html'; 
+
+                if (clientName) {
+                    params.push(`nombre=${clientName}`);
+                }
+
+                if (isReminder) {
+                    let appointmentDate = appointmentDateInput.value;
+                    if (!appointmentDate) {
+                        alert('Por favor, selecciona la fecha y hora del turno para el recordatorio.');
+                        return;
+                    }
+                    params.push(`fecha=${encodeURIComponent(appointmentDate)}`);
+                    
+                    // Si es recordatorio, también podemos pasar descuento y tratamiento
+                    let discount = discountInput.value.trim();
+                    let treatment = treatmentInput.value.trim();
+                    if (discount) {
+                        params.push(`descuento=${encodeURIComponent(discount)}`);
+                    }
+                    if (treatment) {
+                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    }
+
+                } else { // Es difusión
+                    let discount = discountInput.value.trim();
+                    let treatment = treatmentInput.value.trim();
+                    
+                    if (discount) {
+                        params.push(`descuento=${encodeURIComponent(discount)}`);
+                    }
+                    if (treatment) {
+                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    }
+                    
+                    if (!clientName && !discount && !treatment) {
+                        alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
+                        return;
+                    }
+                }
+
+                let generatedUrl = baseUrl;
+                if (params.length > 0) {
+                    generatedUrl += `?${params.join('&')}`;
+                }
+
+                generatedLinkDiv.textContent = generatedUrl;
+                copyLinkBtn.style.display = 'inline-block'; // Mostrar botón de copiar
+            });
+
+            // Copiar el enlace al portapapeles
+            copyLinkBtn.addEventListener('click', () => {
+                const linkToCopy = generatedLinkDiv.textContent;
+                if (linkToCopy) {
+                    navigator.clipboard.writeText(linkToCopy).then(() => {
+                        copyNotification.classList.add('show');
+                        setTimeout(() => {
+                            copyNotification.classList.remove('show');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Error al copiar el texto: ', err);
+                        alert('Hubo un error al copiar el enlace. Inténtalo manualmente.');
+                    });
+                }
+            });
+
+            // Asegurarse de que al cargar la página se muestren los campos correctos (recordatorio por defecto)
+            toggleLinkType('reminder');
+        });
+    </script>
+  </body>
+</html>
