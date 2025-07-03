@@ -460,7 +460,7 @@
         </p>
         <p class="spin-count-display" id="spinCountDisplay">Te quedan 3 tiros.</p>
         <div style="position: relative; width: fit-content; margin: 0 auto;">
-            <canvas id="rouletteCanvas" width="400" height="400"></canvas>
+            <canvas id="rouletteCanvas" width="500" height="500"></canvas> <!-- Aumentado el tamaño del canvas -->
             <div class="wheel-indicator"></div>
         </div>
         <div class="buttons-container">
@@ -775,7 +775,7 @@
                 ctx.rotate(angle + arc / 2); 
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#fff'; 
-                ctx.font = 'bold 18px Segoe UI'; 
+                ctx.font = 'bold 16px Segoe UI'; // Ajustado el tamaño de la fuente
                 ctx.fillText(segments[i].text, canvas.width / 2 - 15, 0); 
                 ctx.restore();
             }
@@ -1134,15 +1134,27 @@
                 
                 const activeRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
                 const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
+                const storedSpinAttempts = parseInt(localStorage.getItem('spinAttempts')); 
+
+                // Always show roulette section if it's a roulette link
+                rouletteSection.style.display = 'block';
+                mainOfferCard.style.display = 'none'; 
+                referralPromoDiffusion.style.display = 'none';
+                appointmentDisplayGroup.style.display = 'none';
+                confirmBtn.style.display = 'none';
+                inviteBtn.style.display = 'none';
+                disclaimerMessage.style.display = 'none';
+
+                // Display the general invite button even in roulette mode
+                inviteBtnDiffusion.style.display = 'block'; 
 
                 if (activeRoulettePrizeDescription && (now - prizeWonTime <= prizeReservationTime)) {
                     console.log("Condition Met: Active roulette prize found and not expired. Displaying prize info.");
-                    rouletteSection.style.display = 'block'; 
                     spinBtn.style.display = 'none'; 
                     loadingSpinner.style.display = 'none';
                     resultMessage.textContent = `¡Tu premio activo: ${activeRoulettePrizeDescription}!`;
-                    useDiscountBtn.style.display = 'inline-block';
-                    mercadopagoLinkContainer.style.display = 'block';
+                    useDiscountBtn.style.display = 'inline-block'; 
+                    mercadopagoLinkContainer.style.display = 'block'; 
                     startPrizeTimer(); 
                     updateSpinCountDisplay(); 
                     nameInput.value = urlName || "Hola!"; 
@@ -1150,7 +1162,7 @@
                     
                 } else if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
                     console.log("Condition Met: Roulette already spun today (cooldown). Displaying cooldown message.");
-                    rouletteSection.style.display = 'none'; 
+                    rouletteSection.style.display = 'none'; // Hide roulette, show main offer card
                     mainOfferCard.style.display = 'block'; 
                     offerTitle.textContent = `¡Ya giraste la ruleta hoy!`;
                     const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
@@ -1161,7 +1173,7 @@
                     confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
                     confirmBtn.style.display = 'block';
                     inviteBtn.style.display = 'none'; 
-                    inviteBtnDiffusion.style.display = 'none'; 
+                    // inviteBtnDiffusion.style.display = 'block'; // Already set above for roulette path
                     disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
                     disclaimerMessage.style.display = 'block';
                     nameInput.value = urlName || "Hola!"; 
@@ -1169,16 +1181,7 @@
 
                 } else {
                     console.log("Condition Met: Roulette available to spin. Displaying roulette.");
-                    rouletteSection.style.display = 'block';
-                    mainOfferCard.style.display = 'none'; 
-                    referralPromoDiffusion.style.display = 'none'; 
-                    appointmentDisplayGroup.style.display = 'none'; 
-                    confirmBtn.style.display = 'none'; 
-                    inviteBtn.style.display = 'none'; 
-                    inviteBtnDiffusion.style.display = 'none'; 
-                    disclaimerMessage.style.display = 'none'; 
-
-                    if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours) || (isNaN(spinAttempts) || spinAttempts === 0)) { 
+                    if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours) || (isNaN(storedSpinAttempts) || storedSpinAttempts === 0)) { 
                         console.log("Resetting spin attempts and clearing old roulette data.");
                         spinAttempts = 3;
                         localStorage.setItem('spinAttempts', spinAttempts.toString());
@@ -1191,6 +1194,10 @@
                     updateSpinCountDisplay(); 
                     drawRoulette();
                     animateSpin(); 
+                    spinBtn.style.display = 'block'; 
+                    useDiscountBtn.style.display = 'none'; 
+                    mercadopagoLinkContainer.style.display = 'none'; 
+                    prizeTimerDisplay.style.display = 'none'; 
                 }
 
             } else if (urlRouletteDiscount) {
