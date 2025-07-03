@@ -800,23 +800,23 @@
 
         // Definición de los segmentos de la ruleta con tipos de premio
         const segments = [
-            { text: '30% OFF Depi', type: 'discount', value: 30, category: 'depilacion', description: '30% de descuento en paquete de depilación', needsSeña: true },
+            { text: '20% OFF Sesión Depi', type: 'discount', value: 20, category: 'depilacion', description: '20% de descuento en sesión de depilación', needsSeña: true },
+            { text: '30% OFF Pack Depi', type: 'discount', value: 30, category: 'depilacion', description: '30% de descuento en paquete de depilación', needsSeña: true },
             { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
-            { text: '20% Amigo!', type: 'new_spin_friend_discount', friendDiscount: 20, description: '20% de descuento para un amigo + un nuevo tiro', needsSeña: false },
-            { text: '25% Manicuria', type: 'discount', value: 25, category: 'manicuria', description: '25% de descuento en manicuría', needsSeña: true },
+            { text: '20% OFF Pack Masajes', type: 'discount', value: 20, category: 'masajes', description: '20% de descuento en paquete de masajes', needsSeña: true },
+            { text: '35% OFF Pack Depi', type: 'discount', value: 35, category: 'depilacion', description: '35% de descuento en paquete de depilación', needsSeña: true },
+            { text: 'No ganaste nada', type: 'no_luck', description: 'No ganaste nada. ¡Mejor suerte la próxima!', needsSeña: false },
+            { text: '30% OFF Manicura', type: 'discount', value: 30, category: 'manicura', description: '30% de descuento en manicura', needsSeña: true },
             { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
-            { text: '0% Suerte!', type: 'no_luck_new_spin', description: '0% de descuento. ¡Suerte en tu próximo tiro!', needsSeña: false },
-            { text: '30% Cosmetologia', type: 'discount', value: 30, category: 'cosmetologia', description: '30% de descuento en cosmetología', needsSeña: true },
-            { text: '35% Masajes', type: 'discount', value: 35, category: 'masajes', description: '35% de descuento en masajes', needsSeña: true },
-            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
-            { text: '15% OFF Cejas', type: 'discount', value: 15, category: 'cejas', description: '15% de descuento en diseño de cejas', needsSeña: true },
-            { text: '40% OFF Pestañas', type: 'discount', value: 40, category: 'pestañas', description: '40% de descuento en lifting de pestañas', needsSeña: true },
+            { text: '30% OFF Cosmetologia', type: 'discount', value: 30, category: 'cosmetologia', description: '30% de descuento en cosmetología', needsSeña: true },
+            { text: '20% OFF Masajes', type: 'discount', value: 20, category: 'masajes', description: '20% de descuento en masajes', needsSeña: true },
+            { text: 'Comodín 30% OFF', type: 'discount', value: 30, category: 'comodin', description: 'Comodín 30% de descuento en cualquier servicio', needsSeña: true },
             { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
         ];
 
         const segmentColors = ['#FFC0CB', '#FFB6C1', '#FFDAB9', '#FFE4E1', '#F0F8FF', '#E6E6FA']; // Colores pastel
         const numSegments = segments.length;
-        const arc = (2 * Math.PI) / numSegments; // Ángulo de cada segmento en radianes (corregido a 2*PI)
+        const arc = (2 * Math.PI) / numSegments; // Ángulo de cada segmento en radianes
 
         const ROULETTE_MAX_SPINS = 3;
         const ROULETTE_LOCKOUT_DURATION_MS = 30 * 60 * 1000; // 30 minutos en milisegundos
@@ -850,8 +850,8 @@
          */
         function loadRouletteState() {
             const savedSpinsLeft = localStorage.getItem('rouletteSpinsLeft');
-            const savedLastSpinCycleStartTimestamp = localStorage.getItem('rouletteLastSpinCycleStartTimestamp'); // Corregido nombre
-            const savedLockoutEndTime = localStorage.getItem('rouletteLockoutEndTime'); // Corregido nombre
+            const savedLastSpinCycleStartTimestamp = localStorage.getItem('rouletteLastSpinCycleStartTimestamp');
+            const savedLockoutEndTime = localStorage.getItem('rouletteLockoutEndTime');
             const savedWonPrize = localStorage.getItem('wonRoulettePrize');
             const savedPrizeEndTime = localStorage.getItem('prizeEndTime');
             const savedPrizeSeñaPaid = localStorage.getItem('prizeSeñaPaid');
@@ -910,13 +910,13 @@
                 ctx.rotate(angle + arc / 2); // Rotar al centro del segmento
                 ctx.fillStyle = '#4a2c5e'; // Color del texto
                 
-                // Tamaño de fuente responsivo: 5% del ancho del canvas, con un mínimo de 16px y un máximo de 28px
-                const fontSize = Math.max(16, Math.min(28, canvas.width * 0.05)); 
+                // Tamaño de fuente responsivo: 5.5% del ancho del canvas, con un mínimo de 18px y un máximo de 30px
+                const fontSize = Math.max(18, Math.min(30, canvas.width * 0.055)); 
                 ctx.font = `bold ${fontSize}px sans-serif`; 
                 ctx.textAlign = 'right'; // El texto se alinea a la derecha del punto de dibujo
                 ctx.textBaseline = 'middle';
                 // Posicionar el texto un poco más hacia el centro para evitar el recorte
-                ctx.fillText(segments[i].text, radius * 0.7, 0); 
+                ctx.fillText(segments[i].text, radius * 0.65, 0); // Ajustado a 0.65 para más espacio
                 ctx.restore();
             }
             ctx.restore();
@@ -1013,7 +1013,7 @@
                 if (winningPrize.type === 'new_spin_friend_discount') {
                     localStorage.setItem('friendRouletteDiscount', winningPrize.friendDiscount);
                 }
-            } else if (winningPrize.type === 'no_luck_new_spin') {
+            } else if (winningPrize.type === 'no_luck_new_spin' || winningPrize.type === 'no_luck') { // Incluir 'no_luck'
                 // No hay descuento, pero se mantiene el giro para el próximo intento
                 // No se decrementa el giro aquí, ya se hizo al inicio del spinRoulette
             }
@@ -1213,21 +1213,27 @@
                 
                 const randomSegmentIndex = Math.floor(Math.random() * numSegments);
                 
-                // Calcular el ángulo para que el segmento ganador quede en la parte superior (puntero)
-                // El puntero está en la parte superior (12 en punto). En radianes, esto es 1.5 * PI (270 grados).
-                // El centro de cada segmento 'i' está en (i * arc + arc / 2).
-                // Queremos que el centro del segmento ganador 'randomSegmentIndex' se alinee con 1.5 * PI.
-                // La rotación necesaria es: (1.5 * PI - (randomSegmentIndex * arc + arc / 2)).
-                // Añadimos múltiples vueltas (ej. 5) para un efecto de giro más dramático.
-                const extraRotations = 5; 
-                let targetRotation = (1.5 * Math.PI - (randomSegmentIndex * arc + arc / 2));
-                targetRotation += (extraRotations * 2 * Math.PI); // Añadir vueltas completas
+                // Calculate the target angle for the *center* of the winning segment
+                // The pointer is at 12 o'clock (top), which is 1.5 * Math.PI radians (270 degrees) clockwise from 3 o'clock.
+                // The center of segment `randomSegmentIndex` is at `(randomSegmentIndex * arc + arc / 2)` radians from 3 o'clock.
+                // We want to rotate the wheel so that `(randomSegmentIndex * arc + arc / 2)` aligns with `1.5 * Math.PI`.
+                // So, the rotation needed is `(1.5 * Math.PI - (randomSegmentIndex * arc + arc / 2))`.
+                // This value can be negative, meaning it needs to rotate counter-clockwise or wrap around.
                 
-                // Normalizar la rotación para que esté entre 0 y 2*PI para la posición real de la rueda
-                // (Esto es importante para que la animación se vea suave si se gira de nuevo)
-                currentRotation = (targetRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                let targetAngleRelativeToZero = (1.5 * Math.PI - (randomSegmentIndex * arc + arc / 2));
+                
+                // Normalize this angle to be between 0 and 2*PI
+                targetAngleRelativeToZero = (targetAngleRelativeToZero % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
 
-                animateRoulette(targetRotation, 6000); // 6 segundos de duración
+                // Calculate the total angle to spin, ensuring it's always forward and includes extra rotations
+                const extraRotations = 5; // Minimum 5 full spins for visual effect
+                let angleToReach = targetAngleRelativeToZero - (currentRotation % (2 * Math.PI));
+                if (angleToReach < 0) {
+                    angleToReach += (2 * Math.PI); // Ensure it spins forward to the target
+                }
+                const absoluteFinalAngle = currentRotation + angleToReach + (extraRotations * 2 * Math.PI);
+
+                animateRoulette(absoluteFinalAngle, 6000); // 6 seconds duration
             } else {
                 updateRouletteUI(); // Asegurarse de que el mensaje de bloqueo se muestre
             }
@@ -1320,9 +1326,9 @@
 
             if (showRoulette === 'true' && !urlRouletteDiscount) { // Si es enlace de ruleta y NO trae un descuento predefinido
                 rouletteSection.style.display = 'block';
-                // Ocultar la oferta principal y la difusión si se muestra la ruleta
+                // Ocultar la oferta principal si se muestra la ruleta
                 document.getElementById('mainOfferCard').style.display = 'none';
-                // document.getElementById('referralPromoDiffusion').style.display = 'none'; // No ocultar esta sección
+                // La sección de difusión (referralPromoDiffusion) se mantiene visible intencionalmente
                 
                 // Controla la visibilidad de la sección de precios
                 if (!customPricesFromUrl || customPricesFromUrl.length === 0) {
