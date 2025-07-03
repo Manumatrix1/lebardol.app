@@ -650,10 +650,21 @@
         const loadingSpinner = document.getElementById('loadingSpinner');
         const rouletteSection = document.getElementById('rouletteSection'); 
 
-        const segments = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; 
+        // Definición de los segmentos de la ruleta con tipos de premio
+        const segments = [
+            { text: '10% OFF', type: 'discount', value: 10 },
+            { text: 'Nuevo Tiro!', type: 'new_spin' },
+            { text: '20% Amigo!', type: 'new_spin_friend_discount', friendDiscount: 20 },
+            { text: '5% OFF', type: 'discount', value: 5 },
+            { text: 'Nuevo Tiro!', type: 'new_spin' },
+            { text: '0% Suerte!', type: 'no_luck_new_spin' },
+            { text: '15% OFF', type: 'discount', value: 15 },
+            { text: 'Nuevo Tiro!', type: 'new_spin' }
+        ];
+
         const segmentColors = [
-            '#FFD1DC', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5',
-            '#392F5B', '#4A47A3', '#3D2B5B', '#9932CC', '#BA55D3'
+            '#FFD1DC', '#FFABAB', '#FFC3A0', '#FF677D', 
+            '#D4A5A5', '#392F5B', '#4A47A3', '#3D2B5B'
         ]; 
 
         const arc = (2 * Math.PI) / segments.length; 
@@ -662,9 +673,10 @@
         let continuousSpinSpeed = 0.01; 
         let isContinuouslySpinning = true; 
         let spinning = false; 
-        let wonDiscount = 0;
+        let wonPrize = null; // Almacenará el objeto del premio ganado
         let spinStartTime = 0;
-        const spinDuration = 3000; 
+        const spinDuration = 3000; // Duración del giro de detención en milisegundos (3 segundos)
+        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
 
         function drawRoulette() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -689,7 +701,7 @@
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#fff'; 
                 ctx.font = 'bold 20px Segoe UI';
-                ctx.fillText(`${segments[i]}%`, canvas.width / 2 - 20, 0); 
+                ctx.fillText(segments[i].text, canvas.width / 2 - 20, 0); 
                 ctx.restore();
             }
 
@@ -705,9 +717,7 @@
                 const elapsed = Date.now() - spinStartTime;
                 if (elapsed >= spinDuration) {
                     spinning = false;
-                    spinBtn.disabled = false;
                     loadingSpinner.style.display = 'none';
-                    useDiscountBtn.style.display = 'inline-block'; 
                     
                     const finalAngle = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); 
                     let winningIndex = -1;
@@ -725,8 +735,32 @@
                         winningIndex = Math.floor(Math.random() * segments.length);
                     }
                     
-                    wonDiscount = segments[winningIndex];
-                    resultMessage.textContent = `¡Felicidades! Ganaste un ${wonDiscount}% de descuento.`;
+                    wonPrize = segments[winningIndex]; // Almacenar el objeto completo del premio
+                    resultMessage.textContent = `¡Felicidades! Ganaste: ${wonPrize.text}`;
+
+                    // Lógica para diferentes tipos de premios
+                    if (wonPrize.type === 'discount') {
+                        useDiscountBtn.style.display = 'inline-block'; 
+                        spinBtn.disabled = false; // El botón de girar se habilita para que puedan volver a la página principal
+                        localStorage.setItem('wonRouletteDiscount', wonPrize.value); // Guardar el descuento para WhatsApp
+                        localStorage.setItem('hasSpunRoulette', 'true'); // Marcar que ya giró (para el control diario)
+                        localStorage.setItem('lastSpinTime', Date.now().toString()); // Guardar tiempo del giro
+                    } else if (wonPrize.type === 'new_spin' || wonPrize.type === 'no_luck_new_spin') {
+                        spinBtn.disabled = false; // Habilitar para un nuevo giro
+                        useDiscountBtn.style.display = 'none';
+                        localStorage.removeItem('wonRouletteDiscount'); // Limpiar descuento previo
+                        // No se marca 'hasSpunRoulette' para permitir otro giro en la misma sesión
+                        // Solo se guarda el lastSpinTime para el control diario
+                        localStorage.setItem('lastSpinTime', Date.now().toString());
+                    } else if (wonPrize.type === 'new_spin_friend_discount') {
+                        spinBtn.disabled = false; // Habilitar para un nuevo giro
+                        useDiscountBtn.style.display = 'none';
+                        localStorage.removeItem('wonRouletteDiscount'); // Limpiar descuento previo
+                        localStorage.setItem('friendRouletteDiscount', wonPrize.friendDiscount); // Guardar descuento para amigo
+                        // No se marca 'hasSpunRoulette' para permitir otro giro
+                        localStorage.setItem('lastSpinTime', Date.now().toString());
+                    }
+
                     drawRoulette(); 
                     return;
                 }
@@ -745,7 +779,17 @@
         }
 
         spinBtn.addEventListener('click', () => {
-            if (spinning || localStorage.getItem('hasSpunRoulette')) return; 
+            const lastSpinTime = localStorage.getItem('lastSpinTime');
+            const now = Date.now();
+
+            if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
+                const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
+                const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
+                resultMessage.textContent = `Ya giraste la ruleta hoy. Vuelve en aproximadamente ${hoursLeft} horas.`;
+                return;
+            }
+
+            if (spinning) return; 
 
             isContinuouslySpinning = false; 
             spinning = true; 
@@ -756,14 +800,15 @@
             spinStartTime = Date.now(); 
             
             animateSpin();
-            localStorage.setItem('hasSpunRoulette', 'true'); 
+            // No se establece hasSpunRoulette aquí, se hace en animateSpin() según el tipo de premio
         });
 
         useDiscountBtn.addEventListener('click', () => {
-            if (wonDiscount > 0) {
-                window.location.href = `index.html?rouletteDiscount=${wonDiscount}`;
+            if (wonPrize && wonPrize.type === 'discount' && wonPrize.value > 0) {
+                // Redirigir a index.html con el descuento ganado como parámetro
+                window.location.href = `index.html?rouletteDiscount=${wonPrize.value}`;
             } else {
-                alert('Por favor, gira la ruleta primero para ganar un descuento.');
+                alert('Por favor, gira la ruleta y gana un descuento para usarlo.');
             }
         });
 
@@ -793,21 +838,51 @@
             const urlNewClientDiscount = getUrlParameter('descuentoNuevoCliente');
             const urlDiffusionReferrerDiscount = getUrlParameter('descuentoReferenteDifusion');
             const urlDiffusionNewClientDiscount = getUrlParameter('descuentoNuevoClienteDifusion');
-            const urlRoulette = getUrlParameter('roulette'); // Nuevo: parámetro para activar la ruleta
+            const urlRoulette = getUrlParameter('roulette'); 
             const urlRouletteDiscount = getUrlParameter('rouletteDiscount'); 
 
             let isReminderLink = false; 
+
+            // DEBUGGING CONSOLE LOGS
+            console.log("--- DEBUGGING INDEX.HTML ---");
+            console.log("URL Parameters:");
+            console.log("  nombre =", urlName);
+            console.log("  fecha =", urlDate);
+            console.log("  descuento =", urlDiscount);
+            console.log("  tratamiento =", urlTreatment);
+            console.log("  descuentoReferente =", urlReferrerDiscount);
+            console.log("  descuentoNuevoCliente =", urlNewClientDiscount);
+            console.log("  descuentoReferenteDifusion =", urlDiffusionReferrerDiscount);
+            console.log("  descuentoNuevoClienteDifusion =", urlDiffusionNewClientDiscount);
+            console.log("  roulette =", urlRoulette);
+            console.log("  rouletteDiscount =", urlRouletteDiscount);
+            console.log("Local Storage:");
+            console.log("  hasSpunRoulette =", localStorage.getItem('hasSpunRoulette'));
+            console.log("  wonRouletteDiscount =", localStorage.getItem('wonRouletteDiscount'));
+            console.log("  lastSpinTime =", localStorage.getItem('lastSpinTime'));
+            console.log("  friendRouletteDiscount =", localStorage.getItem('friendRouletteDiscount'));
+            console.log("----------------------------");
+
 
             // Ocultar todas las secciones por defecto para controlar su visibilidad
             mainOfferCard.style.display = 'none';
             rouletteSection.style.display = 'none';
             referralPromoDiffusion.style.display = 'none';
-            appointmentDisplayGroup.style.display = 'none'; // Ocultar por defecto, se muestra si es recordatorio
+            appointmentDisplayGroup.style.display = 'none'; 
+            confirmBtn.style.display = 'none'; 
+            inviteBtn.style.display = 'none'; 
+            inviteBtnDiffusion.style.display = 'none'; 
+            disclaimerMessage.style.display = 'none'; 
+
 
             // Lógica para mostrar las secciones según los parámetros de la URL
             if (urlDate) { // Es un enlace de recordatorio de turno
+                console.log("Logic Path: Reminder Link");
                 isReminderLink = true;
-                appointmentDisplayGroup.style.display = 'block'; // Mostrar el grupo de la fecha
+                appointmentDisplayGroup.style.display = 'block'; 
+                confirmBtn.style.display = 'block'; 
+                disclaimerMessage.style.display = 'block'; 
+
                 if (urlName) {
                     nameInput.value = urlName;
                 } else {
@@ -848,42 +923,74 @@
                 inviteBtn.style.display = 'block'; 
                 inviteBtnDiffusion.style.display = 'none'; 
 
-            } else if (urlRoulette === 'true' && !localStorage.getItem('hasSpunRoulette')) { 
-                // Es un enlace de ruleta y el usuario no ha girado aún
-                rouletteSection.style.display = 'block';
-                mainOfferCard.style.display = 'none'; // Ocultar la oferta principal
-                referralPromoDiffusion.style.display = 'none'; // Ocultar difusión
-                appointmentDisplayGroup.style.display = 'none'; // Ocultar fecha de turno
-                confirmBtn.style.display = 'none'; // Ocultar botón de confirmar
-                inviteBtn.style.display = 'none'; // Ocultar botón de invitar normal
-                inviteBtnDiffusion.style.display = 'none'; // Ocultar botón de invitar de difusión
-                disclaimerMessage.style.display = 'none'; // Ocultar disclaimer
+            } else if (urlRoulette === 'true') { // Es un enlace de ruleta
+                console.log("Logic Path: Roulette Link");
+                const lastSpinTime = localStorage.getItem('lastSpinTime');
+                const now = Date.now();
 
-                // Iniciar la ruleta
-                drawRoulette();
-                animateSpin();
+                if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
+                    // Si ya giró hoy, mostrar mensaje y el formulario de contacto
+                    console.log("Roulette already spun today.");
+                    rouletteSection.style.display = 'none';
+                    mainOfferCard.style.display = 'block';
+                    offerTitle.textContent = `¡Ya giraste la ruleta hoy!`;
+                    const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
+                    const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
+                    offerDescription.innerHTML = `Vuelve en aproximadamente <strong>${hoursLeft} horas</strong> para un nuevo intento. Mientras tanto, ¡puedes consultar por nuestros servicios!`;
+                    
+                    appointmentDisplayGroup.style.display = 'none'; 
+                    confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
+                    confirmBtn.style.display = 'block';
+                    inviteBtn.style.display = 'none'; 
+                    inviteBtnDiffusion.style.display = 'none'; 
+                    disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
+                    disclaimerMessage.style.display = 'block';
+                    nameInput.value = urlName || "Hola!"; 
+                    nameInput.focus(); 
+
+                } else {
+                    // Si no ha girado hoy, mostrar la ruleta
+                    console.log("Roulette available to spin.");
+                    rouletteSection.style.display = 'block';
+                    mainOfferCard.style.display = 'none'; 
+                    referralPromoDiffusion.style.display = 'none'; 
+                    appointmentDisplayGroup.style.display = 'none'; 
+                    confirmBtn.style.display = 'none'; 
+                    inviteBtn.style.display = 'none'; 
+                    inviteBtnDiffusion.style.display = 'none'; 
+                    disclaimerMessage.style.display = 'none'; 
+
+                    drawRoulette();
+                    animateSpin();
+                    localStorage.removeItem('wonRouletteDiscount'); // Limpiar descuento de ruleta previo
+                    localStorage.removeItem('friendRouletteDiscount'); // Limpiar descuento de amigo previo
+                }
 
             } else if (urlRouletteDiscount) {
-                // El usuario ya giró la ruleta y fue redirigido con el descuento ganado
+                console.log("Logic Path: Roulette Discount Received (from previous spin)");
                 rouletteSection.style.display = 'none';
                 mainOfferCard.style.display = 'block'; 
                 offerTitle.textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
-                offerDescription.innerHTML = `¡Felicidades! Has ganado un <strong>${urlRouletteDiscount}% de descuento</strong>. Utiliza el botón "CONFIRMAR MI TURNO" para contactarnos y aplicar tu premio.`;
+                offerDescription.innerHTML = `¡Felicidades! Has ganado un <strong>${urlRouletteDiscount}% de descuento</strong>. Utiliza el botón "CONSULTAR POR UN TURNO" para contactarnos y aplicar tu premio.`;
                 localStorage.setItem('wonRouletteDiscount', urlRouletteDiscount);
-                // Mostrar el formulario de contacto para que puedan usar el descuento
-                appointmentDisplayGroup.style.display = 'none'; // No hay fecha de turno pre-llenada
+                
+                appointmentDisplayGroup.style.display = 'none'; 
                 confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
                 confirmBtn.style.display = 'block';
                 inviteBtn.style.display = 'none'; 
                 inviteBtnDiffusion.style.display = 'none'; 
                 disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Usa tu descuento de la ruleta! Completa tus datos para contactarnos.';
                 disclaimerMessage.style.display = 'block';
-                nameInput.value = urlName || "Hola!"; // Pre-llenar nombre si viene de la ruleta
-                nameInput.focus(); // Poner el foco en el campo de nombre
+                nameInput.value = urlName || "Hola!"; 
+                nameInput.focus(); 
 
             } else { // Es un enlace de difusión/promoción general (o la URL base sin parámetros específicos)
+                console.log("Logic Path: General Promotion/Default");
                 isReminderLink = false;
                 appointmentDisplayGroup.style.display = 'none'; 
+                confirmBtn.style.display = 'block'; 
+                disclaimerMessage.style.display = 'block'; 
+
                 if (urlName) {
                     nameInput.value = urlName;
                 } else {
@@ -891,7 +998,6 @@
                 }
                 confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
                 disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
-                disclaimerMessage.style.display = 'block';
 
                 if (urlDiscount && urlTreatment) {
                     offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
@@ -912,8 +1018,8 @@
                     referralPromoDiffusion.style.display = 'block';
                     inviteBtnDiffusion.style.display = 'block';
                 } else {
-                    mainOfferCard.style.display = 'none'; // Ocultar la tarjeta de oferta principal si no hay promo específica
-                    referralPromoDiffusion.style.display = 'block'; // Mostrar la tarjeta de referido de difusión por defecto
+                    mainOfferCard.style.display = 'none'; 
+                    referralPromoDiffusion.style.display = 'block'; 
                     inviteBtnDiffusion.style.display = 'block';
                 }
                 inviteBtn.style.display = 'none'; 
