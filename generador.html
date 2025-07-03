@@ -58,6 +58,7 @@
         input[type="text"],
         input[type="datetime-local"],
         input[type="number"],
+        textarea, 
         select {
             width: 100%;
             padding: 12px;
@@ -71,6 +72,7 @@
         input[type="text"]:focus,
         input[type="datetime-local"]:focus,
         input[type="number"]:focus,
+        textarea:focus, 
         select:focus {
             outline: none;
             border-color: #8a2be2;
@@ -197,6 +199,14 @@
           <label for="appointmentDate">Fecha y Hora del Turno</label>
           <input type="datetime-local" id="appointmentDate">
         </div>
+        <div class="form-group">
+          <label for="referrerDiscount">Descuento para el Referente (%) (opcional)</label>
+          <input type="number" id="referrerDiscount" placeholder="Ej: 10" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label for="newClientDiscount">Descuento para el Nuevo Cliente (%) (opcional)</label>
+          <input type="number" id="newClientDiscount" placeholder="Ej: 50" min="0" max="100">
+        </div>
       </div>
 
       <div id="promotionFields" style="display: none;">
@@ -205,8 +215,12 @@
           <input type="text" id="promoClientName" placeholder="Ej: María">
         </div>
         <div class="form-group">
-          <label for="discountPercentage">Descuento (%) (opcional)</label>
-          <input type="number" id="discountPercentage" placeholder="Ej: 20" min="1" max="100">
+          <label for="diffusionReferrerDiscount">Descuento para el Referente (Difusión) (%) (opcional)</label>
+          <input type="number" id="diffusionReferrerDiscount" placeholder="Ej: 5" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label for="diffusionNewClientDiscount">Descuento para el Nuevo Cliente (Difusión) (%) (opcional)</label>
+          <input type="number" id="diffusionNewClientDiscount" placeholder="Ej: 5" min="0" max="100">
         </div>
         <div class="form-group">
           <label for="treatmentType">Tipo de Tratamiento (opcional)</label>
@@ -235,8 +249,13 @@
 
             const clientNameInput = document.getElementById('clientName');
             const appointmentDateInput = document.getElementById('appointmentDate');
+            const referrerDiscountInput = document.getElementById('referrerDiscount'); 
+            const newClientDiscountInput = document.getElementById('newClientDiscount'); 
+
             const promoClientNameInput = document.getElementById('promoClientName');
-            const discountPercentageInput = document.getElementById('discountPercentage');
+            const diffusionReferrerDiscountInput = document.getElementById('diffusionReferrerDiscount'); 
+            const diffusionNewClientDiscountInput = document.getElementById('diffusionNewClientDiscount'); 
+            const discountPercentageInput = document.getElementById('discountPercentage'); 
             const treatmentTypeInput = document.getElementById('treatmentType');
 
             const generateLinkBtn = document.getElementById('generateLinkBtn');
@@ -244,14 +263,8 @@
             const copyLinkBtn = document.getElementById('copyLinkBtn');
             const copyNotification = document.getElementById('copyNotification');
 
-            // URL base simplificada, asumiendo que index.html está en la misma carpeta.
-            // NOTA IMPORTANTE:
-            // Cuando abres estos archivos directamente desde tu computadora (con "file:///"),
-            // los navegadores pueden restringir la forma en que funcionan los enlaces con parámetros.
-            // Si el enlace no se abre correctamente al hacer CLIC en él, por favor, COPIA el texto
-            // del enlace y PÉGALO directamente en la barra de direcciones de una nueva pestaña.
-            // Para un comportamiento 100% fiable y enlaces compartibles, lo ideal es usar un servidor web (local o remoto).
-            const baseUrl = 'index.html'; 
+            // URL base de tu aplicación principal desplegada en Netlify
+            const baseUrl = 'https://lebardol-app.netlify.app/index.html'; 
 
             function toggleLinkType(type) {
                 if (type === 'reminder') {
@@ -259,7 +272,10 @@
                     promotionFields.style.display = 'none';
                     // Limpiar campos de promo al cambiar
                     promoClientNameInput.value = '';
-                    discountPercentageInput.value = '';
+                    // Asegurarse de que estos elementos existan antes de intentar acceder a su valor
+                    if (diffusionReferrerDiscountInput) diffusionReferrerDiscountInput.value = ''; 
+                    if (diffusionNewClientDiscountInput) diffusionNewClientDiscountInput.value = ''; 
+                    if (discountPercentageInput) discountPercentageInput.value = '';
                     treatmentTypeInput.value = '';
                 } else {
                     reminderFields.style.display = 'none';
@@ -267,8 +283,10 @@
                     // Limpiar campos de recordatorio al cambiar
                     clientNameInput.value = '';
                     appointmentDateInput.value = '';
+                    referrerDiscountInput.value = ''; 
+                    newClientDiscountInput.value = ''; 
                 }
-                generatedLinkDiv.innerHTML = 'Aquí aparecerá el enlace generado'; // Limpiar y poner texto por defecto
+                generatedLinkDiv.innerHTML = 'Aquí aparecerá el enlace generado'; 
                 copyLinkBtn.style.display = 'none';
             }
 
@@ -285,6 +303,8 @@
                 if (selectedType === 'reminder') {
                     const clientName = clientNameInput.value.trim();
                     const appointmentDate = appointmentDateInput.value.trim();
+                    const referrerDiscount = referrerDiscountInput.value.trim(); 
+                    const newClientDiscount = newClientDiscountInput.value.trim(); 
 
                     if (clientName) {
                         params.push(`nombre=${encodeURIComponent(clientName)}`);
@@ -294,6 +314,12 @@
                     } else {
                         alert('Para un Recordatorio de Turno, la fecha y hora del turno son obligatorias.');
                         return;
+                    }
+                    if (referrerDiscount) { 
+                        params.push(`descuentoReferente=${encodeURIComponent(referrerDiscount)}`);
+                    }
+                    if (newClientDiscount) { 
+                        params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
                     }
                     // Opcional: Si es recordatorio, también podemos pasar descuento y tratamiento si el generador lo permite
                     const discount = discountPercentageInput.value.trim();
@@ -307,11 +333,19 @@
 
                 } else { // promotion
                     const promoClientName = promoClientNameInput.value.trim();
-                    const discount = discountPercentageInput.value.trim();
+                    const diffusionReferrerDiscount = diffusionReferrerDiscountInput.value.trim(); 
+                    const diffusionNewClientDiscount = diffusionNewClientDiscountInput.value.trim(); 
+                    const discount = discountPercentageInput.value.trim(); // Este es el descuento general para la promo, no de referido
                     const treatment = treatmentTypeInput.value.trim();
 
                     if (promoClientName) {
                         params.push(`nombre=${encodeURIComponent(promoClientName)}`);
+                    }
+                    if (diffusionReferrerDiscount) { 
+                        params.push(`descuentoReferenteDifusion=${encodeURIComponent(diffusionReferrerDiscount)}`);
+                    }
+                    if (diffusionNewClientDiscount) { 
+                        params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(diffusionNewClientDiscount)}`);
                     }
                     if (discount) {
                         params.push(`descuento=${encodeURIComponent(discount)}`);
@@ -321,7 +355,7 @@
                     }
                     
                     // Asegurar que al menos uno de los campos de promo esté lleno
-                    if (!promoClientName && !discount && !treatment) {
+                    if (!promoClientName && !diffusionReferrerDiscount && !diffusionNewClientDiscount && !discount && !treatment) {
                         alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
                         return;
                     }
