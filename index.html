@@ -330,20 +330,34 @@
             margin-bottom: 15px;
         }
 
-        canvas {
-            background-color: #eee;
-            display: block;
+        /* Contenedor de la ruleta para control de tamaño */
+        .roulette-canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Max size for the roulette area */
+            padding-bottom: 100%; /* Maintain aspect ratio (1:1 square) */
+            height: 0; /* Collapse height, padding-bottom defines it */
             margin: 20px auto;
-            border: 5px solid #FFC0CB;
+            border: 5px solid #FFC0CB; /* Border for the whole wheel area */
             border-radius: 50%;
             box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
-            max-width: 100%; /* Responsivo */
-            height: auto; /* Mantiene la proporción */
+            overflow: hidden; /* Ensure content stays within circle */
+        }
+
+        canvas {
+            position: absolute; /* Position canvas within its responsive container */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: #eee;
+            border-radius: 50%; /* Ensure it stays circular */
         }
 
         .wheel-indicator {
             position: absolute;
-            top: 0; /* Ajustado para que esté en la parte superior del canvas */
+            top: -20px; /* Posiciona el puntero ligeramente por encima de la ruleta */
             left: 50%;
             transform: translateX(-50%); /* Centra horizontalmente */
             width: 0;
@@ -504,8 +518,8 @@
                 Por cada amigo que invites, ganas un <strong>10% OFF</strong> en tu próximo tratamiento si tu amigo saca un turno. ¡Él tiene <strong>50% OFF</strong> en su primer servicio!
             </p>
             <p class="spin-count-display" id="spinCountDisplay">Te quedan 3 tiros.</p>
-            <div style="position: relative; width: fit-content; margin: 0 auto;">
-                <canvas id="rouletteCanvas" width="500" height="500"></canvas> <!-- Aumentado el tamaño del canvas -->
+            <div class="roulette-canvas-container">
+                <canvas id="rouletteCanvas"></canvas> 
                 <div class="wheel-indicator"></div>
             </div>
             <div class="buttons-container">
@@ -836,8 +850,8 @@
          */
         function loadRouletteState() {
             const savedSpinsLeft = localStorage.getItem('rouletteSpinsLeft');
-            const savedLastSpinCycleStartTimestamp = localStorage.getItem('rouletteLastSpinCycleStartTimestamp');
-            const savedLockoutEndTime = localStorage.getItem('rouletteLockoutEndTime');
+            const savedLastSpinCycleStartTimestamp = localStorage.getItem('lastSpinCycleStartTimestamp');
+            const savedLockoutEndTime = localStorage.getItem('lockoutEndTime');
             const savedWonPrize = localStorage.getItem('wonRoulettePrize');
             const savedPrizeEndTime = localStorage.getItem('prizeEndTime');
             const savedPrizeSeñaPaid = localStorage.getItem('prizeSeñaPaid');
@@ -851,11 +865,23 @@
         }
 
         /**
+         * Ajusta el tamaño del canvas para que sea responsivo.
+         */
+        function resizeCanvas() {
+            const container = document.querySelector('.roulette-canvas-container');
+            const computedStyle = getComputedStyle(container);
+            const containerWidth = parseFloat(computedStyle.width); 
+
+            canvas.width = containerWidth;
+            canvas.height = containerWidth; 
+            drawRoulette(currentRotation); // Redibuja la ruleta después del redimensionamiento
+        }
+
+        /**
          * Dibuja la ruleta en el canvas.
          * @param {number} rotation - La rotación actual de la ruleta en radianes.
          */
         function drawRoulette(rotation = 0) {
-            console.log('drawRoulette called. Segments length:', segments.length); // DEBUG: Check if called
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
@@ -883,15 +909,17 @@
                 ctx.save();
                 ctx.rotate(angle + arc / 2); // Rotar al centro del segmento
                 ctx.fillStyle = '#4a2c5e'; // Color del texto
-                ctx.font = 'bold 20px Arial';
+                
+                // Tamaño de fuente responsivo
+                const fontSize = canvas.width * 0.06; // 6% del ancho del canvas
+                ctx.font = `bold ${fontSize}px sans-serif`; 
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'middle';
-                // Posicionar el texto más hacia el borde exterior
-                ctx.fillText(segments[i].text, radius * 0.8, 0);
+                // Posicionar el texto un poco más hacia el centro para evitar el recorte
+                ctx.fillText(segments[i].text, radius * 0.7, 0); 
                 ctx.restore();
             }
             ctx.restore();
-            console.log('drawRoulette finished drawing.'); // DEBUG: Check if drawing completed
         }
 
         let animationFrameId; // Para controlar el requestAnimationFrame
@@ -935,11 +963,14 @@
             loadingSpinner.style.display = 'none';
             spinBtn.disabled = false; // Habilitar el botón si hay giros restantes
 
-            // Calcular el segmento ganador
-            const normalizedRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-            let winningSegmentIndex = Math.floor((2 * Math.PI - normalizedRotation) / arc);
-            // Ajustar para que el puntero apunte al centro superior (índice 0)
-            winningSegmentIndex = (winningSegmentIndex + Math.floor(numSegments / 4)) % numSegments;
+            // Calcular el segmento ganador:
+            // currentRotation es la rotación final en sentido horario.
+            // El puntero está fijo en Math.PI / 2 (parte superior, sentido antihorario desde la derecha).
+            // La posición original de la parte de la rueda que ahora está bajo el puntero es:
+            const originalAngleAtPointer = (Math.PI / 2 + currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+
+            // Determinar qué segmento está bajo el puntero efectivo
+            const winningSegmentIndex = Math.floor(originalAngleAtPointer / arc);
             
             const winningPrize = segments[winningSegmentIndex];
             wonRoulettePrize = winningPrize;
@@ -1172,16 +1203,24 @@
                 updateRouletteUI(); // Actualizar la UI inmediatamente
                 
                 const randomSegmentIndex = Math.floor(Math.random() * numSegments);
-                const degreesPerSegment = 360 / numSegments;
-                // Calcular el ángulo para que el segmento ganador quede en la parte superior
-                // Añadir múltiples vueltas para un efecto de giro dramático
+                
+                // Calcular el ángulo para que el segmento ganador quede en la parte superior (puntero)
+                // El puntero está en Math.PI / 2 (90 grados antihorario desde la derecha).
+                // El centro del segmento 'randomIndex' es (randomIndex * arc + arc / 2).
+                // Queremos que (randomIndex * arc + arc / 2 - rotacionTotal) % (2 * Math.PI) = Math.PI / 2
+                let targetAngleForSegmentCenter = (randomIndex * arc + arc / 2 - Math.PI / 2);
+                
+                // Asegurar que el ángulo sea positivo y añadir giros extra para efecto visual
                 const extraRotations = 5; // 5 vueltas completas
-                const targetRotationDegrees = (360 * extraRotations) + (360 - (randomSegmentIndex * degreesPerSegment + degreesPerSegment / 2));
+                const totalRotation = targetAngleForSegmentCenter + (extraRotations * 2 * Math.PI);
                 
-                // Convertir a radianes para el dibujo
-                const targetRotationRadians = targetRotationDegrees * (Math.PI / 180);
-                
-                animateRoulette(targetRotationRadians, 6000); // 6 segundos de duración
+                // Normalizar la rotación para que esté entre 0 y 2*PI para la posición real de la rueda
+                const targetRotationRadians = (totalRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+
+                // Aplicar la rotación al elemento HTML de la ruleta
+                canvas.style.transition = 'transform 6s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                canvas.style.transform = `rotate(${targetRotationRadians}rad)`; 
+
             } else {
                 updateRouletteUI(); // Asegurarse de que el mensaje de bloqueo se muestre
             }
@@ -1232,9 +1271,12 @@
             priceListTableBody.innerHTML = ''; // Limpiar tabla
 
             let pricesToDisplay = [];
+            const isRoulettePage = getUrlParameter('roulette') === 'true';
+            const hasRouletteDiscount = getUrlParameter('rouletteDiscount') !== '';
+
             if (customPrices && customPrices.length > 0) {
                 pricesToDisplay = customPrices;
-            } else if (!getUrlParameter('roulette')) { // Only use default if NOT a pure roulette link
+            } else if (!isRoulettePage || hasRouletteDiscount) { // Show default prices if not a pure roulette link OR if it's a roulette link with a pre-defined discount
                 pricesToDisplay = priceList;
             }
 
@@ -1461,7 +1503,12 @@
 
             startCountdown(); // Iniciar el contador de la oferta principal
             populatePriceList(customPricesFromUrl); // Llenar la lista de precios, pasando los de la URL si existen
-            // checkRouletteStatus() se llama al inicio del bloque if/else para la ruleta
+            
+            // Lógica de redimensionamiento del canvas para la ruleta
+            if (showRoulette === 'true' && !urlRouletteDiscount) {
+                resizeCanvas(); // Ajustar el tamaño del canvas al cargar
+                window.addEventListener('resize', resizeCanvas); // Ajustar el tamaño del canvas al redimensionar la ventana
+            }
         });
     </script>
 </body>
