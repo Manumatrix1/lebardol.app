@@ -1,1413 +1,465 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bardol Estética Center</title>
+    <title>Generador de Enlaces Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos generales y reseteo */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%); /* Fondo degradado suave */
-            color: #4a2c5e; /* Color de texto principal */
-            min-height: 100vh; /* Altura mínima para ocupar toda la pantalla */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            padding: 20px; /* Espaciado alrededor del cuerpo */
-            overflow-x: hidden; /* Evita el scroll horizontal */
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        
-        /* Contenedor principal de la tarjeta */
         .container {
-            max-width: 500px; /* Ancho máximo */
-            width: 100%; /* Ocupa el 100% del ancho disponible hasta el max-width */
-            background: white; /* Fondo blanco */
-            border-radius: 20px; /* Bordes redondeados */
-            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15); /* Sombra suave */
-            overflow: hidden; /* Oculta contenido que se desborda */
-            margin: 20px 0; /* Margen superior e inferior */
-            position: relative;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            max-width: 600px;
+            width: 100%;
         }
-        
-        /* Sección del encabezado */
-        .header {
-            background: linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 100%); /* Fondo rosa pastel con degradado */
-            color: white; /* Texto blanco */
-            padding: 30px 20px; /* Espaciado interno */
-            text-align: center; /* Centra el contenido */
-            position: relative;
-        }
-        
-        /* Estilos para el logo */
-        .header-logo { 
-            display: block; 
-            margin: 0 auto 15px; 
-            max-width: 393px; /* Establece el max-width para el tamaño original deseado */
-            width: 100%; /* Asegura que la imagen sea responsiva */
-            height: auto; /* Mantiene la proporción de la imagen */
-        }
-        
         h1 {
+            color: #4a2c5e;
+            text-align: center;
+            margin-bottom: 25px;
             font-size: 28px;
-            margin-bottom: 5px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
         }
-        
-        .subtitle {
-            font-size: 18px;
-            opacity: 0.9;
+        .form-group {
             margin-bottom: 20px;
         }
-        
-        /* Tarjeta de oferta */
-        .offer-card {
-            background: #fff9c4; /* Fondo amarillo claro */
-            color: #5d4037; /* Color de texto oscuro */
-            border-radius: 15px; /* Bordes redondeados */
-            padding: 15px; /* Espaciado interno */
-            margin: 20px; /* Margen externo */
-            text-align: center; /* Centra el contenido */
-            border: 2px dashed #ffd54f; /* Borde punteado */
-            position: relative;
-        }
-        
-        .offer-card h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #e91e63; /* Color de título de oferta */
-        }
-        
-        .offer-card p {
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        
-        /* Contador regresivo */
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 10px; /* Espacio entre los elementos del contador */
-            margin: 15px 0;
-        }
-        
-        .countdown-box {
-            background: #4a2c5e; /* Fondo oscuro */
-            color: white; /* Texto blanco */
-            width: 60px;
-            height: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .countdown-value {
-            font-size: 22px;
-        }
-        
-        .countdown-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-        
-        /* Contenedor del formulario */
-        .form-container {
-            padding: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px; /* Espacio entre grupos de formulario */
-        }
-        
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: #4a2c5e;
         }
-        
-        /* Estilos para input de texto */
-        input[type="text"] {
-            width: 100%; /* Ocupa todo el ancho disponible */
-            padding: 14px; /* Espaciado interno */
+        input[type="text"], input[type="datetime-local"], select {
+            width: 100%;
+            padding: 12px;
             border: 2px solid #e0c8f0;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 16px;
             background: #f9f0ff;
             transition: all 0.3s;
+            box-sizing: border-box;
         }
-        
-        input[type="text"]:focus {
+        input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus {
             outline: none;
             border-color: #8a2be2;
             box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
-
-        /* Estilo para mostrar la fecha de turno (que ahora se rellenará por JS) */
-        #displayDate {
-            background: #e0f2f7;
-            padding: 14px;
-            border: 2px solid #a7d9f7;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #007bb6;
-            display: block;
-            text-align: center;
-        }
-        
-        /* Estilos de botones */
         .btn {
             display: block;
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
-            margin: 10px 0;
+            margin-top: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        
-        .btn-confirm {
+        .btn-generate {
             background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
             color: white;
         }
-        
-        .btn-invite {
-            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+        .btn-copy {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
             color: white;
+            margin-top: 10px;
         }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .btn-clear {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+            margin-top: 10px;
         }
-        
-        .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
+        .btn:hover {
+            transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
-        
-        .btn:active:not(:disabled) {
-            transform: translateY(1px);
+        .btn:active {
+            transform: translateY(0);
         }
-        
-        /* Notificación emergente */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #4caf50;
-            color: white;
-            padding: 15px 25px;
+        #generatedLinkContainer {
+            margin-top: 25px;
+            padding: 15px;
+            background: #e0f7fa;
+            border: 1px solid #00bcd4;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateX(110%);
-            transition: transform 0.4s ease;
-            z-index: 1000;
+            word-wrap: break-word;
+            font-size: 15px;
+            color: #00796b;
+            display: none; /* Hidden by default */
         }
-        
-        .notification.show {
-            transform: translateX(0);
+        #generatedLink {
+            font-weight: bold;
+            color: #004d40;
         }
-        
-        /* Icono flotante de WhatsApp */
-        .whatsapp-icon {
+        .notification {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 60px;
-            height: 60px;
-            background: #25d366;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #4caf50;
             color: white;
-            font-size: 28px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-            animation: pulse 2s infinite;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
         }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        /* Pie de página */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #7b68ee;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-        
-        /* Disclaimer o aviso */
-        .disclaimer {
-            background: #e0f7fa;
-            border-left: 44px solid #00bcd4;
-            padding: 10px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
-            font-size: 14px;
-        }
-
-        /* Nueva tarjeta de referido para difusión */
-        .referral-promo-diffusion {
-            background: #e0f7fa;
-            color: #00796b;
-            border-radius: 15px;
-            padding: 15px;
-            margin: 20px;
-            text-align: center;
-            border: 2px dashed #00bcd4;
-        }
-
-        .referral-promo-diffusion h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #00bcd4;
-        }
-
-        .referral-promo-diffusion p {
-            font-size: 15px;
-            margin-bottom: 15px;
-        }
-
-        /* Estilos para la Ruleta */
-        .roulette-section {
-            padding: 20px;
-            background: #fdfdfd;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 20px;
-            text-align: center;
-            display: none; /* Oculto por defecto, se muestra con JS */
-        }
-
-        .roulette-section h1 {
-            color: #e91e63;
-            font-size: 26px;
-            margin-bottom: 20px;
-        }
-
-        .roulette-section .referral-offer-text {
-            font-size: 16px;
-            color: #4a2c5e;
-            margin-bottom: 15px;
-            padding: 0 10px;
-        }
-
-        .roulette-section .spin-count-display {
-            font-size: 18px;
-            font-weight: bold;
-            color: #8a2be2;
-            margin-bottom: 15px;
-        }
-
-        canvas {
-            background-color: #eee;
-            display: block;
-            margin: 20px auto;
-            border: 5px solid #FFC0CB;
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
-            max-width: 100%; /* Responsivo */
-            height: auto; /* Mantiene la proporción */
-        }
-
-        .wheel-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            /* Ajusta la posición de la flecha para que apunte al centro superior del círculo */
-            transform: translate(-50%, -100%) translateY(-10px); 
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 30px solid #e91e63; /* Color de la flecha */
-            z-index: 10;
-        }
-
-        .buttons-container {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .btn-spin {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); /* Verde */
-            color: white;
-        }
-
-        .btn-use-discount {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%); /* Morado */
-            color: white;
-            display: none; /* Oculto por defecto */
-        }
-
-        #resultMessage {
-            margin-top: 20px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #e91e63;
-        }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #8a2be2;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
-            display: none; /* Oculto por defecto */
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .prize-timer {
-            font-size: 18px;
-            font-weight: bold;
-            color: #007bb6;
-            margin-top: 10px;
-            display: none; /* Oculto por defecto */
-        }
-
-        .mercadopago-link-container {
-            margin-top: 15px;
-            font-size: 15px;
-            color: #4a2c5e;
-        }
-
-        .mercadopago-link-container a {
-            color: #007bb6;
-            font-weight: bold;
-            text-decoration: underline;
-        }
-
-        /* Estilos para la Lista de Precios */
-        .price-list-section {
-            padding: 20px;
-            background: #fdfdfd;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            margin: 20px; /* Margen para separarlo de otros elementos */
-            text-align: center;
-            display: none; /* Oculto por defecto */
-        }
-
-        .price-list-section h2 {
-            color: #4a2c5e;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .price-list-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .price-list-table th, .price-list-table td {
-            padding: 12px 15px;
+        .option-group {
             border: 1px solid #e0c8f0;
-            text-align: left;
-            font-size: 16px;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #fcfaff;
         }
-
-        .price-list-table th {
-            background-color: #f0e6fa;
+        .option-group h3 {
             color: #6a1b9a;
-            font-weight: bold;
-            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
         }
-
-        .price-list-table tr:nth-child(even) {
-            background-color: #f9f0ff;
+        .option-group > div {
+            margin-bottom: 15px;
         }
-
-        .price-list-table td:last-child {
-            text-align: right;
-            font-weight: bold;
-            color: #e91e63;
+        .price-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
         }
-
+        .price-item input {
+            flex-grow: 1;
+        }
+        .price-item .remove-price-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .price-item .remove-price-btn:hover {
+            background-color: #cc0000;
+        }
+        .add-price-btn {
+            background-color: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .add-price-btn:hover {
+            background-color: #0097a7;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <div class="header">
-        <div>
-          <address>
-            <img src="logo lb.png" alt="le bardol " title="le bardol logo " class="header-logo">
-          </address>
-          <br>
-        </div>
-        <h1 id="mainTitle">Le Bardol Estética Center</h1>
-        <p class="subtitle">Tu belleza, nuestra pasión</p>
-      </div>
-      <div class="offer-card" id="mainOfferCard">
-        <h2 id="offerTitle">¡Oferta Especial de Referidos!</h2>
-        <p id="offerDescription">Confirma tu turno y si invitas a tus amigos en las próximas 24
-          horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada
-          uno que contrate un servicio, ¡y ellos un <strong>50% DE
-            DESCUENTO</strong> en su primer tratamiento!</p>
-        <div class="countdown">
-          <div class="countdown-box">
-            <span id="hours" class="countdown-value">24</span>
-            <span class="countdown-label">Horas</span>
-          </div>
-          <div class="countdown-box">
-            <span id="minutes" class="countdown-value">00</span>
-            <span class="countdown-label">Minutos</span>
-          </div>
-          <div class="countdown-box">
-            <span id="seconds" class="countdown-value">00</span>
-            <span class="countdown-label">Segundos</span>
-          </div>
-        </div>
-      </div>
+        <h1>Generador de Enlaces Le Bardol</h1>
 
-      <!-- SECCIÓN DE RULETA -->
-      <div class="roulette-section" id="rouletteSection">
-        <h1>¡Gira la Ruleta y Gana un Descuento!</h1>
-        <p class="referral-offer-text">
-            Por cada amigo que invites, ganas un <strong>10% OFF</strong> en tu próximo tratamiento si tu amigo saca un turno. ¡Él tiene <strong>50% OFF</strong> en su primer servicio!
-        </p>
-        <p class="spin-count-display" id="spinCountDisplay">Te quedan 3 tiros.</p>
-        <div style="position: relative; width: fit-content; margin: 0 auto;">
-            <canvas id="rouletteCanvas" width="500" height="500"></canvas> <!-- Aumentado el tamaño del canvas -->
-            <div class="wheel-indicator"></div>
-        </div>
-        <div class="buttons-container">
-            <button class="btn btn-spin" id="spinBtn">
-                <i class="fas fa-play-circle"></i> Girar Ruleta
-            </button>
-            <div class="loading-spinner" id="loadingSpinner"></div>
-            <p id="resultMessage"></p>
-            <p class="prize-timer" id="prizeTimerDisplay"></p>
-            <div class="mercadopago-link-container" id="mercadopagoLinkContainer" style="display: none;">
-                <p>Para reservar tu premio, abona una seña de <span id="mercadopagoPriceDisplay"></span> aquí:</p>
-                <a href="#" id="mercadopagoLink" target="_blank">
-                    <i class="fas fa-money-bill-wave"></i> Pagar Seña con Mercado Pago
-                </a>
-            </div>
-            <button class="btn btn-use-discount" id="useDiscountBtn">
-                <i class="fas fa-gift"></i> Usar este Descuento
-            </button>
-        </div>
-      </div>
-      <!-- FIN SECCIÓN DE RULETA -->
-
-      <!-- SECCIÓN DE LISTA DE PRECIOS (NUEVA) -->
-      <div class="price-list-section" id="priceListSection">
-        <h2>Lista de Precios de Tratamientos</h2>
-        <table class="price-list-table">
-            <thead>
-                <tr>
-                    <th>Tratamiento</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody id="priceListTableBody">
-                <!-- Los precios se insertarán aquí con JavaScript -->
-            </tbody>
-        </table>
-      </div>
-      <!-- FIN SECCIÓN DE LISTA DE PRECIOS -->
-
-      <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
-        <h3>¡Invita a un amigo y GANA!</h3>
-        <p>Si reservas un turno y nos recomiendas a un amigo, obtendrás un **5% DE DESCUENTO ADICIONAL** en tu próxima sesión cuando tu amigo contrate su primer servicio.</p>
-        <button class="btn btn-invite" id="inviteBtnDiffusion">
-            <i class="fas fa-user-plus"></i> Invitar a un amigo
-        </button>
-      </div>
-      
-      <div class="form-container">
-        <div class="disclaimer" id="disclaimerMessage">
-          <i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado.
-          ¡No olvides la increíble promoción de referidos!
-        </div>
         <div class="form-group">
-          <label for="name">Nombre completo</label>
-          <input id="name" placeholder="Ingresa tu nombre completo" type="text"> 
+            <label for="linkType">Tipo de Enlace:</label>
+            <select id="linkType">
+                <option value="reminder">Recordatorio de Turno</option>
+                <option value="promotion">Promoción General</option>
+                <option value="roulette">Enlace de Ruleta</option>
+            </select>
         </div>
-        <div class="form-group" id="appointmentDisplayGroup">
-          <label>Tu turno está asignado para:</label>
-          <div id="displayDate"></div> 
+
+        <div id="reminderOptions" class="option-group">
+            <h3>Opciones de Recordatorio de Turno</h3>
+            <div class="form-group">
+                <label for="clientNameReminder">Nombre del Cliente:</label>
+                <input type="text" id="clientNameReminder" placeholder="Ej: Juan Pérez">
+            </div>
+            <div class="form-group">
+                <label for="appointmentDate">Fecha y Hora del Turno:</label>
+                <input type="datetime-local" id="appointmentDate">
+            </div>
+            <div class="form-group">
+                <label for="discountReminder">Descuento (opcional):</label>
+                <input type="text" id="discountReminder" placeholder="Ej: 15 (solo número)">
+            </div>
+            <div class="form-group">
+                <label for="treatmentReminder">Tratamiento (opcional):</label>
+                <input type="text" id="treatmentReminder" placeholder="Ej: Limpieza Facial">
+            </div>
+            <div class="form-group">
+                <label for="referrerDiscountReminder">Descuento Referente (opcional, por defecto 10%):</label>
+                <input type="text" id="referrerDiscountReminder" placeholder="Ej: 10">
+            </div>
+            <div class="form-group">
+                <label for="newClientDiscountReminder">Descuento Nuevo Cliente (opcional, por defecto 50%):</label>
+                <input type="text" id="newClientDiscountReminder" placeholder="Ej: 50">
+            </div>
         </div>
-        <button class="btn btn-confirm" id="confirmBtn">
-          <i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO
+
+        <div id="promotionOptions" class="option-group" style="display: none;">
+            <h3>Opciones de Promoción General</h3>
+            <div class="form-group">
+                <label for="clientNamePromo">Nombre del Cliente (opcional):</label>
+                <input type="text" id="clientNamePromo" placeholder="Ej: Hola!">
+            </div>
+            <div class="form-group">
+                <label for="discountPromo">Descuento (opcional):</label>
+                <input type="text" id="discountPromo" placeholder="Ej: 20 (solo número)">
+            </div>
+            <div class="form-group">
+                <label for="treatmentPromo">Tratamiento (opcional):</label>
+                <input type="text" id="treatmentPromo" placeholder="Ej: Masaje Relajante">
+            </div>
+            <div class="form-group">
+                <label for="referrerDiscountDiffusion">Descuento Referente Difusión (opcional, por defecto 5%):</label>
+                <input type="text" id="referrerDiscountDiffusion" placeholder="Ej: 5">
+            </div>
+            <div class="form-group">
+                <label for="newClientDiscountDiffusion">Descuento Nuevo Cliente Difusión (opcional, por defecto 5%):</label>
+                <input type="text" id="newClientDiscountDiffusion" placeholder="Ej: 5">
+            </div>
+        </div>
+
+        <div id="rouletteOptions" class="option-group" style="display: none;">
+            <h3>Opciones de Enlace de Ruleta</h3>
+            <div class="form-group">
+                <label for="clientNameRoulette">Nombre del Cliente (opcional):</label>
+                <input type="text" id="clientNameRoulette" placeholder="Ej: Hola!">
+            </div>
+            <div class="form-group">
+                <label for="rouletteDiscount">Descuento Ruleta (opcional, para redirigir con premio ganado):</label>
+                <input type="text" id="rouletteDiscount" placeholder="Ej: 20">
+            </div>
+            
+            <h4>Lista de Precios (Opcional)</h4>
+            <div id="priceListEntries">
+                <!-- Aquí se agregarán dinámicamente los campos de precio -->
+            </div>
+            <button type="button" class="add-price-btn" id="addPriceBtn">
+                <i class="fas fa-plus-circle"></i> Agregar Tratamiento y Precio
+            </button>
+        </div>
+
+        <button class="btn btn-generate" id="generateLinkBtn">
+            <i class="fas fa-link"></i> Generar Enlace
         </button>
-        <button class="btn btn-invite" id="inviteBtn">
-          <i class="fas fa-user-plus"></i> INVITAR A UN AMIGO (50% OFF)
+        <button class="btn btn-clear" id="clearFormBtn">
+            <i class="fas fa-eraser"></i> Limpiar Formulario
         </button>
-      </div>
+
+        <div id="generatedLinkContainer">
+            <p>Tu enlace generado:</p>
+            <p id="generatedLink"></p>
+            <button class="btn btn-copy" id="copyLinkBtn">
+                <i class="fas fa-copy"></i> Copiar Enlace
+            </button>
+        </div>
     </div>
-    <div class="notification" id="notification">
-      <i class="fas fa-check-circle"></i>
-      <span>¡Turno confirmado con éxito! Te hemos enviado un mensaje por
-        WhatsApp.</span>
+
+    <div id="notification" class="notification">
+        Enlace copiado al portapapeles.
     </div>
-    <a href="https://wa.me/5493415216025?text=Hola%20Le%20Bardol%2C%20quisiera%20consultar%20sobre%20un%20turno." class="whatsapp-icon" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-    <div class="footer">
-      <p>© 2023 Le Bardol Estética Center. Todos los derechos reservados.</p>
-    </div>
+
     <script>
-        // --- Configuración de Mercado Pago (¡MODIFICA ESTOS VALORES!) ---
-        const mercadopagoLinkUrl = 'https://mpago.la/2tpSkE9'; // Tu enlace real de Mercado Pago
-        const mercadopagoPrice = '$8000'; // El monto de la seña
-        // -----------------------------------------------------------------
-
-        // Script para el contador regresivo de 24 horas
-        function startCountdown() {
-            const savedTime = localStorage.getItem('countdownEndTime');
-            let endTime;
-            
-            // La fecha actual de Argentina (Buenos Aires)
-            const nowArgentina = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Argentina/Buenos_Aires"}));
-
-            if (savedTime) {
-                endTime = parseInt(savedTime);
-                // Si el tiempo guardado ya pasó, reinícialo a 24 horas desde ahora
-                if (endTime < nowArgentina.getTime()) {
-                    endTime = nowArgentina.getTime() + 24 * 60 * 60 * 1000;
-                    localStorage.setItem('countdownEndTime', endTime.toString());
-                }
-            } else {
-                endTime = nowArgentina.getTime() + 24 * 60 * 60 * 1000;
-                localStorage.setItem('countdownEndTime', endTime.toString());
-            }
-            
-            const timer = setInterval(() => {
-                const now = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Argentina/Buenos_Aires"})); 
-                const timeLeft = endTime - now.getTime();
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    document.getElementById('hours').textContent = '00';
-                    document.getElementById('minutes').textContent = '00';
-                    document.getElementById('seconds').textContent = '00';
-                    const isReminderLink = getUrlParameter('fecha') !== '';
-                    if (isReminderLink) { 
-                         document.getElementById('inviteBtn').disabled = true;
-                    }
-                    return;
-                }
-                
-                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-            }, 1000);
-        }
-        
-        // Función para mostrar la notificación de confirmación
-        function showNotification() {
-            const notification = document.getElementById('notification');
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-        
-        // Función para validar el formulario antes de enviar (depende del tipo de enlace)
-        function validateForm(isReminder) {
-            const name = document.getElementById('name').value;
-            const displayedDate = document.getElementById('displayDate').textContent;
-            
-            if (isReminder) { 
-                if (!name || name.trim() === '' || name.trim() === "Estimado/a cliente/a" || displayedDate === '' || displayedDate === 'Fecha y hora no válidas' || displayedDate === 'Fecha y hora no asignadas') { 
-                    alert('Faltan datos para confirmar tu turno. Por favor, asegúrate de que tu nombre y fecha de turno estén visibles y sean correctos.');
-                    return false;
-                }
-            } else { 
-            }
-            return true;
-        }
-        
-        // Función para enviar el mensaje por WhatsApp
-        function sendWhatsAppMessage(isReminder, discount, treatment) {
-            const name = document.getElementById('name').value;
-            const whatsappNumber = '5493415216025'; 
-            let message = '';
-            const wonRouletteDiscount = localStorage.getItem('wonRouletteDiscount'); 
-            const wonRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription'); 
-
-            if (isReminder) {
-                const displayedDate = document.getElementById('displayDate').textContent; 
-                message = `¡Hola Le Bardol! Soy ${name}. Confirmo mi turno asignado para el ${displayedDate}.`;
-                if (wonRouletteDiscount && wonRoulettePrizeDescription) {
-                    message += ` Además, quiero aplicar mi premio de ruleta: ${wonRoulettePrizeDescription}.`;
-                }
-                message += ` Agradezco su confirmación. ¡Saludos!`;
-            } else {
-                let offerText = "";
-                if (discount && treatment) {
-                    offerText = `Estoy interesado/a en la promo de ${discount}% de descuento en ${treatment}.`;
-                } else if (discount) {
-                    offerText = `Estoy interesado/a en la promo de ${discount}% de descuento.`;
-                } else if (treatment) {
-                    offerText = `Estoy interesado/a en la promo de ${treatment}.`;
-                } else {
-                    offerText = `Estoy interesado/a en sus servicios y promociones.`;
-                }
-                message = `¡Hola Le Bardol! Mi nombre es ${name}. ${offerText} ¿Podrían brindarme más información o ayudarme a sacar un turno? ¡Gracias!`;
-            }
-
-            // Si hay un premio de ruleta ganado y es de tipo descuento, añadir la información de la seña
-            if (wonRouletteDiscount && wonRoulettePrizeDescription) {
-                message += `\n\nPara reservar mi premio (${wonRoulettePrizeDescription}), he abonado la seña de ${mercadopagoPrice}.`;
-                message += `\nLink de seña: ${mercadopagoLinkUrl}`; 
-            }
-            
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        
-        // Función para compartir la invitación (botón 50% OFF)
-        function shareInvitation() {
-            const referrerName = document.getElementById('name').value;
-            const referrerDiscount = getUrlParameter('descuentoReferente') || '10'; 
-            const newClientDiscount = getUrlParameter('descuentoNuevoCliente') || '50'; 
-            const friendRouletteDiscount = localStorage.getItem('friendRouletteDiscount'); 
-
-            if (!referrerName || referrerName.trim() === '' || referrerName.trim() === 'Estimado/a cliente/a' || referrerName.trim() === 'Hola!') { 
-                alert('Por favor, ingresa tu nombre completo para que tus amigos sepan quién los envía.');
-                document.getElementById('name').focus();
-                return;
-            }
-
-            const whatsappNumberLeBardol = '5493415216025'; 
-            
-            const finalNewClientDiscount = friendRouletteDiscount ? friendRouletteDiscount : newClientDiscount;
-
-            const messageForFriend = `¡Hola Le Bardol! Me interesa la promo del ${finalNewClientDiscount}% de descuento en mi primer servicio. Me recomendó ${referrerName}. ¡Quisiera más información!`;
-            
-            const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
-            
-            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Están ofreciendo un ${finalNewClientDiscount}% de descuento en tu primer tratamiento! Solo tienes que contactarlos mencionando que te envió ${referrerName} para obtener la promo. Además, por cada amigo que contrate, ¡yo obtengo un ${referrerDiscount}% de descuento en mi próximo servicio!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
-        }
-
-        // Función para compartir la invitación desde la nueva tarjeta de difusión (5% OFF)
-        function shareInvitationDiffusion() {
-            const whatsappNumberLeBardol = '5493415216025'; 
-            const nameFromInput = document.getElementById('name').value;
-            const referrerName = (nameFromInput && nameFromInput.trim() !== '' && nameFromInput.trim() !== 'Hola!') ? nameFromInput : 'un amigo/a';
-
-            const diffusionReferrerDiscount = getUrlParameter('descuentoReferenteDifusion') || '5'; 
-            const diffusionNewClientDiscount = getUrlParameter('descuentoNuevoClienteDifusion') || '5'; 
-
-            const messageForFriend = `¡Hola Le Bardol! Me interesa la promo de referido. Me envió ${referrerName} y quiero mi ${diffusionNewClientDiscount}% de descuento en mi primer servicio.`;
-            
-            const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
-            
-            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Si mencionas que te envié, obtienes un ${diffusionNewClientDiscount}% de descuento en tu primer servicio, y yo también gano un ${diffusionReferrerDiscount}% de descuento en mi próxima sesión!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
-        }
-
-        // Función para habilitar/deshabilitar el botón de invitación del recordatorio
-        function toggleInviteButton() {
-            const nameInput = document.getElementById('name');
-            const inviteBtn = document.getElementById('inviteBtn');
-            if (nameInput.value.trim() === '' || nameInput.value.trim() === 'Estimado/a cliente/a' || nameInput.value.trim() === 'Hola!') {
-                inviteBtn.disabled = true;
-            } else {
-                inviteBtn.disabled = false;
-            }
-        }
-
-        // Función para obtener parámetros de la URL
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-
-        // --- Lógica de la Ruleta ---
-        const canvas = document.getElementById('rouletteCanvas');
-        const ctx = canvas.getContext('2d');
-        const spinBtn = document.getElementById('spinBtn');
-        const useDiscountBtn = document.getElementById('useDiscountBtn');
-        const resultMessage = document.getElementById('resultMessage');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const rouletteSection = document.getElementById('rouletteSection'); 
-        const spinCountDisplay = document.getElementById('spinCountDisplay'); 
-        const prizeTimerDisplay = document.getElementById('prizeTimerDisplay'); 
-        const mercadopagoLinkContainer = document.getElementById('mercadopagoLinkContainer'); 
-        const mercadopagoLink = document.getElementById('mercadopagoLink'); 
-        const mercadopagoPriceDisplay = document.getElementById('mercadopagoPriceDisplay'); 
-
-        // Definición de los segmentos de la ruleta con tipos de premio
-        const segments = [
-            { text: '30% OFF Depi', type: 'discount', value: 30, category: 'depilacion', description: '30% de descuento en paquete de depilación' },
-            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!' },
-            { text: '20% Amigo!', type: 'new_spin_friend_discount', friendDiscount: 20, description: '20% de descuento para un amigo + un nuevo tiro' },
-            { text: '25% Manicuria', type: 'discount', value: 25, category: 'manicuria', description: '25% de descuento en manicuría' },
-            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!' },
-            { text: '0% Suerte!', type: 'no_luck_new_spin', description: '0% de descuento. ¡Suerte en tu próximo tiro!' },
-            { text: '30% Cosmetologia', type: 'discount', value: 30, category: 'cosmetologia', description: '30% de descuento en cosmetología' },
-            { text: '35% Masajes', type: 'discount', value: 35, category: 'masajes', description: '35% de descuento en masajes' },
-            { text: '20% Pack 3 Masajes', type: 'discount', value: 20, category: 'masajes', pack: 3, description: '20% de descuento en pack de 3 masajes' },
-            { text: '20% Pack 3 Depi', type: 'discount', value: 20, category: 'depilacion', pack: 3, description: '20% de descuento en pack de 3 sesiones de depilación' },
-            { text: '20% Pack 5 Depi', type: 'discount', value: 20, category: 'depilacion', pack: 5, description: '20% de descuento en pack de 5 sesiones de depilación' },
-            { text: '35% Pack 5 Depi', type: 'discount', value: 35, category: 'depilacion', pack: 5, description: '35% de descuento en pack de 5 sesiones de depilación' },
-            { text: '20% Comodin', type: 'discount', value: 20, category: 'comodin', description: '20% de descuento comodín para cualquier tratamiento' }
-        ];
-
-        const segmentColors = [
-            '#FFD1DC', '#FFABAB', '#FFC3A0', '#FF677D', 
-            '#D4A5A5', '#392F5B', '#4A47A3', '#3D2B5B',
-            '#FFD700', '#ADFF2F', '#8A2BE2', '#00CED1', '#FF6347'
-        ]; 
-
-        const arc = (2 * Math.PI) / segments.length; 
-        let rotation = 0; 
-        let spinSpeed = 0; 
-        let continuousSpinSpeed = 0.01; 
-        let isContinuouslySpinning = true; 
-        let spinning = false; 
-        let wonPrize = null; 
-        let spinStartTime = 0;
-        const spinDuration = 3000; 
-        const twentyFourHours = 24 * 60 * 60 * 1000; 
-        const prizeReservationTime = 30 * 60 * 1000; 
-
-        let spinAttempts = parseInt(localStorage.getItem('spinAttempts')) || 3; 
-        let prizeTimerInterval = null; 
-
-        function drawRoulette() {
-            console.log("drawRoulette() called. Segments length:", segments.length); // Debugging
-            if (segments.length === 0) {
-                console.error("No segments defined for roulette. Cannot draw.");
-                return;
-            }
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.rotate(rotation);
-
-            for (let i = 0; i < segments.length; i++) {
-                const angle = i * arc;
-                ctx.beginPath();
-                ctx.arc(0, 0, canvas.width / 2, angle, angle + arc);
-                ctx.lineTo(0, 0); 
-                ctx.closePath();
-                ctx.fillStyle = segmentColors[i % segmentColors.length]; 
-                ctx.fill();
-                ctx.strokeStyle = '#fff'; 
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                ctx.save();
-                ctx.rotate(angle + arc / 2); 
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#fff'; 
-                ctx.font = 'bold 16px Segoe UI'; // Ajustado el tamaño de la fuente
-                ctx.fillText(segments[i].text, canvas.width / 2 - 15, 0); 
-                ctx.restore();
-            }
-
-            ctx.restore(); 
-        }
-
-        function updateSpinCountDisplay() {
-            spinCountDisplay.textContent = `Te quedan ${spinAttempts} tiro${spinAttempts !== 1 ? 's' : ''}.`;
-            if (spinAttempts <= 0) {
-                spinBtn.disabled = true;
-                resultMessage.textContent = 'No te quedan más tiros por hoy. Vuelve mañana.';
-            } else {
-                spinBtn.disabled = false;
-            }
-        }
-
-        function startPrizeTimer() {
-            const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
-            if (!prizeWonTime) return;
-
-            const endTime = prizeWonTime + prizeReservationTime;
-
-            if (prizeTimerInterval) {
-                clearInterval(prizeTimerInterval);
-            }
-
-            prizeTimerDisplay.style.display = 'block';
-            mercadopagoLinkContainer.style.display = 'block'; 
-            useDiscountBtn.style.display = 'inline-block'; 
-
-            mercadopagoLink.href = mercadopagoLinkUrl; 
-            mercadopagoPriceDisplay.textContent = mercadopagoPrice; 
-
-            prizeTimerInterval = setInterval(() => {
-                const now = Date.now();
-                const timeLeft = endTime - now;
-
-                if (timeLeft <= 0) {
-                    clearInterval(prizeTimerInterval);
-                    prizeTimerDisplay.textContent = '¡Tiempo agotado! Tu premio ha expirado.';
-                    useDiscountBtn.disabled = true;
-                    mercadopagoLinkContainer.style.display = 'none'; 
-                    localStorage.removeItem('wonRouletteDiscount');
-                    localStorage.removeItem('wonRoulettePrizeDescription');
-                    localStorage.removeItem('prizeWonTime');
-                    return;
-                }
-
-                const minutes = Math.floor(timeLeft / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-                prizeTimerDisplay.textContent = `Tienes ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} para reservar tu premio.`;
-            }, 1000);
-        }
-
-
-        function animateSpin() {
-            if (isContinuouslySpinning) {
-                rotation += continuousSpinSpeed; 
-                drawRoulette();
-                requestAnimationFrame(animateSpin);
-            } else {
-                const elapsed = Date.now() - spinStartTime;
-                if (elapsed >= spinDuration) {
-                    spinning = false;
-                    loadingSpinner.style.display = 'none';
-                    
-                    const finalAngle = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); 
-                    let winningIndex = -1;
-                    const indicatorAngle = (Math.PI / 2); 
-                    
-                    for (let i = 0; i < segments.length; i++) {
-                        const segmentStartAngle = i * arc;
-                        const segmentEndAngle = (i + 1) * arc;
-                        
-                        let angleUnderIndicator = (indicatorAngle - rotation) % (2 * Math.PI);
-                        if (angleUnderIndicator < 0) angleUnderIndicator += (2 * Math.PI); 
-
-                        if (angleUnderIndicator >= segmentStartAngle && angleUnderIndicator < segmentEndAngle) {
-                            winningIndex = i;
-                            break;
-                        }
-                    }
-
-                    if (winningIndex === -1) { 
-                        winningIndex = Math.floor(Math.random() * segments.length);
-                    }
-                    
-                    wonPrize = segments[winningIndex]; 
-                    resultMessage.textContent = `¡Felicidades! Ganaste: ${wonPrize.text}`;
-
-                    if (wonPrize.type === 'discount') {
-                        if (localStorage.getItem('wonRouletteDiscount')) {
-                            resultMessage.textContent = `Ya tienes un premio activo (${localStorage.getItem('wonRoulettePrizeDescription')}). ¡Este tiro es de cortesía!`;
-                            spinBtn.disabled = false; 
-                            useDiscountBtn.style.display = 'none';
-                            mercadopagoLinkContainer.style.display = 'none';
-                            prizeTimerDisplay.style.display = 'none';
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        } else {
-                            useDiscountBtn.style.display = 'inline-block'; 
-                            spinBtn.disabled = true; 
-                            localStorage.setItem('wonRouletteDiscount', wonPrize.value);
-                            localStorage.setItem('wonRoulettePrizeDescription', wonPrize.description);
-                            localStorage.setItem('prizeWonTime', Date.now().toString()); 
-                            startPrizeTimer(); 
-                            
-                            spinAttempts--;
-                            localStorage.setItem('spinAttempts', spinAttempts.toString());
-                            updateSpinCountDisplay();
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        }
-                    } else if (wonPrize.type === 'new_spin' || wonPrize.type === 'no_luck_new_spin') {
-                        spinBtn.disabled = false; 
-                        useDiscountBtn.style.display = 'none';
-                        mercadopagoLinkContainer.style.display = 'none';
-                        prizeTimerDisplay.style.display = 'none';
-                        localStorage.removeItem('wonRouletteDiscount'); 
-                        localStorage.removeItem('wonRoulettePrizeDescription');
-                        localStorage.removeItem('prizeWonTime');
-                        localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                    } else if (wonPrize.type === 'new_spin_friend_discount') {
-                        if (localStorage.getItem('wonRouletteDiscount') || localStorage.getItem('friendRouletteDiscount')) {
-                            resultMessage.textContent = `Ya tienes un premio activo. ¡Este tiro es de cortesía!`;
-                            spinBtn.disabled = false; 
-                            useDiscountBtn.style.display = 'none';
-                            mercadopagoLinkContainer.style.display = 'none';
-                            prizeTimerDisplay.style.display = 'none';
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        } else {
-                            spinBtn.disabled = false; 
-                            useDiscountBtn.style.display = 'none';
-                            mercadopagoLinkContainer.style.display = 'none';
-                            prizeTimerDisplay.style.display = 'none';
-                            localStorage.removeItem('wonRouletteDiscount'); 
-                            localStorage.removeItem('wonRoulettePrizeDescription');
-                            localStorage.removeItem('prizeWonTime');
-                            localStorage.setItem('friendRouletteDiscount', wonPrize.friendDiscount); 
-                            
-                            spinAttempts--;
-                            localStorage.setItem('spinAttempts', spinAttempts.toString());
-                            updateSpinCountDisplay();
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        }
-                    }
-
-                    drawRoulette(); 
-                    return;
-                }
-
-                let progress = elapsed / spinDuration;
-                if (progress < 0.5) { 
-                    spinSpeed = 0.05 + (0.15 * progress * 2); 
-                } else { 
-                    spinSpeed = 0.20 - (0.15 * (progress - 0.5) * 2); 
-                }
-                rotation += spinSpeed;
-
-                drawRoulette();
-                requestAnimationFrame(animateSpin);
-            }
-        }
-
-        spinBtn.addEventListener('click', () => {
-            const lastSpinTime = localStorage.getItem('lastSpinTime');
-            const now = Date.now();
-
-            if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
-                const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
-                const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-                resultMessage.textContent = `Ya giraste la ruleta hoy. Vuelve en aproximadamente ${hoursLeft} horas.`;
-                spinBtn.disabled = true; 
-                return;
-            }
-
-            if (spinAttempts <= 0) {
-                resultMessage.textContent = 'No te quedan más tiros por hoy. Vuelve mañana.';
-                spinBtn.disabled = true;
-                return;
-            }
-
-            if (spinning) return; 
-
-            isContinuouslySpinning = false; 
-            spinning = true; 
-            spinBtn.disabled = true;
-            useDiscountBtn.style.display = 'none'; 
-            mercadopagoLinkContainer.style.display = 'none'; 
-            prizeTimerDisplay.style.display = 'none'; 
-            resultMessage.textContent = '';
-            loadingSpinner.style.display = 'block';
-            spinStartTime = Date.now(); 
-            
-            animateSpin();
-        });
-
-        useDiscountBtn.addEventListener('click', () => {
-            const currentPrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
-            const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
-            const now = Date.now();
-
-            if (!currentPrizeDescription || (now - prizeWonTime > prizeReservationTime)) {
-                alert('Tu premio ha expirado o no tienes un premio activo. Por favor, gira la ruleta de nuevo.');
-                localStorage.removeItem('wonRouletteDiscount');
-                localStorage.removeItem('wonRoulettePrizeDescription');
-                localStorage.removeItem('prizeWonTime');
-                useDiscountBtn.disabled = true;
-                mercadopagoLinkContainer.style.display = 'none';
-                prizeTimerDisplay.style.display = 'none';
-                return;
-            }
-
-            window.open(mercadopagoLinkUrl, '_blank');
-
-            const name = document.getElementById('name').value;
-            const whatsappNumber = '5493415216025'; 
-            let message = `¡Hola Le Bardol! Mi nombre es ${name}. He ganado en la ruleta: ${currentPrizeDescription}.`;
-            message += `\n\nAcabo de abonar la seña de ${mercadopagoPrice} en Mercado Pago para reservar mi premio.`;
-            message += `\nLink de pago: ${mercadopagoLinkUrl}`;
-            message += `\n¡Quisiera coordinar mi turno para usarlo!`;
-            
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-
-            localStorage.removeItem('wonRouletteDiscount');
-            localStorage.removeItem('wonRoulettePrizeDescription');
-            localStorage.removeItem('prizeWonTime');
-            useDiscountBtn.style.display = 'none';
-            mercadopagoLinkContainer.style.display = 'none';
-            prizeTimerDisplay.style.display = 'none';
-            resultMessage.textContent = '¡Premio reservado! Revisa tu WhatsApp para coordinar.';
-            spinBtn.disabled = false; 
-            updateSpinCountDisplay(); 
-        });
-
-
-        // --- Inicialización de la página ---
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOMContentLoaded: Page fully loaded.");
-            startCountdown();
-            
-            const nameInput = document.getElementById('name');
-            const displayDateDiv = document.getElementById('displayDate');
-            const appointmentDisplayGroup = document.getElementById('appointmentDisplayGroup');
-            const confirmBtn = document.getElementById('confirmBtn');
-            const inviteBtn = document.getElementById('inviteBtn');
-            const inviteBtnDiffusion = document.getElementById('inviteBtnDiffusion');
-            const disclaimerMessage = document.getElementById('disclaimerMessage');
-            
-            const mainOfferCard = document.getElementById('mainOfferCard');
-            const offerTitle = document.getElementById('offerTitle');
-            const offerDescription = document.getElementById('offerDescription');
-            const referralPromoDiffusion = document.getElementById('referralPromoDiffusion');
-            const referralPromoDiffusionP = referralPromoDiffusion.querySelector('p');
+            const linkType = document.getElementById('linkType');
+            const reminderOptions = document.getElementById('reminderOptions');
+            const promotionOptions = document.getElementById('promotionOptions');
+            const rouletteOptions = document.getElementById('rouletteOptions');
+            const generateLinkBtn = document.getElementById('generateLinkBtn');
+            const clearFormBtn = document.getElementById('clearFormBtn'); // Nuevo
+            const generatedLinkContainer = document.getElementById('generatedLinkContainer');
+            const generatedLink = document.getElementById('generatedLink');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const notification = document.getElementById('notification');
+            const addPriceBtn = document.getElementById('addPriceBtn');
+            const priceListEntries = document.getElementById('priceListEntries');
 
-            const priceListSection = document.getElementById('priceListSection'); // Nueva referencia
-            const priceListTableBody = document.getElementById('priceListTableBody'); // Nueva referencia
+            // Base URL of your index.html (adjust if needed, usually just the domain)
+            // Asegúrate de que esta URL sea la correcta para tu archivo index.html
+            const baseUrl = window.location.origin + '/index.html'; 
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlName = urlParams.get('nombre');
-            const urlDate = urlParams.get('fecha');
-            const urlDiscount = urlParams.get('descuento');
-            const urlTreatment = urlParams.get('tratamiento');
-            const urlReferrerDiscount = urlParams.get('descuentoReferente');
-            const urlNewClientDiscount = urlParams.get('descuentoNuevoCliente');
-            const urlDiffusionReferrerDiscount = urlParams.get('descuentoReferenteDifusion');
-            const urlDiffusionNewClientDiscount = urlParams.get('descuentoNuevoClienteDifusion');
-            const urlRoulette = urlParams.get('roulette'); 
-            const urlRouletteDiscount = urlParams.get('rouletteDiscount'); 
-            const urlPrices = urlParams.get('prices'); // Nuevo parámetro
+            function toggleOptions() {
+                reminderOptions.style.display = 'none';
+                promotionOptions.style.display = 'none';
+                rouletteOptions.style.display = 'none';
+                generatedLinkContainer.style.display = 'none'; // Ocultar el enlace generado al cambiar el tipo
 
-            let isReminderLink = false; 
-
-            // DEBUGGING CONSOLE LOGS
-            console.log("--- DEBUGGING INDEX.HTML ---");
-            console.log("URL Parameters:");
-            console.log("  nombre =", urlName);
-            console.log("  fecha =", urlDate);
-            console.log("  descuento =", urlDiscount);
-            console.log("  tratamiento =", urlTreatment);
-            console.log("  descuentoReferente =", urlReferrerDiscount);
-            console.log("  descuentoNuevoCliente =", urlNewClientDiscount);
-            console.log("  descuentoReferenteDifusion =", urlDiffusionReferrerDiscount);
-            console.log("  descuentoNuevoClienteDifusion =", urlDiffusionNewClientDiscount);
-            console.log("  roulette =", urlRoulette);
-            console.log("  rouletteDiscount =", urlRouletteDiscount);
-            console.log("  prices =", urlPrices); // Debugging prices
-            console.log("Local Storage:");
-            console.log("  hasSpunRoulette =", localStorage.getItem('hasSpunRoulette'));
-            console.log("  wonRouletteDiscount =", localStorage.getItem('wonRouletteDiscount'));
-            console.log("  wonRoulettePrizeDescription =", localStorage.getItem('wonRoulettePrizeDescription'));
-            console.log("  lastSpinTime =", localStorage.getItem('lastSpinTime'));
-            console.log("  friendRouletteDiscount =", localStorage.getItem('friendRouletteDiscount'));
-            console.log("  spinAttempts =", localStorage.getItem('spinAttempts'));
-            console.log("  prizeWonTime =", localStorage.getItem('prizeWonTime'));
-            console.log("----------------------------");
-
-
-            // Ocultar todas las secciones por defecto para controlar su visibilidad
-            mainOfferCard.style.display = 'none';
-            rouletteSection.style.display = 'none';
-            referralPromoDiffusion.style.display = 'none';
-            appointmentDisplayGroup.style.display = 'none'; 
-            confirmBtn.style.display = 'none'; 
-            inviteBtn.style.display = 'none'; 
-            inviteBtnDiffusion.style.display = 'none'; 
-            disclaimerMessage.style.display = 'none'; 
-            priceListSection.style.display = 'none'; // Ocultar por defecto
-
-            // Lógica para mostrar las secciones según los parámetros de la URL
-            if (urlDate) { 
-                console.log("Logic Path: Reminder Link (urlDate is present)");
-                isReminderLink = true;
-                appointmentDisplayGroup.style.display = 'block'; 
-                confirmBtn.style.display = 'block'; 
-                disclaimerMessage.style.display = 'block'; 
-
-                if (urlName) {
-                    nameInput.value = urlName;
-                } else {
-                    nameInput.value = "Estimado/a cliente/a"; 
+                if (linkType.value === 'reminder') {
+                    reminderOptions.style.display = 'block';
+                } else if (linkType.value === 'promotion') {
+                    promotionOptions.style.display = 'block';
+                } else if (linkType.value === 'roulette') {
+                    rouletteOptions.style.display = 'block';
                 }
-                
-                try {
-                    const dateObj = new Date(urlDate);
-                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' };
-                    displayDateDiv.textContent = dateObj.toLocaleDateString('es-ES', options) + ' hs';
-                } catch (e) {
-                    console.error("Error al parsear la fecha de la URL:", e);
-                    displayDateDiv.textContent = "Fecha y hora no válidas";
-                }
-                confirmBtn.innerHTML = '<i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO';
-                disclaimerMessage.innerHTML = `<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado para el <strong>${displayDateDiv.textContent}</strong>.`;
-                
-                if (urlDiscount && urlTreatment) {
-                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
-                    mainOfferCard.style.display = 'block';
-                } else if (urlDiscount) {
-                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TU PRÓXIMO SERVICIO!`;
-                    offerDescription.innerHTML = `Como cliente especial, disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en tu próximo tratamiento. ¡Tu momento de relajación y belleza te espera!`;
-                    mainOfferCard.style.display = 'block';
-                } else if (urlTreatment) {
-                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                    mainOfferCard.style.display = 'block';
-                } else {
-                    offerTitle.textContent = '¡Oferta Especial de Referidos!';
-                    const displayReferrerDiscount = urlReferrerDiscount || '10';
-                    const displayNewClientDiscount = urlNewClientDiscount || '50';
-                    offerDescription.innerHTML = `Confirma tu turno y si invitas a tus amigos en las próximas 24 horas, tú obtienes un <strong>${displayReferrerDiscount}% DE DESCUENTO</strong> por cada uno que contrate un servicio, ¡y ellos un <strong>${displayNewClientDiscount}% DE DESCUENTO</strong> en su primer tratamiento!`;
-                    mainOfferCard.style.display = 'block';
-                }
-                inviteBtn.style.display = 'block'; 
-                inviteBtnDiffusion.style.display = 'none'; 
-
-            } else if (urlRoulette === 'true') { 
-                console.log("Logic Path: Roulette Link (urlRoulette is 'true') - Checking conditions...");
-                const lastSpinTime = localStorage.getItem('lastSpinTime');
-                const now = Date.now();
-                
-                const activeRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
-                const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
-                const storedSpinAttempts = parseInt(localStorage.getItem('spinAttempts')); 
-
-                // Always show roulette section if it's a roulette link
-                rouletteSection.style.display = 'block';
-                mainOfferCard.style.display = 'none'; 
-                appointmentDisplayGroup.style.display = 'none';
-                confirmBtn.style.display = 'none';
-                inviteBtn.style.display = 'none';
-                disclaimerMessage.style.display = 'none';
-
-                // Always show diffusion invite card and button in roulette mode
-                referralPromoDiffusion.style.display = 'block'; 
-                inviteBtnDiffusion.style.display = 'block'; 
-
-                // Populate and show price list if available
-                if (urlPrices) {
-                    try {
-                        const prices = JSON.parse(urlPrices);
-                        if (Array.isArray(prices) && prices.length > 0) {
-                            priceListTableBody.innerHTML = ''; // Clear previous content
-                            prices.forEach(item => {
-                                const row = priceListTableBody.insertRow();
-                                const nameCell = row.insertCell();
-                                const priceCell = row.insertCell();
-                                nameCell.textContent = item.name;
-                                priceCell.textContent = item.price;
-                            });
-                            priceListSection.style.display = 'block';
-                            console.log("Price list displayed.");
-                        } else {
-                            console.log("urlPrices is empty or not an array.");
-                        }
-                    } catch (e) {
-                        console.error("Error parsing urlPrices JSON:", e);
-                    }
-                } else {
-                    console.log("urlPrices parameter not found.");
-                }
-
-                // Initial draw and animation for roulette
-                drawRoulette();
-                animateSpin(); // Start continuous spin
-
-                if (activeRoulettePrizeDescription && (now - prizeWonTime <= prizeReservationTime)) {
-                    console.log("Condition Met: Active roulette prize found and not expired. Displaying prize info.");
-                    spinBtn.style.display = 'none'; 
-                    loadingSpinner.style.display = 'none';
-                    resultMessage.textContent = `¡Tu premio activo: ${activeRoulettePrizeDescription}!`;
-                    useDiscountBtn.style.display = 'inline-block'; 
-                    mercadopagoLinkContainer.style.display = 'block'; 
-                    startPrizeTimer(); 
-                    updateSpinCountDisplay(); 
-                    nameInput.value = urlName || "Hola!"; 
-                    nameInput.focus(); 
-                    
-                } else if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
-                    console.log("Condition Met: Roulette already spun today (cooldown). Displaying cooldown message.");
-                    rouletteSection.style.display = 'none'; // Hide roulette, show main offer card
-                    mainOfferCard.style.display = 'block'; 
-                    offerTitle.textContent = `¡Ya giraste la ruleta hoy!`;
-                    const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
-                    const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-                    offerDescription.innerHTML = `Vuelve en aproximadamente <strong>${hoursLeft} horas</strong> para un nuevo intento. Mientras tanto, ¡puedes consultar por nuestros servicios!`;
-                    
-                    appointmentDisplayGroup.style.display = 'none'; 
-                    confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                    confirmBtn.style.display = 'block';
-                    inviteBtn.style.display = 'none'; 
-                    disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
-                    disclaimerMessage.style.display = 'block';
-                    nameInput.value = urlName || "Hola!"; 
-                    nameInput.focus(); 
-
-                } else {
-                    console.log("Condition Met: Roulette available to spin. Initializing spins.");
-                    if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours) || (isNaN(storedSpinAttempts) || storedSpinAttempts === 0)) { 
-                        console.log("Resetting spin attempts and clearing old roulette data.");
-                        spinAttempts = 3;
-                        localStorage.setItem('spinAttempts', spinAttempts.toString());
-                        localStorage.removeItem('wonRouletteDiscount'); 
-                        localStorage.removeItem('wonRoulettePrizeDescription');
-                        localStorage.removeItem('prizeWonTime');
-                        localStorage.removeItem('friendRouletteDiscount'); 
-                        localStorage.removeItem('hasSpunRoulette'); 
-                    }
-                    updateSpinCountDisplay(); 
-                    spinBtn.style.display = 'block'; 
-                    useDiscountBtn.style.display = 'none'; 
-                    mercadopagoLinkContainer.style.display = 'none'; 
-                    prizeTimerDisplay.style.display = 'none'; 
-                }
-
-            } else if (urlRouletteDiscount) {
-                console.log("Logic Path: Roulette Discount Received (urlRouletteDiscount is present)");
-                rouletteSection.style.display = 'none';
-                mainOfferCard.style.display = 'block'; 
-                offerTitle.textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
-                const prizeDesc = localStorage.getItem('wonRoulettePrizeDescription') || `${urlRouletteDiscount}% de descuento`;
-                offerDescription.innerHTML = `¡Felicidades! Has ganado <strong>${prizeDesc}</strong>. Utiliza el botón "CONSULTAR POR UN TURNO" para contactarnos y aplicar tu premio.`;
-                
-                localStorage.setItem('wonRouletteDiscount', urlRouletteDiscount);
-                localStorage.setItem('wonRoulettePrizeDescription', prizeDesc); 
-                
-                appointmentDisplayGroup.style.display = 'none'; 
-                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                confirmBtn.style.display = 'block';
-                inviteBtn.style.display = 'none'; 
-                inviteBtnDiffusion.style.display = 'none'; 
-                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Usa tu descuento de la ruleta! Completa tus datos para contactarnos.';
-                disclaimerMessage.style.display = 'block';
-                nameInput.value = urlName || "Hola!"; 
-                nameInput.focus(); 
-
-                // Also display price list if present
-                if (urlPrices) {
-                    try {
-                        const prices = JSON.parse(urlPrices);
-                        if (Array.isArray(prices) && prices.length > 0) {
-                            priceListTableBody.innerHTML = ''; 
-                            prices.forEach(item => {
-                                const row = priceListTableBody.insertRow();
-                                const nameCell = row.insertCell();
-                                const priceCell = row.insertCell();
-                                nameCell.textContent = item.name;
-                                priceCell.textContent = item.price;
-                            });
-                            priceListSection.style.display = 'block';
-                            console.log("Price list displayed for roulette discount link.");
-                        }
-                    } catch (e) {
-                        console.error("Error parsing urlPrices JSON for roulette discount link:", e);
-                    }
-                }
-
-            } else { 
-                console.log("Logic Path: General Promotion/Default (no specific URL parameters)");
-                isReminderLink = false;
-                appointmentDisplayGroup.style.display = 'none'; 
-                confirmBtn.style.display = 'block'; 
-                disclaimerMessage.style.display = 'block'; 
-
-                if (urlName) {
-                    nameInput.value = urlName;
-                } else {
-                    nameInput.value = "Hola!"; 
-                }
-                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
-
-                if (urlDiscount && urlTreatment) {
-                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Aprovecha esta oportunidad única y obtén un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
-                    mainOfferCard.style.display = 'block'; 
-                    referralPromoDiffusion.style.display = 'block'; 
-                    inviteBtnDiffusion.style.display = 'block'; 
-                } else if (urlDiscount) {
-                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TODOS LOS SERVICIOS!`;
-                    offerDescription.innerHTML = `Disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en cualquiera de nuestros tratamientos. ¡Tu momento de relajación y belleza te espera!`;
-                    mainOfferCard.style.display = 'block';
-                    referralPromoDiffusion.style.display = 'block';
-                    inviteBtnDiffusion.style.display = 'block';
-                } else if (urlTreatment) {
-                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                    mainOfferCard.style.display = 'block';
-                    referralPromoDiffusion.style.display = 'block';
-                    inviteBtnDiffusion.style.display = 'block';
-                } else {
-                    mainOfferCard.style.display = 'none'; 
-                    referralPromoDiffusion.style.display = 'block'; 
-                    inviteBtnDiffusion.style.display = 'block';
-                }
-                inviteBtn.style.display = 'none'; 
-
-                const displayDiffusionReferrerDiscount = urlDiffusionReferrerDiscount || '5';
-                const displayDiffusionNewClientDiscount = urlDiffusionNewClientDiscount || '5';
-                referralPromoDiffusionP.innerHTML = `Si reservas un turno y nos recomiendas a un amigo, obtendrás un <strong>${displayDiffusionReferrerDiscount}% DE DESCUENTO ADICIONAL</strong> en tu próxima sesión cuando tu amigo contrate su primer servicio, ¡y tu amigo obtendrá un <strong>${displayDiffusionNewClientDiscount}% DE DESCUENTO</strong> en su primer servicio!`;
             }
 
-            // Asignar eventos a los botones (siempre, independientemente de la sección visible)
-            document.getElementById('confirmBtn').addEventListener('click', () => {
-                if (validateForm(isReminderLink)) {
-                    sendWhatsAppMessage(isReminderLink, urlDiscount, urlTreatment);
-                    showNotification();
+            function showNotification() {
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+
+            function addPriceEntry() {
+                const div = document.createElement('div');
+                div.classList.add('price-item');
+                div.innerHTML = `
+                    <input type="text" class="treatment-name" placeholder="Nombre Tratamiento">
+                    <input type="text" class="treatment-price" placeholder="Precio (ej: $15.000)">
+                    <button type="button" class="remove-price-btn">X</button>
+                `;
+                priceListEntries.appendChild(div);
+
+                div.querySelector('.remove-price-btn').addEventListener('click', () => {
+                    div.remove();
+                });
+            }
+
+            function clearForm() {
+                // Limpiar campos de recordatorio
+                document.getElementById('clientNameReminder').value = '';
+                document.getElementById('appointmentDate').value = '';
+                document.getElementById('discountReminder').value = '';
+                document.getElementById('treatmentReminder').value = '';
+                document.getElementById('referrerDiscountReminder').value = '';
+                document.getElementById('newClientDiscountReminder').value = '';
+
+                // Limpiar campos de promoción
+                document.getElementById('clientNamePromo').value = '';
+                document.getElementById('discountPromo').value = '';
+                document.getElementById('treatmentPromo').value = '';
+                document.getElementById('referrerDiscountDiffusion').value = '';
+                document.getElementById('newClientDiscountDiffusion').value = '';
+
+                // Limpiar campos de ruleta
+                document.getElementById('clientNameRoulette').value = '';
+                document.getElementById('rouletteDiscount').value = '';
+                priceListEntries.innerHTML = ''; // Eliminar entradas de precios dinámicas
+
+                generatedLink.textContent = '';
+                generatedLinkContainer.style.display = 'none';
+                linkType.value = 'reminder'; // Volver al tipo de enlace por defecto
+                toggleOptions(); // Actualizar la vista
+            }
+
+            generateLinkBtn.addEventListener('click', () => {
+                let url = baseUrl + '?';
+                const params = [];
+
+                if (linkType.value === 'reminder') {
+                    const clientName = document.getElementById('clientNameReminder').value.trim();
+                    const appointmentDate = document.getElementById('appointmentDate').value;
+                    const discount = document.getElementById('discountReminder').value.trim();
+                    const treatment = document.getElementById('treatmentReminder').value.trim();
+                    const referrerDiscount = document.getElementById('referrerDiscountReminder').value.trim();
+                    const newClientDiscount = document.getElementById('newClientDiscountReminder').value.trim();
+
+                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
+                    if (appointmentDate) {
+                        // Formatear la fecha para que sea legible en la URL y en el index.html
+                        const dateObj = new Date(appointmentDate);
+                        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+                        const formattedDate = dateObj.toLocaleString('es-ES', options);
+                        params.push(`fecha=${encodeURIComponent(formattedDate)}`);
+                    }
+                    if (discount) params.push(`descuento=${encodeURIComponent(discount)}`);
+                    if (treatment) params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    if (referrerDiscount) params.push(`descuentoReferente=${encodeURIComponent(referrerDiscount)}`);
+                    if (newClientDiscount) params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
+
+                } else if (linkType.value === 'promotion') {
+                    const clientName = document.getElementById('clientNamePromo').value.trim();
+                    const discount = document.getElementById('discountPromo').value.trim();
+                    const treatment = document.getElementById('treatmentPromo').value.trim();
+                    const referrerDiscountDiffusion = document.getElementById('referrerDiscountDiffusion').value.trim();
+                    const newClientDiscountDiffusion = document.getElementById('newClientDiscountDiffusion').value.trim();
+
+                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
+                    if (discount) params.push(`descuento=${encodeURIComponent(discount)}`);
+                    if (treatment) params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    if (referrerDiscountDiffusion) params.push(`descuentoReferenteDifusion=${encodeURIComponent(referrerDiscountDiffusion)}`);
+                    if (newClientDiscountDiffusion) params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(newClientDiscountDiffusion)}`);
+
+                } else if (linkType.value === 'roulette') {
+                    const clientName = document.getElementById('clientNameRoulette').value.trim();
+                    const rouletteDiscount = document.getElementById('rouletteDiscount').value.trim();
+                    
+                    params.push('roulette=true'); // Always include for roulette links
+                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
+                    if (rouletteDiscount) params.push(`rouletteDiscount=${encodeURIComponent(rouletteDiscount)}`);
+
+                    // Collect price list data
+                    const prices = [];
+                    document.querySelectorAll('.price-item').forEach(itemDiv => {
+                        const name = itemDiv.querySelector('.treatment-name').value.trim();
+                        const price = itemDiv.querySelector('.treatment-price').value.trim();
+                        if (name && price) {
+                            prices.push({ name: name, price: price });
+                        }
+                    });
+                    if (prices.length > 0) {
+                        params.push(`prices=${encodeURIComponent(JSON.stringify(prices))}`);
+                    }
+                }
+
+                url += params.join('&');
+                generatedLink.textContent = url;
+                generatedLinkContainer.style.display = 'block';
+            });
+
+            copyLinkBtn.addEventListener('click', () => {
+                const linkText = generatedLink.textContent;
+                // Usar document.execCommand('copy') como método principal por su fiabilidad en iframes
+                const tempInput = document.createElement('textarea');
+                tempInput.value = linkText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showNotification();
+                    } else {
+                        console.error('Fallback: Error al copiar el enlace con execCommand.');
+                        // Si execCommand falla, intentar con Clipboard API (menos probable que funcione en iframe)
+                        navigator.clipboard.writeText(linkText).then(() => {
+                            showNotification();
+                        }).catch(err => {
+                            console.error('Error al copiar el enlace con Clipboard API: ', err);
+                            alert('No se pudo copiar el enlace automáticamente. Por favor, cópialo manualmente.');
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error al copiar el enlace: ', err);
+                    alert('No se pudo copiar el enlace automáticamente. Por favor, cópialo manualmente.');
+                } finally {
+                    document.body.removeChild(tempInput);
                 }
             });
-            
-            document.getElementById('inviteBtn').addEventListener('click', shareInvitation); 
-            document.getElementById('inviteBtnDiffusion').addEventListener('click', shareInvitationDiffusion); 
 
-            nameInput.addEventListener('input', toggleInviteButton);
-            
-            if (isReminderLink) {
-                toggleInviteButton(); 
-            } else {
-                inviteBtn.disabled = false; 
-            }
+            linkType.addEventListener('change', toggleOptions);
+            addPriceBtn.addEventListener('click', addPriceEntry);
+            clearFormBtn.addEventListener('click', clearForm); // Nuevo event listener
+
+            // Initial display
+            toggleOptions();
         });
     </script>
-  </body>
+</body>
 </html>
