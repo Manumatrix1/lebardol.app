@@ -255,7 +255,8 @@
             const promoClientNameInput = document.getElementById('promoClientName');
             const diffusionReferrerDiscountInput = document.getElementById('diffusionReferrerDiscount'); 
             const diffusionNewClientDiscountInput = document.getElementById('diffusionNewClientDiscount'); 
-            const discountPercentageInput = document.getElementById('discountPercentage'); 
+            // El campo discountPercentageInput ya no existe en el HTML para la sección de promoción
+            // const discountPercentageInput = document.getElementById('discountPercentage'); 
             const treatmentTypeInput = document.getElementById('treatmentType');
 
             const generateLinkBtn = document.getElementById('generateLinkBtn');
@@ -275,7 +276,8 @@
                     // Asegurarse de que estos elementos existan antes de intentar acceder a su valor
                     if (diffusionReferrerDiscountInput) diffusionReferrerDiscountInput.value = ''; 
                     if (diffusionNewClientDiscountInput) diffusionNewClientDiscountInput.value = ''; 
-                    if (discountPercentageInput) discountPercentageInput.value = '';
+                    // Ya no se necesita limpiar discountPercentageInput porque no existe
+                    // if (discountPercentageInput) discountPercentageInput.value = '';
                     treatmentTypeInput.value = '';
                 } else {
                     reminderFields.style.display = 'none';
@@ -321,21 +323,24 @@
                     if (newClientDiscount) { 
                         params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
                     }
-                    // Opcional: Si es recordatorio, también podemos pasar descuento y tratamiento si el generador lo permite
-                    const discount = discountPercentageInput.value.trim();
-                    const treatment = treatmentTypeInput.value.trim();
-                    if (discount) {
-                        params.push(`descuento=${encodeURIComponent(discount)}`);
-                    }
-                    if (treatment) {
-                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
-                    }
+                    // Si se desea pasar un descuento general o tratamiento en el modo recordatorio,
+                    // se debería añadir un campo en la sección de recordatorio para ello.
+                    // Actualmente, discountPercentageInput y treatmentTypeInput solo se usan en promotionFields.
+                    // const discount = discountPercentageInput.value.trim();
+                    // const treatment = treatmentTypeInput.value.trim();
+                    // if (discount) {
+                    //     params.push(`descuento=${encodeURIComponent(discount)}`);
+                    // }
+                    // if (treatment) {
+                    //     params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    // }
 
                 } else { // promotion
                     const promoClientName = promoClientNameInput.value.trim();
                     const diffusionReferrerDiscount = diffusionReferrerDiscountInput.value.trim(); 
                     const diffusionNewClientDiscount = diffusionNewClientDiscountInput.value.trim(); 
-                    const discount = discountPercentageInput.value.trim(); // Este es el descuento general para la promo, no de referido
+                    // discountPercentageInput ya no existe, se usa diffusionReferrerDiscount y diffusionNewClientDiscount
+                    // const discount = discountPercentageInput.value.trim(); 
                     const treatment = treatmentTypeInput.value.trim();
 
                     if (promoClientName) {
@@ -347,15 +352,16 @@
                     if (diffusionNewClientDiscount) { 
                         params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(diffusionNewClientDiscount)}`);
                     }
-                    if (discount) {
-                        params.push(`descuento=${encodeURIComponent(discount)}`);
-                    }
+                    // Si se desea un descuento general para la promoción (no de referido), se debería añadir un campo específico.
+                    // if (discount) {
+                    //     params.push(`descuento=${encodeURIComponent(discount)}`);
+                    // }
                     if (treatment) {
                         params.push(`tratamiento=${encodeURIComponent(treatment)}`);
                     }
                     
                     // Asegurar que al menos uno de los campos de promo esté lleno
-                    if (!promoClientName && !diffusionReferrerDiscount && !diffusionNewClientDiscount && !discount && !treatment) {
+                    if (!promoClientName && !diffusionReferrerDiscount && !diffusionNewClientDiscount && !treatment) {
                         alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
                         return;
                     }
