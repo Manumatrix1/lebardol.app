@@ -418,7 +418,7 @@
         </div>
       </div>
 
-      <!-- NUEVA SECCIÓN DE RULETA -->
+      <!-- SECCIÓN DE RULETA -->
       <div class="roulette-section" id="rouletteSection">
         <h1>¡Gira la Ruleta y Gana un Descuento!</h1>
         <div style="position: relative; width: fit-content; margin: 0 auto;">
@@ -436,7 +436,7 @@
             </button>
         </div>
       </div>
-      <!-- FIN NUEVA SECCIÓN DE RULETA -->
+      <!-- FIN SECCIÓN DE RULETA -->
 
       <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
         <h3>¡Invita a un amigo y GANA!</h3>
@@ -554,7 +554,7 @@
             const name = document.getElementById('name').value;
             const whatsappNumber = '5493415216025'; 
             let message = '';
-            const wonRouletteDiscount = localStorage.getItem('wonRouletteDiscount'); // Obtener descuento de ruleta
+            const wonRouletteDiscount = localStorage.getItem('wonRouletteDiscount'); 
 
             if (isReminder) {
                 const displayedDate = document.getElementById('displayDate').textContent; 
@@ -648,15 +648,15 @@
         const useDiscountBtn = document.getElementById('useDiscountBtn');
         const resultMessage = document.getElementById('resultMessage');
         const loadingSpinner = document.getElementById('loadingSpinner');
-        const rouletteSection = document.getElementById('rouletteSection'); // La sección completa de la ruleta
+        const rouletteSection = document.getElementById('rouletteSection'); 
 
-        const segments = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // Porcentajes de descuento
+        const segments = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; 
         const segmentColors = [
             '#FFD1DC', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5',
             '#392F5B', '#4A47A3', '#3D2B5B', '#9932CC', '#BA55D3'
         ]; 
 
-        const arc = (2 * Math.PI) / segments.length; // Ángulo de cada segmento (círculo completo)
+        const arc = (2 * Math.PI) / segments.length; 
         let rotation = 0; 
         let spinSpeed = 0; 
         let continuousSpinSpeed = 0.01; 
@@ -709,24 +709,19 @@
                     loadingSpinner.style.display = 'none';
                     useDiscountBtn.style.display = 'inline-block'; 
                     
-                    // Calcular el segmento ganador final
-                    const finalAngle = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); // Normalizar a 0-2PI
+                    const finalAngle = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); 
                     let winningIndex = -1;
                     for (let i = 0; i < segments.length; i++) {
                         const startAngle = (i * arc);
                         const endAngle = ((i + 1) * arc);
-                        // Ajustar para el indicador en la parte superior (90 grados o PI/2 radianes)
-                        // Invertimos la lógica porque la ruleta gira y el indicador es fijo.
-                        // El segmento ganador es el que está "debajo" del indicador cuando la ruleta se detiene.
-                        // Esto requiere un ajuste de ángulo para que el segmento correcto se alinee con el indicador.
-                        const adjustedFinalAngle = (finalAngle + Math.PI / 2) % (2 * Math.PI); // Ajusta para que el 0% esté arriba.
+                        const adjustedFinalAngle = (finalAngle + Math.PI / 2) % (2 * Math.PI); 
                         
                         if (adjustedFinalAngle >= startAngle && adjustedFinalAngle < endAngle) {
                             winningIndex = i;
                             break;
                         }
                     }
-                    if (winningIndex === -1) { // Fallback en caso de que el cálculo falle
+                    if (winningIndex === -1) { 
                         winningIndex = Math.floor(Math.random() * segments.length);
                     }
                     
@@ -750,7 +745,7 @@
         }
 
         spinBtn.addEventListener('click', () => {
-            if (spinning || localStorage.getItem('hasSpunRoulette')) return; // Evitar múltiples giros o si ya giró
+            if (spinning || localStorage.getItem('hasSpunRoulette')) return; 
 
             isContinuouslySpinning = false; 
             spinning = true; 
@@ -761,7 +756,7 @@
             spinStartTime = Date.now(); 
             
             animateSpin();
-            localStorage.setItem('hasSpunRoulette', 'true'); // Marcar que el usuario ya giró
+            localStorage.setItem('hasSpunRoulette', 'true'); 
         });
 
         useDiscountBtn.addEventListener('click', () => {
@@ -798,43 +793,21 @@
             const urlNewClientDiscount = getUrlParameter('descuentoNuevoCliente');
             const urlDiffusionReferrerDiscount = getUrlParameter('descuentoReferenteDifusion');
             const urlDiffusionNewClientDiscount = getUrlParameter('descuentoNuevoClienteDifusion');
-            const urlRouletteDiscount = getUrlParameter('rouletteDiscount'); // Nuevo: descuento de la ruleta
+            const urlRoulette = getUrlParameter('roulette'); // Nuevo: parámetro para activar la ruleta
+            const urlRouletteDiscount = getUrlParameter('rouletteDiscount'); 
 
             let isReminderLink = false; 
 
-            // Lógica para mostrar u ocultar la ruleta y las ofertas
-            if (urlRouletteDiscount) {
-                // Si viene de la ruleta, ocultar la ruleta y mostrar el mensaje del premio
-                rouletteSection.style.display = 'none';
-                mainOfferCard.style.display = 'block'; 
-                offerTitle.textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
-                offerDescription.innerHTML = `¡Felicidades! Has ganado un <strong>${urlRouletteDiscount}% de descuento</strong>. Utiliza el botón "CONFIRMAR MI TURNO" para contactarnos y aplicar tu premio.`;
-                // Almacenar el descuento de la ruleta para usarlo en WhatsApp
-                localStorage.setItem('wonRouletteDiscount', urlRouletteDiscount);
-                // Ocultar otras secciones si es necesario, por ejemplo, la de difusión
-                referralPromoDiffusion.style.display = 'none';
-                inviteBtn.style.display = 'block'; // Mostrar el botón de invitar normal
-                inviteBtnDiffusion.style.display = 'none'; // Ocultar el botón de invitar de difusión
+            // Ocultar todas las secciones por defecto para controlar su visibilidad
+            mainOfferCard.style.display = 'none';
+            rouletteSection.style.display = 'none';
+            referralPromoDiffusion.style.display = 'none';
+            appointmentDisplayGroup.style.display = 'none'; // Ocultar por defecto, se muestra si es recordatorio
 
-            } else if (localStorage.getItem('hasSpunRoulette')) {
-                // Si ya giró la ruleta en esta sesión pero no viene con el parámetro, ocultarla
-                rouletteSection.style.display = 'none';
-                mainOfferCard.style.display = 'block'; // Asegurarse de que la oferta principal sea visible
-                offerTitle.textContent = `¡Oferta Especial de Referidos!`;
-                offerDescription.innerHTML = `Ya has girado la ruleta. ¡Aprovecha nuestras otras promociones!`;
-                // Puedes mostrar un mensaje diferente o simplemente la oferta por defecto
-            } else {
-                // Si no hay descuento de ruleta y no ha girado, mostrar la ruleta
-                rouletteSection.style.display = 'block';
-                drawRoulette(); // Dibujar la ruleta
-                animateSpin(); // Iniciar giro continuo
-                localStorage.removeItem('wonRouletteDiscount'); // Limpiar cualquier descuento de ruleta previo
-            }
-
-
-            // Lógica existente para pre-llenar campos y configurar el tipo de enlace
-            if (urlDate) { 
+            // Lógica para mostrar las secciones según los parámetros de la URL
+            if (urlDate) { // Es un enlace de recordatorio de turno
                 isReminderLink = true;
+                appointmentDisplayGroup.style.display = 'block'; // Mostrar el grupo de la fecha
                 if (urlName) {
                     nameInput.value = urlName;
                 } else {
@@ -852,77 +825,105 @@
                 confirmBtn.innerHTML = '<i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO';
                 disclaimerMessage.innerHTML = `<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado para el <strong>${displayDateDiv.textContent}</strong>.`;
                 
-                // Si no hay descuento de ruleta en la URL, mostrar la oferta de referidos o la específica
-                if (!urlRouletteDiscount) {
-                    if (urlDiscount && urlTreatment) {
-                        offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
-                        offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
-                        mainOfferCard.style.display = 'block';
-                    } else if (urlDiscount) {
-                        offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TU PRÓXIMO SERVICIO!`;
-                        offerDescription.innerHTML = `Como cliente especial, disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en tu próximo tratamiento. ¡Tu momento de relajación y belleza te espera!`;
-                        mainOfferCard.style.display = 'block';
-                    } else if (urlTreatment) {
-                        offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                        offerDescription.innerHTML = `Como cliente especial, descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                        mainOfferCard.style.display = 'block';
-                    } else {
-                        offerTitle.textContent = '¡Oferta Especial de Referidos!';
-                        const displayReferrerDiscount = urlReferrerDiscount || '10';
-                        const displayNewClientDiscount = urlNewClientDiscount || '50';
-                        offerDescription.innerHTML = `Confirma tu turno y si invitas a tus amigos en las próximas 24 horas, tú obtienes un <strong>${displayReferrerDiscount}% DE DESCUENTO</strong> por cada uno que contrate un servicio, ¡y ellos un <strong>${displayNewClientDiscount}% DE DESCUENTO</strong> en su primer tratamiento!`;
-                        mainOfferCard.style.display = 'block';
-                    }
+                // Mostrar la oferta de referidos o la específica en el modo recordatorio
+                if (urlDiscount && urlTreatment) {
+                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
+                    mainOfferCard.style.display = 'block';
+                } else if (urlDiscount) {
+                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TU PRÓXIMO SERVICIO!`;
+                    offerDescription.innerHTML = `Como cliente especial, disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en tu próximo tratamiento. ¡Tu momento de relajación y belleza te espera!`;
+                    mainOfferCard.style.display = 'block';
+                } else if (urlTreatment) {
+                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Como cliente especial, descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
+                    mainOfferCard.style.display = 'block';
+                } else {
+                    offerTitle.textContent = '¡Oferta Especial de Referidos!';
+                    const displayReferrerDiscount = urlReferrerDiscount || '10';
+                    const displayNewClientDiscount = urlNewClientDiscount || '50';
+                    offerDescription.innerHTML = `Confirma tu turno y si invitas a tus amigos en las próximas 24 horas, tú obtienes un <strong>${displayReferrerDiscount}% DE DESCUENTO</strong> por cada uno que contrate un servicio, ¡y ellos un <strong>${displayNewClientDiscount}% DE DESCUENTO</strong> en su primer tratamiento!`;
+                    mainOfferCard.style.display = 'block';
                 }
-                referralPromoDiffusion.style.display = 'none'; 
                 inviteBtn.style.display = 'block'; 
                 inviteBtnDiffusion.style.display = 'none'; 
 
-            } else { // Si no hay fecha, es un enlace de difusión/promoción (o la ruleta si no se ha girado)
-                // Si no hay descuento de ruleta en la URL, se mantiene la lógica de difusión
-                if (!urlRouletteDiscount) {
-                    isReminderLink = false;
-                    appointmentDisplayGroup.style.display = 'none'; 
-                    if (urlName) {
-                        nameInput.value = urlName;
-                    } else {
-                        nameInput.value = "Hola!"; 
-                    }
-                    confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                    disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
+            } else if (urlRoulette === 'true' && !localStorage.getItem('hasSpunRoulette')) { 
+                // Es un enlace de ruleta y el usuario no ha girado aún
+                rouletteSection.style.display = 'block';
+                mainOfferCard.style.display = 'none'; // Ocultar la oferta principal
+                referralPromoDiffusion.style.display = 'none'; // Ocultar difusión
+                appointmentDisplayGroup.style.display = 'none'; // Ocultar fecha de turno
+                confirmBtn.style.display = 'none'; // Ocultar botón de confirmar
+                inviteBtn.style.display = 'none'; // Ocultar botón de invitar normal
+                inviteBtnDiffusion.style.display = 'none'; // Ocultar botón de invitar de difusión
+                disclaimerMessage.style.display = 'none'; // Ocultar disclaimer
 
-                    if (urlDiscount && urlTreatment) {
-                        offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
-                        offerDescription.innerHTML = `Aprovecha esta oportunidad única y obtén un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
-                        mainOfferCard.style.display = 'block'; 
-                        referralPromoDiffusion.style.display = 'block'; 
-                        inviteBtnDiffusion.style.display = 'block'; 
-                    } else if (urlDiscount) {
-                        offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TODOS LOS SERVICIOS!`;
-                        offerDescription.innerHTML = `Disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en cualquiera de nuestros tratamientos. ¡Tu momento de relajación y belleza te espera!`;
-                        mainOfferCard.style.display = 'block';
-                        referralPromoDiffusion.style.display = 'block';
-                        inviteBtnDiffusion.style.display = 'block';
-                    } else if (urlTreatment) {
-                        offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                        offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                        mainOfferCard.style.display = 'block';
-                        referralPromoDiffusion.style.display = 'block';
-                        inviteBtnDiffusion.style.display = 'block';
-                    } else {
-                        mainOfferCard.style.display = 'none';
-                        referralPromoDiffusion.style.display = 'block';
-                        inviteBtnDiffusion.style.display = 'block';
-                    }
-                    inviteBtn.style.display = 'none'; 
+                // Iniciar la ruleta
+                drawRoulette();
+                animateSpin();
 
-                    const displayDiffusionReferrerDiscount = urlDiffusionReferrerDiscount || '5';
-                    const displayDiffusionNewClientDiscount = urlDiffusionNewClientDiscount || '5';
-                    referralPromoDiffusionP.innerHTML = `Si reservas un turno y nos recomiendas a un amigo, obtendrás un <strong>${displayDiffusionReferrerDiscount}% DE DESCUENTO ADICIONAL</strong> en tu próxima sesión cuando tu amigo contrate su primer servicio, ¡y tu amigo obtendrá un <strong>${displayDiffusionNewClientDiscount}% DE DESCUENTO</strong> en su primer servicio!`;
+            } else if (urlRouletteDiscount) {
+                // El usuario ya giró la ruleta y fue redirigido con el descuento ganado
+                rouletteSection.style.display = 'none';
+                mainOfferCard.style.display = 'block'; 
+                offerTitle.textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
+                offerDescription.innerHTML = `¡Felicidades! Has ganado un <strong>${urlRouletteDiscount}% de descuento</strong>. Utiliza el botón "CONFIRMAR MI TURNO" para contactarnos y aplicar tu premio.`;
+                localStorage.setItem('wonRouletteDiscount', urlRouletteDiscount);
+                // Mostrar el formulario de contacto para que puedan usar el descuento
+                appointmentDisplayGroup.style.display = 'none'; // No hay fecha de turno pre-llenada
+                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
+                confirmBtn.style.display = 'block';
+                inviteBtn.style.display = 'none'; 
+                inviteBtnDiffusion.style.display = 'none'; 
+                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Usa tu descuento de la ruleta! Completa tus datos para contactarnos.';
+                disclaimerMessage.style.display = 'block';
+                nameInput.value = urlName || "Hola!"; // Pre-llenar nombre si viene de la ruleta
+                nameInput.focus(); // Poner el foco en el campo de nombre
+
+            } else { // Es un enlace de difusión/promoción general (o la URL base sin parámetros específicos)
+                isReminderLink = false;
+                appointmentDisplayGroup.style.display = 'none'; 
+                if (urlName) {
+                    nameInput.value = urlName;
+                } else {
+                    nameInput.value = "Hola!"; 
                 }
+                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
+                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
+                disclaimerMessage.style.display = 'block';
+
+                if (urlDiscount && urlTreatment) {
+                    offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Aprovecha esta oportunidad única y obtén un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
+                    mainOfferCard.style.display = 'block'; 
+                    referralPromoDiffusion.style.display = 'block'; 
+                    inviteBtnDiffusion.style.display = 'block'; 
+                } else if (urlDiscount) {
+                    offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TODOS LOS SERVICIOS!`;
+                    offerDescription.innerHTML = `Disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en cualquiera de nuestros tratamientos. ¡Tu momento de relajación y belleza te espera!`;
+                    mainOfferCard.style.display = 'block';
+                    referralPromoDiffusion.style.display = 'block';
+                    inviteBtnDiffusion.style.display = 'block';
+                } else if (urlTreatment) {
+                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
+                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
+                    mainOfferCard.style.display = 'block';
+                    referralPromoDiffusion.style.display = 'block';
+                    inviteBtnDiffusion.style.display = 'block';
+                } else {
+                    mainOfferCard.style.display = 'none'; // Ocultar la tarjeta de oferta principal si no hay promo específica
+                    referralPromoDiffusion.style.display = 'block'; // Mostrar la tarjeta de referido de difusión por defecto
+                    inviteBtnDiffusion.style.display = 'block';
+                }
+                inviteBtn.style.display = 'none'; 
+
+                const displayDiffusionReferrerDiscount = urlDiffusionReferrerDiscount || '5';
+                const displayDiffusionNewClientDiscount = urlDiffusionNewClientDiscount || '5';
+                referralPromoDiffusionP.innerHTML = `Si reservas un turno y nos recomiendas a un amigo, obtendrás un <strong>${displayDiffusionReferrerDiscount}% DE DESCUENTO ADICIONAL</strong> en tu próxima sesión cuando tu amigo contrate su primer servicio, ¡y tu amigo obtendrá un <strong>${displayDiffusionNewClientDiscount}% DE DESCUENTO</strong> en su primer servicio!`;
             }
 
-            // Asignar eventos a los botones
+            // Asignar eventos a los botones (siempre, independientemente de la sección visible)
             document.getElementById('confirmBtn').addEventListener('click', () => {
                 if (validateForm(isReminderLink)) {
                     sendWhatsAppMessage(isReminderLink, urlDiscount, urlTreatment);
