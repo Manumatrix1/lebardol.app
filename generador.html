@@ -83,6 +83,7 @@
             display: flex;
             gap: 20px;
             margin-bottom: 20px;
+            flex-wrap: wrap; /* Permite que los radios se envuelvan en pantallas pequeñas */
         }
 
         .radio-group label {
@@ -188,6 +189,10 @@
           <input type="radio" name="linkType" value="promotion">
           Difusión / Promoción
         </label>
+        <label>
+          <input type="radio" name="linkType" value="roulette">
+          Enlace de Ruleta
+        </label>
       </div>
 
       <div id="reminderFields">
@@ -227,6 +232,13 @@
           <input type="text" id="treatmentType" placeholder="Ej: Limpieza Facial">
         </div>
       </div>
+
+      <div id="rouletteFields" style="display: none;">
+        <div class="form-group">
+          <label for="rouletteClientName">Nombre para la Ruleta (opcional)</label>
+          <input type="text" id="rouletteClientName" placeholder="Ej: Cliente Ruleta">
+        </div>
+      </div>
       
       <button class="btn btn-generate" id="generateLinkBtn">Generar Enlace</button>
       
@@ -246,6 +258,7 @@
             const linkTypeRadios = document.querySelectorAll('input[name="linkType"]');
             const reminderFields = document.getElementById('reminderFields');
             const promotionFields = document.getElementById('promotionFields');
+            const rouletteFields = document.getElementById('rouletteFields'); // Nuevo: campos de ruleta
 
             const clientNameInput = document.getElementById('clientName');
             const appointmentDateInput = document.getElementById('appointmentDate');
@@ -255,9 +268,9 @@
             const promoClientNameInput = document.getElementById('promoClientName');
             const diffusionReferrerDiscountInput = document.getElementById('diffusionReferrerDiscount'); 
             const diffusionNewClientDiscountInput = document.getElementById('diffusionNewClientDiscount'); 
-            // El campo discountPercentageInput ya no existe en el HTML para la sección de promoción
-            // const discountPercentageInput = document.getElementById('discountPercentage'); 
             const treatmentTypeInput = document.getElementById('treatmentType');
+
+            const rouletteClientNameInput = document.getElementById('rouletteClientName'); // Nuevo: nombre para ruleta
 
             const generateLinkBtn = document.getElementById('generateLinkBtn');
             const generatedLinkDiv = document.getElementById('generatedLink');
@@ -268,26 +281,29 @@
             const baseUrl = 'https://lebardol-app.netlify.app/index.html'; 
 
             function toggleLinkType(type) {
+                reminderFields.style.display = 'none';
+                promotionFields.style.display = 'none';
+                rouletteFields.style.display = 'none'; // Ocultar todos por defecto
+
+                // Limpiar todos los campos al cambiar de tipo
+                clientNameInput.value = '';
+                appointmentDateInput.value = '';
+                referrerDiscountInput.value = ''; 
+                newClientDiscountInput.value = ''; 
+                promoClientNameInput.value = '';
+                diffusionReferrerDiscountInput.value = ''; 
+                diffusionNewClientDiscountInput.value = ''; 
+                treatmentTypeInput.value = '';
+                rouletteClientNameInput.value = ''; // Limpiar campo de ruleta
+
                 if (type === 'reminder') {
                     reminderFields.style.display = 'block';
-                    promotionFields.style.display = 'none';
-                    // Limpiar campos de promo al cambiar
-                    promoClientNameInput.value = '';
-                    // Asegurarse de que estos elementos existan antes de intentar acceder a su valor
-                    if (diffusionReferrerDiscountInput) diffusionReferrerDiscountInput.value = ''; 
-                    if (diffusionNewClientDiscountInput) diffusionNewClientDiscountInput.value = ''; 
-                    // Ya no se necesita limpiar discountPercentageInput porque no existe
-                    // if (discountPercentageInput) discountPercentageInput.value = '';
-                    treatmentTypeInput.value = '';
-                } else {
-                    reminderFields.style.display = 'none';
+                } else if (type === 'promotion') {
                     promotionFields.style.display = 'block';
-                    // Limpiar campos de recordatorio al cambiar
-                    clientNameInput.value = '';
-                    appointmentDateInput.value = '';
-                    referrerDiscountInput.value = ''; 
-                    newClientDiscountInput.value = ''; 
+                } else if (type === 'roulette') { // Mostrar campos de ruleta
+                    rouletteFields.style.display = 'block';
                 }
+
                 generatedLinkDiv.innerHTML = 'Aquí aparecerá el enlace generado'; 
                 copyLinkBtn.style.display = 'none';
             }
@@ -323,24 +339,11 @@
                     if (newClientDiscount) { 
                         params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
                     }
-                    // Si se desea pasar un descuento general o tratamiento en el modo recordatorio,
-                    // se debería añadir un campo en la sección de recordatorio para ello.
-                    // Actualmente, discountPercentageInput y treatmentTypeInput solo se usan en promotionFields.
-                    // const discount = discountPercentageInput.value.trim();
-                    // const treatment = treatmentTypeInput.value.trim();
-                    // if (discount) {
-                    //     params.push(`descuento=${encodeURIComponent(discount)}`);
-                    // }
-                    // if (treatment) {
-                    //     params.push(`tratamiento=${encodeURIComponent(treatment)}`);
-                    // }
 
-                } else { // promotion
+                } else if (selectedType === 'promotion') { 
                     const promoClientName = promoClientNameInput.value.trim();
                     const diffusionReferrerDiscount = diffusionReferrerDiscountInput.value.trim(); 
                     const diffusionNewClientDiscount = diffusionNewClientDiscountInput.value.trim(); 
-                    // discountPercentageInput ya no existe, se usa diffusionReferrerDiscount y diffusionNewClientDiscount
-                    // const discount = discountPercentageInput.value.trim(); 
                     const treatment = treatmentTypeInput.value.trim();
 
                     if (promoClientName) {
@@ -352,19 +355,20 @@
                     if (diffusionNewClientDiscount) { 
                         params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(diffusionNewClientDiscount)}`);
                     }
-                    // Si se desea un descuento general para la promoción (no de referido), se debería añadir un campo específico.
-                    // if (discount) {
-                    //     params.push(`descuento=${encodeURIComponent(discount)}`);
-                    // }
                     if (treatment) {
                         params.push(`tratamiento=${encodeURIComponent(treatment)}`);
                     }
                     
-                    // Asegurar que al menos uno de los campos de promo esté lleno
                     if (!promoClientName && !diffusionReferrerDiscount && !diffusionNewClientDiscount && !treatment) {
                         alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
                         return;
                     }
+                } else if (selectedType === 'roulette') { // Lógica para enlace de ruleta
+                    const rouletteClientName = rouletteClientNameInput.value.trim();
+                    if (rouletteClientName) {
+                        params.push(`nombre=${encodeURIComponent(rouletteClientName)}`);
+                    }
+                    params.push(`roulette=true`); // Parámetro para activar la ruleta
                 }
 
                 let generatedUrl = baseUrl;
@@ -372,20 +376,17 @@
                     generatedUrl += `?${params.join('&')}`;
                 }
 
-                // Limpiar contenido previo y crear el enlace clicable
                 generatedLinkDiv.innerHTML = ''; 
                 const linkElement = document.createElement('a');
                 linkElement.href = generatedUrl;
                 linkElement.textContent = generatedUrl;
-                linkElement.target = '_blank'; // Abrir en una nueva pestaña
+                linkElement.target = '_blank'; 
 
-                generatedLinkDiv.appendChild(linkElement); // Agregar el enlace al div
-                copyLinkBtn.style.display = 'inline-block'; // Mostrar botón de copiar
+                generatedLinkDiv.appendChild(linkElement); 
+                copyLinkBtn.style.display = 'inline-block'; 
             });
 
-            // Copiar el enlace al portapapeles
             copyLinkBtn.addEventListener('click', () => {
-                // Obtener el href del enlace generado para copiar la URL completa y correcta
                 const linkToCopy = generatedLinkDiv.querySelector('a').href;
                 if (linkToCopy) {
                     navigator.clipboard.writeText(linkToCopy).then(() => {
@@ -400,8 +401,7 @@
                 }
             });
 
-            // Asegurarse de que al cargar la página se muestren los campos correctos (recordatorio por defecto)
-            toggleLinkType('reminder');
+            toggleLinkType('reminder'); // Mostrar campos de recordatorio por defecto al cargar
         });
     </script>
   </body>
