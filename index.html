@@ -1031,16 +1031,17 @@
             const referralPromoDiffusion = document.getElementById('referralPromoDiffusion');
             const referralPromoDiffusionP = referralPromoDiffusion.querySelector('p');
 
-            const urlName = getUrlParameter('nombre');
-            const urlDate = getUrlParameter('fecha');
-            const urlDiscount = getUrlParameter('descuento');
-            const urlTreatment = getUrlParameter('tratamiento');
-            const urlReferrerDiscount = getUrlParameter('descuentoReferente');
-            const urlNewClientDiscount = getUrlParameter('descuentoNuevoCliente');
-            const urlDiffusionReferrerDiscount = getUrlParameter('descuentoReferenteDifusion');
-            const urlDiffusionNewClientDiscount = getUrlParameter('descuentoNuevoClienteDifusion');
-            const urlRoulette = getUrlParameter('roulette'); 
-            const urlRouletteDiscount = getUrlParameter('rouletteDiscount'); 
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlName = urlParams.get('nombre');
+            const urlDate = urlParams.get('fecha');
+            const urlDiscount = urlParams.get('descuento');
+            const urlTreatment = urlParams.get('tratamiento');
+            const urlReferrerDiscount = urlParams.get('descuentoReferente');
+            const urlNewClientDiscount = urlParams.get('descuentoNuevoCliente');
+            const urlDiffusionReferrerDiscount = urlParams.get('descuentoReferenteDifusion');
+            const urlDiffusionNewClientDiscount = urlParams.get('descuentoNuevoClienteDifusion');
+            const urlRoulette = urlParams.get('roulette'); 
+            const urlRouletteDiscount = urlParams.get('rouletteDiscount'); 
 
             let isReminderLink = false; 
 
@@ -1127,18 +1128,16 @@
                 inviteBtnDiffusion.style.display = 'none'; 
 
             } else if (urlRoulette === 'true') { // Es un enlace de ruleta
-                console.log("Logic Path: Roulette Link");
+                console.log("Logic Path: Roulette Link - Checking conditions...");
                 const lastSpinTime = localStorage.getItem('lastSpinTime');
                 const now = Date.now();
                 const storedSpinAttempts = parseInt(localStorage.getItem('spinAttempts'));
                 
-                // Si ya hay un premio de ruleta activo y no ha expirado, mostrarlo
                 const activeRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
-                const activeRouletteDiscount = localStorage.getItem('wonRouletteDiscount');
                 const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
 
                 if (activeRoulettePrizeDescription && (now - prizeWonTime <= prizeReservationTime)) {
-                    console.log("Active roulette prize found and not expired.");
+                    console.log("Condition Met: Active roulette prize found and not expired. Displaying prize info.");
                     rouletteSection.style.display = 'block'; 
                     spinBtn.style.display = 'none'; 
                     loadingSpinner.style.display = 'none';
@@ -1151,7 +1150,7 @@
                     nameInput.focus(); 
                     
                 } else if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
-                    console.log("Roulette already spun today (cooldown).");
+                    console.log("Condition Met: Roulette already spun today (cooldown). Displaying cooldown message.");
                     rouletteSection.style.display = 'none'; 
                     mainOfferCard.style.display = 'block'; 
                     offerTitle.textContent = `¡Ya giraste la ruleta hoy!`;
@@ -1170,7 +1169,7 @@
                     nameInput.focus(); 
 
                 } else {
-                    console.log("Roulette available to spin.");
+                    console.log("Condition Met: Roulette available to spin. Displaying roulette.");
                     rouletteSection.style.display = 'block';
                     mainOfferCard.style.display = 'none'; 
                     referralPromoDiffusion.style.display = 'none'; 
@@ -1181,6 +1180,7 @@
                     disclaimerMessage.style.display = 'none'; 
 
                     if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours)) {
+                        console.log("Resetting spin attempts and clearing old roulette data.");
                         spinAttempts = 3;
                         localStorage.setItem('spinAttempts', spinAttempts.toString());
                         localStorage.removeItem('wonRouletteDiscount'); 
@@ -1191,7 +1191,7 @@
                     }
                     updateSpinCountDisplay(); 
                     drawRoulette();
-                    animateSpin(); 
+                    animateSpin(); // Iniciar giro continuo de la ruleta
                 }
 
             } else if (urlRouletteDiscount) {
