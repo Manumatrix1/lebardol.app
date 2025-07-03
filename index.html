@@ -741,7 +741,7 @@
             
             const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
             
-            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Están ofreciendo un ${finalNewClientDiscount}% de descuento en tu primer tratamiento! Solo tienes que contactarlos mencionando que te envió ${referrerName} para obtener la promo. Además, por cada amigo que contrate, ¡yo obtengo un ${referrerDiscount}% de descuento en mi próximo servicio!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
+            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Están ofreciendo un ${finalNewClientDiscount}% de descuento en tu primer tratamiento! Solo tienes que contactarlos mencionando que te envió ${referrerName} para obtener la promo. Además, por cada amigo que contrate, ¡yo obtengo un <strong>${referrerDiscount}% de descuento</strong> en mi próximo servicio!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
             
             window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
         }
@@ -759,7 +759,7 @@
             
             const referralLink = `https://wa.me/${whatsappNumberLeBardol}?text=${encodeURIComponent(messageForFriend)}`;
             
-            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Si mencionas que te envié, obtienes un ${diffusionNewClientDiscount}% de descuento en tu primer servicio, y yo también gano un ${diffusionReferrerDiscount}% de descuento en mi próxima sesión!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
+            const sharedMessage = `¡Hola! Te recomiendo Le Bardol Estética Center. ¡Si mencionas que te envié, obtienes un <strong>${diffusionNewClientDiscount}% de descuento</strong> en tu primer servicio, y yo también gano un <strong>${diffusionReferrerDiscount}% de descuento</strong> en mi próxima sesión!\n\n👉 Contáctalos aquí y obtén tu descuento: ${referralLink}`;
             
             window.open(`https://wa.me/?text=${encodeURIComponent(sharedMessage)}`, '_blank');
         }
@@ -816,11 +816,11 @@
 
         const segmentColors = ['#FFC0CB', '#FFB6C1', '#FFDAB9', '#FFE4E1', '#F0F8FF', '#E6E6FA']; // Colores pastel
         const numSegments = segments.length;
-        const arc = Math.PI / (numSegments / 2); // Ángulo de cada segmento en radianes
+        const arc = (2 * Math.PI) / numSegments; // Ángulo de cada segmento en radianes (corregido a 2*PI)
 
         const ROULETTE_MAX_SPINS = 3;
-        const ROULETTE_LOCKOUT_DURATION_MS = 30 * 60 * 1000; // 30 minutos
-        const ROULETTE_RESET_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas
+        const ROULETTE_LOCKOUT_DURATION_MS = 30 * 60 * 1000; // 30 minutos en milisegundos
+        const ROULETTE_RESET_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
         const PRIZE_SEÑA_DURATION_MS = 30 * 60 * 1000; // 30 minutos para la seña
 
         let rouletteSpinsLeft = ROULETTE_MAX_SPINS;
@@ -850,8 +850,8 @@
          */
         function loadRouletteState() {
             const savedSpinsLeft = localStorage.getItem('rouletteSpinsLeft');
-            const savedLastSpinCycleStartTimestamp = localStorage.getItem('lastSpinCycleStartTimestamp');
-            const savedLockoutEndTime = localStorage.getItem('lockoutEndTime');
+            const savedLastSpinCycleStartTimestamp = localStorage.getItem('rouletteLastSpinCycleStartTimestamp'); // Corregido nombre
+            const savedLockoutEndTime = localStorage.getItem('rouletteLockoutEndTime'); // Corregido nombre
             const savedWonPrize = localStorage.getItem('wonRoulettePrize');
             const savedPrizeEndTime = localStorage.getItem('prizeEndTime');
             const savedPrizeSeñaPaid = localStorage.getItem('prizeSeñaPaid');
@@ -910,10 +910,10 @@
                 ctx.rotate(angle + arc / 2); // Rotar al centro del segmento
                 ctx.fillStyle = '#4a2c5e'; // Color del texto
                 
-                // Tamaño de fuente responsivo
-                const fontSize = canvas.width * 0.06; // 6% del ancho del canvas
+                // Tamaño de fuente responsivo: 5% del ancho del canvas, con un mínimo de 16px y un máximo de 28px
+                const fontSize = Math.max(16, Math.min(28, canvas.width * 0.05)); 
                 ctx.font = `bold ${fontSize}px sans-serif`; 
-                ctx.textAlign = 'right';
+                ctx.textAlign = 'right'; // El texto se alinea a la derecha del punto de dibujo
                 ctx.textBaseline = 'middle';
                 // Posicionar el texto un poco más hacia el centro para evitar el recorte
                 ctx.fillText(segments[i].text, radius * 0.7, 0); 
@@ -964,14 +964,23 @@
             spinBtn.disabled = false; // Habilitar el botón si hay giros restantes
 
             // Calcular el segmento ganador:
-            // currentRotation es la rotación final en sentido horario.
-            // El puntero está fijo en Math.PI / 2 (parte superior, sentido antihorario desde la derecha).
-            // La posición original de la parte de la rueda que ahora está bajo el puntero es:
-            const originalAngleAtPointer = (Math.PI / 2 + currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-
-            // Determinar qué segmento está bajo el puntero efectivo
-            const winningSegmentIndex = Math.floor(originalAngleAtPointer / arc);
+            // El puntero está fijo en la parte superior del canvas.
+            // Si el canvas no está rotado, la parte superior es -PI/2 o 1.5 * PI radianes desde el eje X positivo (derecha).
+            // La rotación de la rueda (currentRotation) es en sentido horario desde el eje X positivo.
+            // Para saber qué segmento está bajo el puntero, necesitamos el ángulo del puntero en el sistema de coordenadas de la rueda.
+            // Si el puntero está en 1.5 * PI (top) y la rueda ha girado `currentRotation` (clockwise),
+            // entonces el punto de la rueda que está bajo el puntero estaba originalmente en (1.5 * PI - currentRotation).
+            let angleAtPointerOnWheel = (1.5 * Math.PI - (currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
             
+            // Determinar el índice del segmento que contiene este ángulo
+            // Los segmentos se dibujan desde 0 (derecha) en sentido horario.
+            let winningSegmentIndex = Math.floor(angleAtPointerOnWheel / arc);
+            
+            // Ajustar si el ángulo cae exactamente en el límite entre dos segmentos
+            if (winningSegmentIndex === numSegments) {
+                winningSegmentIndex = 0;
+            }
+
             const winningPrize = segments[winningSegmentIndex];
             wonRoulettePrize = winningPrize;
             localStorage.setItem('wonRoulettePrize', JSON.stringify(wonRoulettePrize));
@@ -1205,22 +1214,20 @@
                 const randomSegmentIndex = Math.floor(Math.random() * numSegments);
                 
                 // Calcular el ángulo para que el segmento ganador quede en la parte superior (puntero)
-                // El puntero está en Math.PI / 2 (90 grados antihorario desde la derecha).
-                // El centro del segmento 'randomIndex' es (randomIndex * arc + arc / 2).
-                // Queremos que (randomIndex * arc + arc / 2 - rotacionTotal) % (2 * Math.PI) = Math.PI / 2
-                let targetAngleForSegmentCenter = (randomIndex * arc + arc / 2 - Math.PI / 2);
-                
-                // Asegurar que el ángulo sea positivo y añadir giros extra para efecto visual
-                const extraRotations = 5; // 5 vueltas completas
-                const totalRotation = targetAngleForSegmentCenter + (extraRotations * 2 * Math.PI);
+                // El puntero está en la parte superior (12 en punto). En radianes, esto es 1.5 * PI (270 grados).
+                // El centro de cada segmento 'i' está en (i * arc + arc / 2).
+                // Queremos que el centro del segmento ganador 'randomSegmentIndex' se alinee con 1.5 * PI.
+                // La rotación necesaria es: (1.5 * PI - (randomSegmentIndex * arc + arc / 2)).
+                // Añadimos múltiples vueltas (ej. 5) para un efecto de giro más dramático.
+                const extraRotations = 5; 
+                let targetRotation = (1.5 * Math.PI - (randomSegmentIndex * arc + arc / 2));
+                targetRotation += (extraRotations * 2 * Math.PI); // Añadir vueltas completas
                 
                 // Normalizar la rotación para que esté entre 0 y 2*PI para la posición real de la rueda
-                const targetRotationRadians = (totalRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                // (Esto es importante para que la animación se vea suave si se gira de nuevo)
+                currentRotation = (targetRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
 
-                // Aplicar la rotación al elemento HTML de la ruleta
-                canvas.style.transition = 'transform 6s cubic-bezier(0.25, 0.1, 0.25, 1)';
-                canvas.style.transform = `rotate(${targetRotationRadians}rad)`; 
-
+                animateRoulette(targetRotation, 6000); // 6 segundos de duración
             } else {
                 updateRouletteUI(); // Asegurarse de que el mensaje de bloqueo se muestre
             }
@@ -1315,7 +1322,7 @@
                 rouletteSection.style.display = 'block';
                 // Ocultar la oferta principal y la difusión si se muestra la ruleta
                 document.getElementById('mainOfferCard').style.display = 'none';
-                document.getElementById('referralPromoDiffusion').style.display = 'none';
+                // document.getElementById('referralPromoDiffusion').style.display = 'none'; // No ocultar esta sección
                 
                 // Controla la visibilidad de la sección de precios
                 if (!customPricesFromUrl || customPricesFromUrl.length === 0) {
@@ -1414,11 +1421,7 @@
                     offerTitle.textContent = `¡${urlDiscount}% DE DESCUENTO EN TU PRÓXIMO SERVICIO!`;
                     offerDescription.innerHTML = `Como cliente especial, disfruta de un increíble <strong>${urlDiscount}% de descuento</strong> en tu próximo tratamiento. ¡Tu momento de relajación y belleza te espera!`;
                     mainOfferCard.style.display = 'block';
-                } else if (urlTreatment) {
-                    offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
-                    mainOfferCard.style.display = 'block';
-                } else {
+                } else { // Si solo hay tratamiento o ninguno, se muestra la oferta de referidos
                     offerTitle.textContent = '¡Oferta Especial de Referidos!';
                     const displayReferrerDiscount = urlReferrerDiscount || '10';
                     const displayNewClientDiscount = urlNewClientDiscount || '50';
@@ -1505,7 +1508,7 @@
             populatePriceList(customPricesFromUrl); // Llenar la lista de precios, pasando los de la URL si existen
             
             // Lógica de redimensionamiento del canvas para la ruleta
-            if (showRoulette === 'true' && !urlRouletteDiscount) {
+            if (showRoulette === 'true' || urlRouletteDiscount) { // También redimensionar si hay un descuento de ruleta predefinido
                 resizeCanvas(); // Ajustar el tamaño del canvas al cargar
                 window.addEventListener('resize', resizeCanvas); // Ajustar el tamaño del canvas al redimensionar la ventana
             }
