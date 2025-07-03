@@ -416,6 +416,53 @@
             text-decoration: underline;
         }
 
+        /* Estilos para la Lista de Precios */
+        .price-list-section {
+            padding: 20px;
+            background: #fdfdfd;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin: 20px; /* Margen para separarlo de otros elementos */
+            text-align: center;
+            display: none; /* Oculto por defecto */
+        }
+
+        .price-list-section h2 {
+            color: #4a2c5e;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .price-list-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .price-list-table th, .price-list-table td {
+            padding: 12px 15px;
+            border: 1px solid #e0c8f0;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .price-list-table th {
+            background-color: #f0e6fa;
+            color: #6a1b9a;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .price-list-table tr:nth-child(even) {
+            background-color: #f9f0ff;
+        }
+
+        .price-list-table td:last-child {
+            text-align: right;
+            font-weight: bold;
+            color: #e91e63;
+        }
+
     </style>
   </head>
   <body>
@@ -482,6 +529,23 @@
         </div>
       </div>
       <!-- FIN SECCIÓN DE RULETA -->
+
+      <!-- SECCIÓN DE LISTA DE PRECIOS (NUEVA) -->
+      <div class="price-list-section" id="priceListSection">
+        <h2>Lista de Precios de Tratamientos</h2>
+        <table class="price-list-table">
+            <thead>
+                <tr>
+                    <th>Tratamiento</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody id="priceListTableBody">
+                <!-- Los precios se insertarán aquí con JavaScript -->
+            </tbody>
+        </table>
+      </div>
+      <!-- FIN SECCIÓN DE LISTA DE PRECIOS -->
 
       <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
         <h3>¡Invita a un amigo y GANA!</h3>
@@ -754,6 +818,12 @@
         let prizeTimerInterval = null; 
 
         function drawRoulette() {
+            console.log("drawRoulette() called. Segments length:", segments.length); // Debugging
+            if (segments.length === 0) {
+                console.error("No segments defined for roulette. Cannot draw.");
+                return;
+            }
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -1032,6 +1102,9 @@
             const referralPromoDiffusion = document.getElementById('referralPromoDiffusion');
             const referralPromoDiffusionP = referralPromoDiffusion.querySelector('p');
 
+            const priceListSection = document.getElementById('priceListSection'); // Nueva referencia
+            const priceListTableBody = document.getElementById('priceListTableBody'); // Nueva referencia
+
             const urlParams = new URLSearchParams(window.location.search);
             const urlName = urlParams.get('nombre');
             const urlDate = urlParams.get('fecha');
@@ -1043,6 +1116,7 @@
             const urlDiffusionNewClientDiscount = urlParams.get('descuentoNuevoClienteDifusion');
             const urlRoulette = urlParams.get('roulette'); 
             const urlRouletteDiscount = urlParams.get('rouletteDiscount'); 
+            const urlPrices = urlParams.get('prices'); // Nuevo parámetro
 
             let isReminderLink = false; 
 
@@ -1059,6 +1133,7 @@
             console.log("  descuentoNuevoClienteDifusion =", urlDiffusionNewClientDiscount);
             console.log("  roulette =", urlRoulette);
             console.log("  rouletteDiscount =", urlRouletteDiscount);
+            console.log("  prices =", urlPrices); // Debugging prices
             console.log("Local Storage:");
             console.log("  hasSpunRoulette =", localStorage.getItem('hasSpunRoulette'));
             console.log("  wonRouletteDiscount =", localStorage.getItem('wonRouletteDiscount'));
@@ -1079,6 +1154,7 @@
             inviteBtn.style.display = 'none'; 
             inviteBtnDiffusion.style.display = 'none'; 
             disclaimerMessage.style.display = 'none'; 
+            priceListSection.style.display = 'none'; // Ocultar por defecto
 
             // Lógica para mostrar las secciones según los parámetros de la URL
             if (urlDate) { 
@@ -1139,14 +1215,43 @@
                 // Always show roulette section if it's a roulette link
                 rouletteSection.style.display = 'block';
                 mainOfferCard.style.display = 'none'; 
-                referralPromoDiffusion.style.display = 'none';
                 appointmentDisplayGroup.style.display = 'none';
                 confirmBtn.style.display = 'none';
                 inviteBtn.style.display = 'none';
                 disclaimerMessage.style.display = 'none';
 
-                // Display the general invite button even in roulette mode
+                // Always show diffusion invite card and button in roulette mode
+                referralPromoDiffusion.style.display = 'block'; 
                 inviteBtnDiffusion.style.display = 'block'; 
+
+                // Populate and show price list if available
+                if (urlPrices) {
+                    try {
+                        const prices = JSON.parse(urlPrices);
+                        if (Array.isArray(prices) && prices.length > 0) {
+                            priceListTableBody.innerHTML = ''; // Clear previous content
+                            prices.forEach(item => {
+                                const row = priceListTableBody.insertRow();
+                                const nameCell = row.insertCell();
+                                const priceCell = row.insertCell();
+                                nameCell.textContent = item.name;
+                                priceCell.textContent = item.price;
+                            });
+                            priceListSection.style.display = 'block';
+                            console.log("Price list displayed.");
+                        } else {
+                            console.log("urlPrices is empty or not an array.");
+                        }
+                    } catch (e) {
+                        console.error("Error parsing urlPrices JSON:", e);
+                    }
+                } else {
+                    console.log("urlPrices parameter not found.");
+                }
+
+                // Initial draw and animation for roulette
+                drawRoulette();
+                animateSpin(); // Start continuous spin
 
                 if (activeRoulettePrizeDescription && (now - prizeWonTime <= prizeReservationTime)) {
                     console.log("Condition Met: Active roulette prize found and not expired. Displaying prize info.");
@@ -1173,14 +1278,13 @@
                     confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
                     confirmBtn.style.display = 'block';
                     inviteBtn.style.display = 'none'; 
-                    // inviteBtnDiffusion.style.display = 'block'; // Already set above for roulette path
                     disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
                     disclaimerMessage.style.display = 'block';
                     nameInput.value = urlName || "Hola!"; 
                     nameInput.focus(); 
 
                 } else {
-                    console.log("Condition Met: Roulette available to spin. Displaying roulette.");
+                    console.log("Condition Met: Roulette available to spin. Initializing spins.");
                     if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours) || (isNaN(storedSpinAttempts) || storedSpinAttempts === 0)) { 
                         console.log("Resetting spin attempts and clearing old roulette data.");
                         spinAttempts = 3;
@@ -1192,8 +1296,6 @@
                         localStorage.removeItem('hasSpunRoulette'); 
                     }
                     updateSpinCountDisplay(); 
-                    drawRoulette();
-                    animateSpin(); 
                     spinBtn.style.display = 'block'; 
                     useDiscountBtn.style.display = 'none'; 
                     mercadopagoLinkContainer.style.display = 'none'; 
@@ -1220,6 +1322,27 @@
                 disclaimerMessage.style.display = 'block';
                 nameInput.value = urlName || "Hola!"; 
                 nameInput.focus(); 
+
+                // Also display price list if present
+                if (urlPrices) {
+                    try {
+                        const prices = JSON.parse(urlPrices);
+                        if (Array.isArray(prices) && prices.length > 0) {
+                            priceListTableBody.innerHTML = ''; 
+                            prices.forEach(item => {
+                                const row = priceListTableBody.insertRow();
+                                const nameCell = row.insertCell();
+                                const priceCell = row.insertCell();
+                                nameCell.textContent = item.name;
+                                priceCell.textContent = item.price;
+                            });
+                            priceListSection.style.display = 'block';
+                            console.log("Price list displayed for roulette discount link.");
+                        }
+                    } catch (e) {
+                        console.error("Error parsing urlPrices JSON for roulette discount link:", e);
+                    }
+                }
 
             } else { 
                 console.log("Logic Path: General Promotion/Default (no specific URL parameters)");
