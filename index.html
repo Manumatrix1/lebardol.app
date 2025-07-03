@@ -1015,6 +1015,7 @@
 
         // --- Inicialización de la página ---
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOMContentLoaded: Page fully loaded.");
             startCountdown();
             
             const nameInput = document.getElementById('name');
@@ -1080,8 +1081,8 @@
             disclaimerMessage.style.display = 'none'; 
 
             // Lógica para mostrar las secciones según los parámetros de la URL
-            if (urlDate) { // Es un enlace de recordatorio de turno
-                console.log("Logic Path: Reminder Link");
+            if (urlDate) { 
+                console.log("Logic Path: Reminder Link (urlDate is present)");
                 isReminderLink = true;
                 appointmentDisplayGroup.style.display = 'block'; 
                 confirmBtn.style.display = 'block'; 
@@ -1104,7 +1105,6 @@
                 confirmBtn.innerHTML = '<i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO';
                 disclaimerMessage.innerHTML = `<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado para el <strong>${displayDateDiv.textContent}</strong>.`;
                 
-                // Mostrar la oferta de referidos o la específica en el modo recordatorio
                 if (urlDiscount && urlTreatment) {
                     offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
                     offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
@@ -1115,7 +1115,7 @@
                     mainOfferCard.style.display = 'block';
                 } else if (urlTreatment) {
                     offerTitle.textContent = `¡Promoción Especial en ${urlTreatment}!`;
-                    offerDescription.innerHTML = `Como cliente especial, descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
+                    offerDescription.innerHTML = `Descubre los beneficios de nuestro servicio de <strong>${urlTreatment}</strong> con una promoción exclusiva. ¡Agenda tu cita hoy mismo!`;
                     mainOfferCard.style.display = 'block';
                 } else {
                     offerTitle.textContent = '¡Oferta Especial de Referidos!';
@@ -1127,11 +1127,10 @@
                 inviteBtn.style.display = 'block'; 
                 inviteBtnDiffusion.style.display = 'none'; 
 
-            } else if (urlRoulette === 'true') { // Es un enlace de ruleta
-                console.log("Logic Path: Roulette Link - Checking conditions...");
+            } else if (urlRoulette === 'true') { 
+                console.log("Logic Path: Roulette Link (urlRoulette is 'true') - Checking conditions...");
                 const lastSpinTime = localStorage.getItem('lastSpinTime');
                 const now = Date.now();
-                const storedSpinAttempts = parseInt(localStorage.getItem('spinAttempts'));
                 
                 const activeRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
                 const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
@@ -1179,7 +1178,7 @@
                     inviteBtnDiffusion.style.display = 'none'; 
                     disclaimerMessage.style.display = 'none'; 
 
-                    if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours)) {
+                    if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours) || (isNaN(spinAttempts) || spinAttempts === 0)) { 
                         console.log("Resetting spin attempts and clearing old roulette data.");
                         spinAttempts = 3;
                         localStorage.setItem('spinAttempts', spinAttempts.toString());
@@ -1191,11 +1190,11 @@
                     }
                     updateSpinCountDisplay(); 
                     drawRoulette();
-                    animateSpin(); // Iniciar giro continuo de la ruleta
+                    animateSpin(); 
                 }
 
             } else if (urlRouletteDiscount) {
-                console.log("Logic Path: Roulette Discount Received (from previous spin and redirect)");
+                console.log("Logic Path: Roulette Discount Received (urlRouletteDiscount is present)");
                 rouletteSection.style.display = 'none';
                 mainOfferCard.style.display = 'block'; 
                 offerTitle.textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
@@ -1215,8 +1214,8 @@
                 nameInput.value = urlName || "Hola!"; 
                 nameInput.focus(); 
 
-            } else { // Es un enlace de difusión/promoción general (o la URL base sin parámetros específicos)
-                console.log("Logic Path: General Promotion/Default");
+            } else { 
+                console.log("Logic Path: General Promotion/Default (no specific URL parameters)");
                 isReminderLink = false;
                 appointmentDisplayGroup.style.display = 'none'; 
                 confirmBtn.style.display = 'block'; 
