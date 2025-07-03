@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Bardol Estética Center</title>
@@ -343,10 +343,9 @@
 
         .wheel-indicator {
             position: absolute;
-            top: 50%;
+            top: 0; /* Ajustado para que esté en la parte superior del canvas */
             left: 50%;
-            /* Ajusta la posición de la flecha para que apunte al centro superior del círculo */
-            transform: translate(-50%, -100%) translateY(-10px); 
+            transform: translateX(-50%); /* Centra horizontalmente */
             width: 0;
             height: 0;
             border-left: 15px solid transparent;
@@ -462,130 +461,133 @@
             font-weight: bold;
             color: #e91e63;
         }
-
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <div class="header">
-        <div>
-          <address>
-            <img src="logo lb.png" alt="le bardol " title="le bardol logo " class="header-logo">
-          </address>
-          <br>
-        </div>
-        <h1 id="mainTitle">Le Bardol Estética Center</h1>
-        <p class="subtitle">Tu belleza, nuestra pasión</p>
-      </div>
-      <div class="offer-card" id="mainOfferCard">
-        <h2 id="offerTitle">¡Oferta Especial de Referidos!</h2>
-        <p id="offerDescription">Confirma tu turno y si invitas a tus amigos en las próximas 24
-          horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada
-          uno que contrate un servicio, ¡y ellos un <strong>50% DE
-            DESCUENTO</strong> en su primer tratamiento!</p>
-        <div class="countdown">
-          <div class="countdown-box">
-            <span id="hours" class="countdown-value">24</span>
-            <span class="countdown-label">Horas</span>
-          </div>
-          <div class="countdown-box">
-            <span id="minutes" class="countdown-value">00</span>
-            <span class="countdown-label">Minutos</span>
-          </div>
-          <div class="countdown-box">
-            <span id="seconds" class="countdown-value">00</span>
-            <span class="countdown-label">Segundos</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN DE RULETA -->
-      <div class="roulette-section" id="rouletteSection">
-        <h1>¡Gira la Ruleta y Gana un Descuento!</h1>
-        <p class="referral-offer-text">
-            Por cada amigo que invites, ganas un <strong>10% OFF</strong> en tu próximo tratamiento si tu amigo saca un turno. ¡Él tiene <strong>50% OFF</strong> en su primer servicio!
-        </p>
-        <p class="spin-count-display" id="spinCountDisplay">Te quedan 3 tiros.</p>
-        <div style="position: relative; width: fit-content; margin: 0 auto;">
-            <canvas id="rouletteCanvas" width="500" height="500"></canvas> <!-- Aumentado el tamaño del canvas -->
-            <div class="wheel-indicator"></div>
-        </div>
-        <div class="buttons-container">
-            <button class="btn btn-spin" id="spinBtn">
-                <i class="fas fa-play-circle"></i> Girar Ruleta
-            </button>
-            <div class="loading-spinner" id="loadingSpinner"></div>
-            <p id="resultMessage"></p>
-            <p class="prize-timer" id="prizeTimerDisplay"></p>
-            <div class="mercadopago-link-container" id="mercadopagoLinkContainer" style="display: none;">
-                <p>Para reservar tu premio, abona una seña de <span id="mercadopagoPriceDisplay"></span> aquí:</p>
-                <a href="#" id="mercadopagoLink" target="_blank">
-                    <i class="fas fa-money-bill-wave"></i> Pagar Seña con Mercado Pago
-                </a>
+        <div class="header">
+            <div>
+                <address>
+                    <img src="logo lb.png" alt="le bardol " title="le bardol logo " class="header-logo">
+                </address>
+                <br>
             </div>
-            <button class="btn btn-use-discount" id="useDiscountBtn">
-                <i class="fas fa-gift"></i> Usar este Descuento
+            <h1 id="mainTitle">Le Bardol Estética Center</h1>
+            <p class="subtitle">Tu belleza, nuestra pasión</p>
+        </div>
+        <div class="offer-card" id="mainOfferCard">
+            <h2 id="offerTitle">¡Oferta Especial de Referidos!</h2>
+            <p id="offerDescription">Confirma tu turno y si invitas a tus amigos en las próximas 24
+                horas, tú obtienes un <strong>10% DE DESCUENTO</strong> por cada
+                uno que contrate un servicio, ¡y ellos un <strong>50% DE
+                DESCUENTO</strong> en su primer tratamiento!</p>
+            <div class="countdown">
+                <div class="countdown-box">
+                    <span id="hours" class="countdown-value">24</span>
+                    <span class="countdown-label">Horas</span>
+                </div>
+                <div class="countdown-box">
+                    <span id="minutes" class="countdown-value">00</span>
+                    <span class="countdown-label">Minutos</span>
+                </div>
+                <div class="countdown-box">
+                    <span id="seconds" class="countdown-value">00</span>
+                    <span class="countdown-label">Segundos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE RULETA -->
+        <div class="roulette-section" id="rouletteSection">
+            <h1>¡Gira la Ruleta y Gana un Descuento!</h1>
+            <p class="referral-offer-text">
+                Por cada amigo que invites, ganas un <strong>10% OFF</strong> en tu próximo tratamiento si tu amigo saca un turno. ¡Él tiene <strong>50% OFF</strong> en su primer servicio!
+            </p>
+            <p class="spin-count-display" id="spinCountDisplay">Te quedan 3 tiros.</p>
+            <div style="position: relative; width: fit-content; margin: 0 auto;">
+                <canvas id="rouletteCanvas" width="500" height="500"></canvas> <!-- Aumentado el tamaño del canvas -->
+                <div class="wheel-indicator"></div>
+            </div>
+            <div class="buttons-container">
+                <button class="btn btn-spin" id="spinBtn">
+                    <i class="fas fa-play-circle"></i> Girar Ruleta
+                </button>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                <p id="resultMessage"></p>
+                <p class="prize-timer" id="prizeTimerDisplay"></p>
+                <div class="mercadopago-link-container" id="mercadopagoLinkContainer" style="display: none;">
+                    <p>Para reservar tu premio, abona una seña de <span id="mercadopagoPriceDisplay"></span> aquí:</p>
+                    <a href="#" id="mercadopagoLink" target="_blank">
+                        <i class="fas fa-money-bill-wave"></i> Pagar Seña con Mercado Pago
+                    </a>
+                    <!-- Botón para simular el pago de la seña (solo para demostración) -->
+                    <button class="btn btn-confirm mt-4" id="markSeñaPaidBtn" style="display: none;">
+                        Marcar Seña como Pagada (Demo)
+                    </button>
+                </div>
+                <button class="btn btn-use-discount" id="useDiscountBtn">
+                    <i class="fas fa-gift"></i> Usar este Descuento
+                </button>
+            </div>
+        </div>
+        <!-- FIN SECCIÓN DE RULETA -->
+
+        <!-- SECCIÓN DE LISTA DE PRECIOS (NUEVA) -->
+        <div class="price-list-section" id="priceListSection">
+            <h2>Lista de Precios de Tratamientos</h2>
+            <table class="price-list-table">
+                <thead>
+                    <tr>
+                        <th>Tratamiento</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody id="priceListTableBody">
+                    <!-- Los precios se insertarán aquí con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <!-- FIN SECCIÓN DE LISTA DE PRECIOS -->
+
+        <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
+            <h3>¡Invita a un amigo y GANA!</h3>
+            <p>Si reservas un turno y nos recomiendas a un amigo, obtendrás un **5% DE DESCUENTO ADICIONAL** en tu próxima sesión cuando tu amigo contrate su primer servicio.</p>
+            <button class="btn btn-invite" id="inviteBtnDiffusion">
+                <i class="fas fa-user-plus"></i> Invitar a un amigo
             </button>
         </div>
-      </div>
-      <!-- FIN SECCIÓN DE RULETA -->
-
-      <!-- SECCIÓN DE LISTA DE PRECIOS (NUEVA) -->
-      <div class="price-list-section" id="priceListSection">
-        <h2>Lista de Precios de Tratamientos</h2>
-        <table class="price-list-table">
-            <thead>
-                <tr>
-                    <th>Tratamiento</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody id="priceListTableBody">
-                <!-- Los precios se insertarán aquí con JavaScript -->
-            </tbody>
-        </table>
-      </div>
-      <!-- FIN SECCIÓN DE LISTA DE PRECIOS -->
-
-      <div class="referral-promo-diffusion" id="referralPromoDiffusion" style="display: none;">
-        <h3>¡Invita a un amigo y GANA!</h3>
-        <p>Si reservas un turno y nos recomiendas a un amigo, obtendrás un **5% DE DESCUENTO ADICIONAL** en tu próxima sesión cuando tu amigo contrate su primer servicio.</p>
-        <button class="btn btn-invite" id="inviteBtnDiffusion">
-            <i class="fas fa-user-plus"></i> Invitar a un amigo
-        </button>
-      </div>
-      
-      <div class="form-container">
-        <div class="disclaimer" id="disclaimerMessage">
-          <i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado.
-          ¡No olvides la increíble promoción de referidos!
+        
+        <div class="form-container">
+            <div class="disclaimer" id="disclaimerMessage">
+                <i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado.
+                ¡No olvides la increíble promoción de referidos!
+            </div>
+            <div class="form-group">
+                <label for="name">Nombre completo</label>
+                <input id="name" placeholder="Ingresa tu nombre completo" type="text"> 
+            </div>
+            <div class="form-group" id="appointmentDisplayGroup">
+                <label>Tu turno está asignado para:</label>
+                <div id="displayDate"></div> 
+            </div>
+            <button class="btn btn-confirm" id="confirmBtn">
+                <i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO
+            </button>
+            <button class="btn btn-invite" id="inviteBtn">
+                <i class="fas fa-user-plus"></i> INVITAR A UN AMIGO (50% OFF)
+            </button>
         </div>
-        <div class="form-group">
-          <label for="name">Nombre completo</label>
-          <input id="name" placeholder="Ingresa tu nombre completo" type="text"> 
-        </div>
-        <div class="form-group" id="appointmentDisplayGroup">
-          <label>Tu turno está asignado para:</label>
-          <div id="displayDate"></div> 
-        </div>
-        <button class="btn btn-confirm" id="confirmBtn">
-          <i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO
-        </button>
-        <button class="btn btn-invite" id="inviteBtn">
-          <i class="fas fa-user-plus"></i> INVITAR A UN AMIGO (50% OFF)
-        </button>
-      </div>
     </div>
     <div class="notification" id="notification">
-      <i class="fas fa-check-circle"></i>
-      <span>¡Turno confirmado con éxito! Te hemos enviado un mensaje por
-        WhatsApp.</span>
+        <i class="fas fa-check-circle"></i>
+        <span>¡Turno confirmado con éxito! Te hemos enviado un mensaje por
+            WhatsApp.</span>
     </div>
     <a href="https://wa.me/5493415216025?text=Hola%20Le%20Bardol%2C%20quisiera%20consultar%20sobre%20un%20turno." class="whatsapp-icon" target="_blank">
-      <i class="fab fa-whatsapp"></i>
+        <i class="fab fa-whatsapp"></i>
     </a>
     <div class="footer">
-      <p>© 2023 Le Bardol Estética Center. Todos los derechos reservados.</p>
+        <p>© 2023 Le Bardol Estética Center. Todos los derechos reservados.</p>
     </div>
     <script>
         // --- Configuración de Mercado Pago (¡MODIFICA ESTOS VALORES!) ---
@@ -593,7 +595,7 @@
         const mercadopagoPrice = '$8000'; // El monto de la seña
         // -----------------------------------------------------------------
 
-        // Script para el contador regresivo de 24 horas
+        // Script para el contador regresivo de 24 horas de la oferta principal
         function startCountdown() {
             const savedTime = localStorage.getItem('countdownEndTime');
             let endTime;
@@ -624,7 +626,7 @@
                     document.getElementById('seconds').textContent = '00';
                     const isReminderLink = getUrlParameter('fecha') !== '';
                     if (isReminderLink) { 
-                         document.getElementById('inviteBtn').disabled = true;
+                           document.getElementById('inviteBtn').disabled = true;
                     }
                     return;
                 }
@@ -668,14 +670,16 @@
             const name = document.getElementById('name').value;
             const whatsappNumber = '5493415216025'; 
             let message = '';
-            const wonRouletteDiscount = localStorage.getItem('wonRouletteDiscount'); 
-            const wonRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription'); 
+            const wonRoulettePrize = JSON.parse(localStorage.getItem('wonRoulettePrize')); 
+            const prizeSeñaPaid = localStorage.getItem('prizeSeñaPaid') === 'true';
 
             if (isReminder) {
                 const displayedDate = document.getElementById('displayDate').textContent; 
                 message = `¡Hola Le Bardol! Soy ${name}. Confirmo mi turno asignado para el ${displayedDate}.`;
-                if (wonRouletteDiscount && wonRoulettePrizeDescription) {
-                    message += ` Además, quiero aplicar mi premio de ruleta: ${wonRoulettePrizeDescription}.`;
+                if (wonRoulettePrize && wonRoulettePrize.description && prizeSeñaPaid) {
+                    message += ` Además, quiero aplicar mi premio de ruleta: ${wonRoulettePrize.description}.`;
+                } else if (wonRoulettePrize && wonRoulettePrize.description && !prizeSeñaPaid && wonRoulettePrize.needsSeña) {
+                    message += ` Además, gané un premio de ruleta: ${wonRoulettePrize.description}. Estoy gestionando el pago de la seña.`;
                 }
                 message += ` Agradezco su confirmación. ¡Saludos!`;
             } else {
@@ -692,9 +696,9 @@
                 message = `¡Hola Le Bardol! Mi nombre es ${name}. ${offerText} ¿Podrían brindarme más información o ayudarme a sacar un turno? ¡Gracias!`;
             }
 
-            // Si hay un premio de ruleta ganado y es de tipo descuento, añadir la información de la seña
-            if (wonRouletteDiscount && wonRoulettePrizeDescription) {
-                message += `\n\nPara reservar mi premio (${wonRoulettePrizeDescription}), he abonado la seña de ${mercadopagoPrice}.`;
+            // Si hay un premio de ruleta ganado que requiere seña y no ha sido pagada
+            if (wonRoulettePrize && wonRoulettePrize.needsSeña && !prizeSeñaPaid) {
+                message += `\n\nPara reservar mi premio (${wonRoulettePrize.description}), abonaré la seña de ${mercadopagoPrice}.`;
                 message += `\nLink de seña: ${mercadopagoLinkUrl}`; 
             }
             
@@ -778,409 +782,555 @@
         const mercadopagoLinkContainer = document.getElementById('mercadopagoLinkContainer'); 
         const mercadopagoLink = document.getElementById('mercadopagoLink'); 
         const mercadopagoPriceDisplay = document.getElementById('mercadopagoPriceDisplay'); 
+        const markSeñaPaidBtn = document.getElementById('markSeñaPaidBtn'); // Nuevo botón para simular pago de seña
 
         // Definición de los segmentos de la ruleta con tipos de premio
         const segments = [
-            { text: '30% OFF Depi', type: 'discount', value: 30, category: 'depilacion', description: '30% de descuento en paquete de depilación' },
-            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!' },
-            { text: '20% Amigo!', type: 'new_spin_friend_discount', friendDiscount: 20, description: '20% de descuento para un amigo + un nuevo tiro' },
-            { text: '25% Manicuria', type: 'discount', value: 25, category: 'manicuria', description: '25% de descuento en manicuría' },
-            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!' },
-            { text: '0% Suerte!', type: 'no_luck_new_spin', description: '0% de descuento. ¡Suerte en tu próximo tiro!' },
-            { text: '30% Cosmetologia', type: 'discount', value: 30, category: 'cosmetologia', description: '30% de descuento en cosmetología' },
-            { text: '35% Masajes', type: 'discount', value: 35, category: 'masajes', description: '35% de descuento en masajes' },
-            { text: '20% Pack 3 Masajes', type: 'discount', value: 20, category: 'masajes', pack: 3, description: '20% de descuento en pack de 3 masajes' },
-            { text: '20% Pack 3 Depi', type: 'discount', value: 20, category: 'depilacion', pack: 3, description: '20% de descuento en pack de 3 sesiones de depilación' },
-            { text: '20% Pack 5 Depi', type: 'discount', value: 20, category: 'depilacion', pack: 5, description: '20% de descuento en pack de 5 sesiones de depilación' },
-            { text: '35% Pack 5 Depi', type: 'discount', value: 35, category: 'depilacion', pack: 5, description: '35% de descuento en pack de 5 sesiones de depilación' },
-            { text: '20% Comodin', type: 'discount', value: 20, category: 'comodin', description: '20% de descuento comodín para cualquier tratamiento' }
+            { text: '30% OFF Depi', type: 'discount', value: 30, category: 'depilacion', description: '30% de descuento en paquete de depilación', needsSeña: true },
+            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
+            { text: '20% Amigo!', type: 'new_spin_friend_discount', friendDiscount: 20, description: '20% de descuento para un amigo + un nuevo tiro', needsSeña: false },
+            { text: '25% Manicuria', type: 'discount', value: 25, category: 'manicuria', description: '25% de descuento en manicuría', needsSeña: true },
+            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
+            { text: '0% Suerte!', type: 'no_luck_new_spin', description: '0% de descuento. ¡Suerte en tu próximo tiro!', needsSeña: false },
+            { text: '30% Cosmetologia', type: 'discount', value: 30, category: 'cosmetologia', description: '30% de descuento en cosmetología', needsSeña: true },
+            { text: '35% Masajes', type: 'discount', value: 35, category: 'masajes', description: '35% de descuento en masajes', needsSeña: true },
+            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
+            { text: '15% OFF Cejas', type: 'discount', value: 15, category: 'cejas', description: '15% de descuento en diseño de cejas', needsSeña: true },
+            { text: '40% OFF Pestañas', type: 'discount', value: 40, category: 'pestañas', description: '40% de descuento en lifting de pestañas', needsSeña: true },
+            { text: 'Nuevo Tiro!', type: 'new_spin', description: '¡Un nuevo tiro en la ruleta!', needsSeña: false },
         ];
 
-        const segmentColors = [
-            '#FFD1DC', '#FFABAB', '#FFC3A0', '#FF677D', 
-            '#D4A5A5', '#392F5B', '#4A47A3', '#3D2B5B',
-            '#FFD700', '#ADFF2F', '#8A2BE2', '#00CED1', '#FF6347'
-        ]; 
+        const segmentColors = ['#FFC0CB', '#FFB6C1', '#FFDAB9', '#FFE4E1', '#F0F8FF', '#E6E6FA']; // Colores pastel
+        const numSegments = segments.length;
+        const arc = Math.PI / (numSegments / 2); // Ángulo de cada segmento en radianes
 
-        const arc = (2 * Math.PI) / segments.length; 
-        let rotation = 0; 
-        let spinSpeed = 0; 
-        let continuousSpinSpeed = 0.01; 
-        let isContinuouslySpinning = true; 
-        let spinning = false; 
-        let wonPrize = null; 
-        let spinStartTime = 0;
-        const spinDuration = 3000; 
-        const twentyFourHours = 24 * 60 * 60 * 1000; 
-        const prizeReservationTime = 30 * 60 * 1000; 
+        const ROULETTE_MAX_SPINS = 3;
+        const ROULETTE_LOCKOUT_DURATION_MS = 30 * 60 * 1000; // 30 minutos
+        const ROULETTE_RESET_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas
+        const PRIZE_SEÑA_DURATION_MS = 30 * 60 * 1000; // 30 minutos para la seña
 
-        let spinAttempts = parseInt(localStorage.getItem('spinAttempts')) || 3; 
-        let prizeTimerInterval = null; 
+        let rouletteSpinsLeft = ROULETTE_MAX_SPINS;
+        let rouletteLastSpinCycleStartTimestamp = 0;
+        let rouletteLockoutEndTime = 0;
+        let wonRoulettePrize = null; // Objeto del premio ganado
+        let prizeEndTime = 0; // Tiempo límite para "señal" el premio
+        let prizeSeñaPaid = false; // Bandera para indicar si la seña fue pagada
 
-        function drawRoulette() {
-            console.log("drawRoulette() called. Segments length:", segments.length); // Debugging
-            if (segments.length === 0) {
-                console.error("No segments defined for roulette. Cannot draw.");
-                return;
-            }
+        let rouletteTimerInterval; // Para el contador regresivo de la ruleta
+        let prizeTimerInterval; // Para el contador regresivo del premio
 
+        /**
+         * Guarda el estado actual de la ruleta en localStorage.
+         */
+        function saveRouletteState() {
+            localStorage.setItem('rouletteSpinsLeft', rouletteSpinsLeft);
+            localStorage.setItem('rouletteLastSpinCycleStartTimestamp', rouletteLastSpinCycleStartTimestamp);
+            localStorage.setItem('rouletteLockoutEndTime', rouletteLockoutEndTime);
+            localStorage.setItem('wonRoulettePrize', JSON.stringify(wonRoulettePrize));
+            localStorage.setItem('prizeEndTime', prizeEndTime);
+            localStorage.setItem('prizeSeñaPaid', prizeSeñaPaid);
+        }
+
+        /**
+         * Carga el estado de la ruleta desde localStorage.
+         */
+        function loadRouletteState() {
+            const savedSpinsLeft = localStorage.getItem('rouletteSpinsLeft');
+            const savedLastSpinCycleStartTimestamp = localStorage.getItem('rouletteLastSpinCycleStartTimestamp');
+            const savedLockoutEndTime = localStorage.getItem('rouletteLockoutEndTime');
+            const savedWonPrize = localStorage.getItem('wonRoulettePrize');
+            const savedPrizeEndTime = localStorage.getItem('prizeEndTime');
+            const savedPrizeSeñaPaid = localStorage.getItem('prizeSeñaPaid');
+
+            if (savedSpinsLeft !== null) rouletteSpinsLeft = parseInt(savedSpinsLeft, 10);
+            if (savedLastSpinCycleStartTimestamp !== null) rouletteLastSpinCycleStartTimestamp = parseInt(savedLastSpinCycleStartTimestamp, 10);
+            if (savedLockoutEndTime !== null) rouletteLockoutEndTime = parseInt(savedLockoutEndTime, 10);
+            if (savedWonPrize !== null && savedWonPrize !== 'null') wonRoulettePrize = JSON.parse(savedWonPrize);
+            if (savedPrizeEndTime !== null) prizeEndTime = parseInt(savedPrizeEndTime, 10);
+            if (savedPrizeSeñaPaid !== null) prizeSeñaPaid = (savedPrizeSeñaPaid === 'true');
+        }
+
+        /**
+         * Dibuja la ruleta en el canvas.
+         * @param {number} rotation - La rotación actual de la ruleta en radianes.
+         */
+        function drawRoulette(rotation = 0) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 20; // Un poco más pequeño para el borde
+
             ctx.save();
-            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.translate(centerX, centerY);
             ctx.rotate(rotation);
 
-            for (let i = 0; i < segments.length; i++) {
+            for (let i = 0; i < numSegments; i++) {
                 const angle = i * arc;
+                const color = segmentColors[i % segmentColors.length];
+
                 ctx.beginPath();
-                ctx.arc(0, 0, canvas.width / 2, angle, angle + arc);
-                ctx.lineTo(0, 0); 
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, angle, angle + arc);
                 ctx.closePath();
-                ctx.fillStyle = segmentColors[i % segmentColors.length]; 
+                ctx.fillStyle = color;
                 ctx.fill();
-                ctx.strokeStyle = '#fff'; 
+                ctx.strokeStyle = '#4a2c5e'; // Borde de los segmentos
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
+                // Dibujar texto del segmento
                 ctx.save();
-                ctx.rotate(angle + arc / 2); 
+                ctx.rotate(angle + arc / 2); // Rotar al centro del segmento
+                ctx.fillStyle = '#4a2c5e'; // Color del texto
+                ctx.font = 'bold 20px Arial';
                 ctx.textAlign = 'right';
-                ctx.fillStyle = '#fff'; 
-                ctx.font = 'bold 16px Segoe UI'; // Ajustado el tamaño de la fuente
-                ctx.fillText(segments[i].text, canvas.width / 2 - 15, 0); 
+                ctx.textBaseline = 'middle';
+                // Posicionar el texto más hacia el borde exterior
+                ctx.fillText(segments[i].text, radius * 0.8, 0);
                 ctx.restore();
             }
-
-            ctx.restore(); 
+            ctx.restore();
         }
 
-        function updateSpinCountDisplay() {
-            spinCountDisplay.textContent = `Te quedan ${spinAttempts} tiro${spinAttempts !== 1 ? 's' : ''}.`;
-            if (spinAttempts <= 0) {
-                spinBtn.disabled = true;
-                resultMessage.textContent = 'No te quedan más tiros por hoy. Vuelve mañana.';
+        let animationFrameId; // Para controlar el requestAnimationFrame
+
+        /**
+         * Anima el giro de la ruleta.
+         * @param {number} finalAngle - El ángulo final de rotación en radianes.
+         * @param {number} duration - Duración de la animación en milisegundos.
+         */
+        function animateRoulette(finalAngle, duration) {
+            const startAngle = currentRotation; // Usar la rotación actual como punto de partida
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Curva de aceleración/desaceleración (cubic-bezier(0.25, 0.1, 0.25, 1))
+                const easedProgress = 1 - Math.pow(1 - progress, 3); // Simula ease-out cubic
+
+                currentRotation = startAngle + (finalAngle - startAngle) * easedProgress;
+                drawRoulette(currentRotation);
+
+                if (progress < 1) {
+                    animationFrameId = requestAnimationFrame(animate);
+                } else {
+                    // Normalizar la rotación para evitar valores muy grandes
+                    currentRotation = finalAngle % (2 * Math.PI);
+                    drawRoulette(currentRotation);
+                    handleSpinEnd();
+                }
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        let currentRotation = 0; // Rotación actual de la ruleta en radianes
+
+        /**
+         * Maneja el final del giro de la ruleta.
+         */
+        function handleSpinEnd() {
+            loadingSpinner.style.display = 'none';
+            spinBtn.disabled = false; // Habilitar el botón si hay giros restantes
+
+            // Calcular el segmento ganador
+            const normalizedRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+            let winningSegmentIndex = Math.floor((2 * Math.PI - normalizedRotation) / arc);
+            // Ajustar para que el puntero apunte al centro superior (índice 0)
+            winningSegmentIndex = (winningSegmentIndex + Math.floor(numSegments / 4)) % numSegments;
+            
+            const winningPrize = segments[winningSegmentIndex];
+            wonRoulettePrize = winningPrize;
+            localStorage.setItem('wonRoulettePrize', JSON.stringify(wonRoulettePrize));
+
+            resultMessage.textContent = `¡Felicidades! Ganaste: ${winningPrize.description}`;
+            resultMessage.style.color = '#e91e63'; // Color para el mensaje de resultado
+
+            // Lógica para la seña y el botón "Usar Descuento"
+            if (winningPrize.needsSeña) {
+                prizeEndTime = Date.now() + PRIZE_SEÑA_DURATION_MS;
+                prizeSeñaPaid = false; // Reiniciar estado de pago de seña
+                mercadopagoPriceDisplay.textContent = mercadopagoPrice;
+                mercadopagoLink.href = mercadopagoLinkUrl;
+                mercadopagoLinkContainer.style.display = 'block';
+                markSeñaPaidBtn.style.display = 'block'; // Mostrar botón de demo
+                useDiscountBtn.style.display = 'none'; // Ocultar hasta que se pague la seña
+                startPrizeTimer();
             } else {
-                spinBtn.disabled = false;
+                prizeEndTime = 0; // No hay tiempo límite para seña
+                prizeSeñaPaid = true; // No necesita seña, se considera pagado
+                mercadopagoLinkContainer.style.display = 'none';
+                markSeñaPaidBtn.style.display = 'none';
+                useDiscountBtn.style.display = 'block'; // Mostrar botón "Usar Descuento"
+                useDiscountBtn.disabled = false;
             }
+
+            // Lógica para premios de "Nuevo Tiro" o "Nuevo Tiro + Amigo"
+            if (winningPrize.type === 'new_spin' || winningPrize.type === 'new_spin_friend_discount') {
+                rouletteSpinsLeft++; // Dar un giro adicional
+                if (winningPrize.type === 'new_spin_friend_discount') {
+                    localStorage.setItem('friendRouletteDiscount', winningPrize.friendDiscount);
+                }
+            } else if (winningPrize.type === 'no_luck_new_spin') {
+                // No hay descuento, pero se mantiene el giro para el próximo intento
+                // No se decrementa el giro aquí, ya se hizo al inicio del spinRoulette
+            }
+
+            saveRouletteState();
+            updateRouletteUI(); // Actualiza la UI de la ruleta después del giro
+            checkRouletteStatus(); // Revisa el estado general de la ruleta
         }
 
+        /**
+         * Inicia el temporizador para la seña del premio.
+         */
         function startPrizeTimer() {
-            const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
-            if (!prizeWonTime) return;
-
-            const endTime = prizeWonTime + prizeReservationTime;
-
-            if (prizeTimerInterval) {
-                clearInterval(prizeTimerInterval);
-            }
+            if (prizeTimerInterval) clearInterval(prizeTimerInterval);
 
             prizeTimerDisplay.style.display = 'block';
-            mercadopagoLinkContainer.style.display = 'block'; 
-            useDiscountBtn.style.display = 'inline-block'; 
-
-            mercadopagoLink.href = mercadopagoLinkUrl; 
-            mercadopagoPriceDisplay.textContent = mercadopagoPrice; 
-
             prizeTimerInterval = setInterval(() => {
                 const now = Date.now();
-                const timeLeft = endTime - now;
+                const timeLeft = prizeEndTime - now;
 
                 if (timeLeft <= 0) {
                     clearInterval(prizeTimerInterval);
-                    prizeTimerDisplay.textContent = '¡Tiempo agotado! Tu premio ha expirado.';
-                    useDiscountBtn.disabled = true;
-                    mercadopagoLinkContainer.style.display = 'none'; 
-                    localStorage.removeItem('wonRouletteDiscount');
-                    localStorage.removeItem('wonRoulettePrizeDescription');
-                    localStorage.removeItem('prizeWonTime');
+                    prizeTimerDisplay.textContent = 'Tiempo para seña expirado.';
+                    prizeTimerDisplay.style.color = '#e53e3e'; // Rojo para expirado
+                    useDiscountBtn.disabled = true; // Deshabilitar botón de usar descuento
+                    mercadopagoLinkContainer.style.display = 'none'; // Ocultar enlace de MP
+                    markSeñaPaidBtn.style.display = 'none'; // Ocultar botón de demo
+                    wonRoulettePrize = null; // El premio se pierde
+                    localStorage.removeItem('wonRoulettePrize');
+                    localStorage.removeItem('prizeEndTime');
+                    localStorage.removeItem('prizeSeñaPaid');
+                    saveRouletteState(); // Guardar el estado actualizado
                     return;
                 }
 
-                const minutes = Math.floor(timeLeft / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-                prizeTimerDisplay.textContent = `Tienes ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} para reservar tu premio.`;
+                const minutes = Math.floor(timeLeft / (60 * 1000));
+                const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+                prizeTimerDisplay.textContent = `Tiempo para señar: ${minutes}m ${seconds}s`;
+                prizeTimerDisplay.style.color = '#007bb6'; // Color azul para el temporizador
             }, 1000);
         }
 
+        /**
+         * Actualiza la interfaz de usuario de la sección de la ruleta.
+         */
+        function updateRouletteUI() {
+            spinCountDisplay.textContent = `Te quedan ${rouletteSpinsLeft} tiros.`;
+            mercadopagoPriceDisplay.textContent = mercadopagoPrice; // Asegura que el precio se muestre
 
-        function animateSpin() {
-            if (isContinuouslySpinning) {
-                rotation += continuousSpinSpeed; 
-                drawRoulette();
-                requestAnimationFrame(animateSpin);
-            } else {
-                const elapsed = Date.now() - spinStartTime;
-                if (elapsed >= spinDuration) {
-                    spinning = false;
-                    loadingSpinner.style.display = 'none';
-                    
-                    const finalAngle = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); 
-                    let winningIndex = -1;
-                    const indicatorAngle = (Math.PI / 2); 
-                    
-                    for (let i = 0; i < segments.length; i++) {
-                        const segmentStartAngle = i * arc;
-                        const segmentEndAngle = (i + 1) * arc;
-                        
-                        let angleUnderIndicator = (indicatorAngle - rotation) % (2 * Math.PI);
-                        if (angleUnderIndicator < 0) angleUnderIndicator += (2 * Math.PI); 
-
-                        if (angleUnderIndicator >= segmentStartAngle && angleUnderIndicator < segmentEndAngle) {
-                            winningIndex = i;
-                            break;
-                        }
-                    }
-
-                    if (winningIndex === -1) { 
-                        winningIndex = Math.floor(Math.random() * segments.length);
-                    }
-                    
-                    wonPrize = segments[winningIndex]; 
-                    resultMessage.textContent = `¡Felicidades! Ganaste: ${wonPrize.text}`;
-
-                    if (wonPrize.type === 'discount') {
-                        if (localStorage.getItem('wonRouletteDiscount')) {
-                            resultMessage.textContent = `Ya tienes un premio activo (${localStorage.getItem('wonRoulettePrizeDescription')}). ¡Este tiro es de cortesía!`;
-                            spinBtn.disabled = false; 
-                            useDiscountBtn.style.display = 'none';
-                            mercadopagoLinkContainer.style.display = 'none';
-                            prizeTimerDisplay.style.display = 'none';
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        } else {
-                            useDiscountBtn.style.display = 'inline-block'; 
-                            spinBtn.disabled = true; 
-                            localStorage.setItem('wonRouletteDiscount', wonPrize.value);
-                            localStorage.setItem('wonRoulettePrizeDescription', wonPrize.description);
-                            localStorage.setItem('prizeWonTime', Date.now().toString()); 
-                            startPrizeTimer(); 
-                            
-                            spinAttempts--;
-                            localStorage.setItem('spinAttempts', spinAttempts.toString());
-                            updateSpinCountDisplay();
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        }
-                    } else if (wonPrize.type === 'new_spin' || wonPrize.type === 'no_luck_new_spin') {
-                        spinBtn.disabled = false; 
-                        useDiscountBtn.style.display = 'none';
-                        mercadopagoLinkContainer.style.display = 'none';
-                        prizeTimerDisplay.style.display = 'none';
-                        localStorage.removeItem('wonRouletteDiscount'); 
-                        localStorage.removeItem('wonRoulettePrizeDescription');
-                        localStorage.removeItem('prizeWonTime');
-                        localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                    } else if (wonPrize.type === 'new_spin_friend_discount') {
-                        if (localStorage.getItem('wonRouletteDiscount') || localStorage.getItem('friendRouletteDiscount')) {
-                            resultMessage.textContent = `Ya tienes un premio activo. ¡Este tiro es de cortesía!`;
-                            spinBtn.disabled = false; 
-                            useDiscountBtn.style.display = 'none';
-                            mercadopagoLinkContainer.style.display = 'none';
-                            prizeTimerDisplay.style.display = 'none';
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        } else {
-                            spinBtn.disabled = false; 
-                            useDiscountBtn.style.display = 'none';
-                            mercadopagoLinkContainer.style.display = 'none';
-                            prizeTimerDisplay.style.display = 'none';
-                            localStorage.removeItem('wonRouletteDiscount'); 
-                            localStorage.removeItem('wonRoulettePrizeDescription');
-                            localStorage.removeItem('prizeWonTime');
-                            localStorage.setItem('friendRouletteDiscount', wonPrize.friendDiscount); 
-                            
-                            spinAttempts--;
-                            localStorage.setItem('spinAttempts', spinAttempts.toString());
-                            updateSpinCountDisplay();
-                            localStorage.setItem('lastSpinTime', Date.now().toString()); 
-                        }
-                    }
-
-                    drawRoulette(); 
-                    return;
-                }
-
-                let progress = elapsed / spinDuration;
-                if (progress < 0.5) { 
-                    spinSpeed = 0.05 + (0.15 * progress * 2); 
-                } else { 
-                    spinSpeed = 0.20 - (0.15 * (progress - 0.5) * 2); 
-                }
-                rotation += spinSpeed;
-
-                drawRoulette();
-                requestAnimationFrame(animateSpin);
-            }
-        }
-
-        spinBtn.addEventListener('click', () => {
-            const lastSpinTime = localStorage.getItem('lastSpinTime');
             const now = Date.now();
 
-            if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
-                const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
-                const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-                resultMessage.textContent = `Ya giraste la ruleta hoy. Vuelve en aproximadamente ${hoursLeft} horas.`;
-                spinBtn.disabled = true; 
-                return;
+            if (rouletteSpinsLeft === 0) {
+                if (now < rouletteLockoutEndTime) {
+                    // Bloqueo general de 30 minutos activo (si no hay premio con seña)
+                    const remainingLockout = rouletteLockoutEndTime - now;
+                    const minutes = Math.floor(remainingLockout / (60 * 1000));
+                    const seconds = Math.floor((remainingLockout % (60 * 1000)) / 1000);
+                    spinBtn.textContent = `Bloqueado: ${minutes}m ${seconds}s`;
+                    spinBtn.disabled = true;
+                    resultMessage.textContent = 'Has agotado tus tiros. Espera para volver a girar.';
+                    resultMessage.style.color = '#e53e3e';
+                } else if (now < (rouletteLastSpinCycleStartTimestamp + ROULETTE_RESET_DURATION_MS)) {
+                    // Esperando el reinicio de 24 horas
+                    const remainingReset = (rouletteLastSpinCycleStartTimestamp + ROULETTE_RESET_DURATION_MS) - now;
+                    const hours = Math.floor(remainingReset / (60 * 60 * 1000));
+                    const minutes = Math.floor((remainingReset % (60 * 60 * 1000)) / (60 * 1000));
+                    spinBtn.textContent = `Reinicia en: ${hours}h ${minutes}m`;
+                    spinBtn.disabled = true;
+                    resultMessage.textContent = 'Tiros agotados. Espera 24 horas para un nuevo ciclo.';
+                    resultMessage.style.color = '#e53e3e';
+                } else {
+                    // Reinicio de 24 horas completado
+                    resetRouletteCycle();
+                }
+            } else {
+                // Hay giros disponibles
+                spinBtn.textContent = '¡Girar Ruleta!';
+                spinBtn.disabled = false;
+                resultMessage.textContent = ''; // Limpiar mensaje si hay giros
             }
 
-            if (spinAttempts <= 0) {
-                resultMessage.textContent = 'No te quedan más tiros por hoy. Vuelve mañana.';
-                spinBtn.disabled = true;
-                return;
+            // Lógica para el premio ganado y la seña
+            if (wonRoulettePrize) {
+                resultMessage.textContent = `¡Felicidades! Ganaste: ${wonRoulettePrize.description}`;
+                resultMessage.style.color = '#e91e63';
+
+                if (wonRoulettePrize.needsSeña) {
+                    mercadopagoLinkContainer.style.display = 'block';
+                    markSeñaPaidBtn.style.display = 'block'; // Mostrar botón de demo
+                    if (!prizeSeñaPaid && now < prizeEndTime) {
+                        // Si no se ha pagado la seña y el tiempo no ha expirado
+                        useDiscountBtn.style.display = 'none';
+                        startPrizeTimer(); // Asegura que el temporizador esté corriendo
+                    } else if (prizeSeñaPaid) {
+                        // Si la seña ya fue pagada
+                        prizeTimerDisplay.style.display = 'none';
+                        mercadopagoLinkContainer.style.display = 'none';
+                        markSeñaPaidBtn.style.display = 'none';
+                        useDiscountBtn.style.display = 'block';
+                        useDiscountBtn.disabled = false;
+                    } else {
+                        // Si el tiempo de seña expiró
+                        prizeTimerDisplay.textContent = 'Tiempo para seña expirado.';
+                        prizeTimerDisplay.style.color = '#e53e3e';
+                        mercadopagoLinkContainer.style.display = 'none';
+                        markSeñaPaidBtn.style.display = 'none';
+                        useDiscountBtn.style.display = 'none'; // Ocultar botón de usar descuento
+                        wonRoulettePrize = null; // El premio se pierde
+                        localStorage.removeItem('wonRoulettePrize');
+                        localStorage.removeItem('prizeEndTime');
+                        localStorage.removeItem('prizeSeñaPaid');
+                        saveRouletteState();
+                        updateRouletteUI(); // Recargar UI para reflejar la pérdida del premio
+                    }
+                } else {
+                    // Si el premio no necesita seña
+                    prizeTimerDisplay.style.display = 'none';
+                    mercadopagoLinkContainer.style.display = 'none';
+                    markSeñaPaidBtn.style.display = 'none';
+                    useDiscountBtn.style.display = 'block';
+                    useDiscountBtn.disabled = false;
+                }
+            } else {
+                // No hay premio ganado actualmente
+                resultMessage.textContent = '';
+                prizeTimerDisplay.style.display = 'none';
+                mercadopagoLinkContainer.style.display = 'none';
+                markSeñaPaidBtn.style.display = 'none';
+                useDiscountBtn.style.display = 'none';
             }
+            saveRouletteState(); // Guardar cualquier cambio de estado
+        }
 
-            if (spinning) return; 
-
-            isContinuouslySpinning = false; 
-            spinning = true; 
-            spinBtn.disabled = true;
-            useDiscountBtn.style.display = 'none'; 
-            mercadopagoLinkContainer.style.display = 'none'; 
-            prizeTimerDisplay.style.display = 'none'; 
+        /**
+         * Restablece el ciclo de juego de la ruleta (giros y temporizadores).
+         */
+        function resetRouletteCycle() {
+            rouletteSpinsLeft = ROULETTE_MAX_SPINS;
+            rouletteLastSpinCycleStartTimestamp = Date.now();
+            rouletteLockoutEndTime = 0;
+            wonRoulettePrize = null;
+            prizeEndTime = 0;
+            prizeSeñaPaid = false;
+            localStorage.removeItem('friendRouletteDiscount'); // Limpiar descuento de amigo
+            saveRouletteState();
+            updateRouletteUI();
+            if (rouletteTimerInterval) clearInterval(rouletteTimerInterval);
+            if (prizeTimerInterval) clearInterval(prizeTimerInterval);
             resultMessage.textContent = '';
-            loadingSpinner.style.display = 'block';
-            spinStartTime = Date.now(); 
-            
-            animateSpin();
+        }
+
+        /**
+         * Verifica el estado de la ruleta al cargar la página.
+         */
+        function checkRouletteStatus() {
+            loadRouletteState();
+            const now = Date.now();
+
+            // Si el ciclo de 24 horas ha pasado o es la primera vez
+            if (rouletteLastSpinCycleStartTimestamp === 0 || now >= (rouletteLastSpinCycleStartTimestamp + ROULETTE_RESET_DURATION_MS)) {
+                resetRouletteCycle();
+            } else if (rouletteSpinsLeft === 0 && now < rouletteLockoutEndTime) {
+                // Si está en bloqueo de 30 minutos
+                if (rouletteTimerInterval) clearInterval(rouletteTimerInterval);
+                rouletteTimerInterval = setInterval(updateRouletteUI, 1000);
+            } else if (rouletteSpinsLeft === 0 && now >= rouletteLockoutEndTime && now < (rouletteLastSpinCycleStartTimestamp + ROULETTE_RESET_DURATION_MS)) {
+                // Si el bloqueo de 30 minutos terminó pero no las 24 horas
+                if (rouletteTimerInterval) clearInterval(rouletteTimerInterval); // Detener el temporizador de 30min si ya pasó
+                rouletteTimerInterval = setInterval(updateRouletteUI, 1000); // Iniciar temporizador de 24h
+            }
+
+            // Si hay un premio ganado y necesita seña, y el tiempo de seña no ha expirado
+            if (wonRoulettePrize && wonRoulettePrize.needsSeña && !prizeSeñaPaid && now < prizeEndTime) {
+                startPrizeTimer();
+            } else if (wonRoulettePrize && wonRoulettePrize.needsSeña && !prizeSeñaPaid && now >= prizeEndTime) {
+                // Si el premio necesitaba seña y el tiempo expiró
+                wonRoulettePrize = null;
+                prizeEndTime = 0;
+                prizeSeñaPaid = false;
+                localStorage.removeItem('wonRoulettePrize');
+                localStorage.removeItem('prizeEndTime');
+                localStorage.removeItem('prizeSeñaPaid');
+                saveRouletteState();
+            }
+            updateRouletteUI();
+        }
+
+        // Event Listeners
+        spinBtn.addEventListener('click', () => {
+            if (rouletteSpinsLeft > 0) {
+                loadingSpinner.style.display = 'block';
+                spinBtn.disabled = true;
+                rouletteSpinsLeft--; // Decrementar el giro al inicio
+                saveRouletteState(); // Guardar el estado de los giros
+                updateRouletteUI(); // Actualizar la UI inmediatamente
+                
+                const randomSegmentIndex = Math.floor(Math.random() * numSegments);
+                const degreesPerSegment = 360 / numSegments;
+                // Calcular el ángulo para que el segmento ganador quede en la parte superior
+                // Añadir múltiples vueltas para un efecto de giro dramático
+                const extraRotations = 5; // 5 vueltas completas
+                const targetRotationDegrees = (360 * extraRotations) + (360 - (randomSegmentIndex * degreesPerSegment + degreesPerSegment / 2));
+                
+                // Convertir a radianes para el dibujo
+                const targetRotationRadians = targetRotationDegrees * (Math.PI / 180);
+                
+                animateRoulette(targetRotationRadians, 6000); // 6 segundos de duración
+            } else {
+                updateRouletteUI(); // Asegurarse de que el mensaje de bloqueo se muestre
+            }
+        });
+
+        // Event listener para el botón "Marcar Seña como Pagada (Demo)"
+        markSeñaPaidBtn.addEventListener('click', () => {
+            prizeSeñaPaid = true;
+            localStorage.setItem('prizeSeñaPaid', 'true');
+            if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Detener el temporizador de seña
+            updateRouletteUI(); // Actualizar la UI para mostrar el botón "Usar Descuento"
+            alert('Seña marcada como pagada. Ahora puedes usar tu descuento.'); // Alerta de demostración
         });
 
         useDiscountBtn.addEventListener('click', () => {
-            const currentPrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
-            const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
-            const now = Date.now();
-
-            if (!currentPrizeDescription || (now - prizeWonTime > prizeReservationTime)) {
-                alert('Tu premio ha expirado o no tienes un premio activo. Por favor, gira la ruleta de nuevo.');
-                localStorage.removeItem('wonRouletteDiscount');
-                localStorage.removeItem('wonRoulettePrizeDescription');
-                localStorage.removeItem('prizeWonTime');
-                useDiscountBtn.disabled = true;
-                mercadopagoLinkContainer.style.display = 'none';
-                prizeTimerDisplay.style.display = 'none';
-                return;
+            if (wonRoulettePrize) {
+                // Aquí podrías redirigir a una página de reserva con el descuento aplicado
+                // o mostrar un modal con los detalles para usarlo.
+                alert(`¡Has usado tu premio: ${wonRoulettePrize.description}! Presenta este mensaje en caja.`);
+                // Limpiar el premio después de usarlo para que no se pueda usar de nuevo
+                wonRoulettePrize = null;
+                prizeEndTime = 0;
+                prizeSeñaPaid = false;
+                localStorage.removeItem('wonRoulettePrize');
+                localStorage.removeItem('prizeEndTime');
+                localStorage.removeItem('prizeSeñaPaid');
+                localStorage.removeItem('friendRouletteDiscount'); // Limpiar descuento de amigo si se usa
+                saveRouletteState();
+                updateRouletteUI(); // Actualizar la UI para reflejar que el premio fue usado
             }
-
-            window.open(mercadopagoLinkUrl, '_blank');
-
-            const name = document.getElementById('name').value;
-            const whatsappNumber = '5493415216025'; 
-            let message = `¡Hola Le Bardol! Mi nombre es ${name}. He ganado en la ruleta: ${currentPrizeDescription}.`;
-            message += `\n\nAcabo de abonar la seña de ${mercadopagoPrice} en Mercado Pago para reservar mi premio.`;
-            message += `\nLink de pago: ${mercadopagoLinkUrl}`;
-            message += `\n¡Quisiera coordinar mi turno para usarlo!`;
-            
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-
-            localStorage.removeItem('wonRouletteDiscount');
-            localStorage.removeItem('wonRoulettePrizeDescription');
-            localStorage.removeItem('prizeWonTime');
-            useDiscountBtn.style.display = 'none';
-            mercadopagoLinkContainer.style.display = 'none';
-            prizeTimerDisplay.style.display = 'none';
-            resultMessage.textContent = '¡Premio reservado! Revisa tu WhatsApp para coordinar.';
-            spinBtn.disabled = false; 
-            updateSpinCountDisplay(); 
         });
 
+        // --- Lógica de la Lista de Precios (Existente) ---
+        const priceList = [
+            { treatment: 'Limpieza Facial Profunda', price: '$5000' },
+            { treatment: 'Peeling Químico', price: '$7000' },
+            { treatment: 'Radiofrecuencia Facial', price: '$6000' },
+            { treatment: 'Drenaje Linfático', price: '$4500' },
+            { treatment: 'Masaje Relajante (60 min)', price: '$5500' },
+            { treatment: 'Manicuría Completa', price: '$2000' },
+            { treatment: 'Pedicuría Completa', price: '$3000' },
+            { treatment: 'Perfilado de Cejas', price: '$1500' },
+            { treatment: 'Lifting de Pestañas', price: '$3500' }
+        ];
 
-        // --- Inicialización de la página ---
+        function populatePriceList() {
+            const priceListTableBody = document.getElementById('priceListTableBody');
+            priceListTableBody.innerHTML = ''; // Limpiar tabla
+            priceList.forEach(item => {
+                const row = priceListTableBody.insertRow();
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                cell1.textContent = item.treatment;
+                cell2.textContent = item.price;
+            });
+        }
+
+        // --- Lógica de la Página Principal (Existente) ---
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOMContentLoaded: Page fully loaded.");
-            startCountdown();
-            
-            const nameInput = document.getElementById('name');
-            const displayDateDiv = document.getElementById('displayDate');
-            const appointmentDisplayGroup = document.getElementById('appointmentDisplayGroup');
+            // Mostrar u ocultar la sección de la ruleta si hay un parámetro 'ruleta' en la URL
+            const showRoulette = getUrlParameter('roulette');
+            const urlRouletteDiscount = getUrlParameter('rouletteDiscount'); // Obtener el descuento de ruleta de la URL
+
+            if (showRoulette === 'true' && !urlRouletteDiscount) { // Si es enlace de ruleta y NO trae un descuento predefinido
+                rouletteSection.style.display = 'block';
+                // Ocultar la oferta principal y la difusión si se muestra la ruleta
+                document.getElementById('mainOfferCard').style.display = 'none';
+                document.getElementById('referralPromoDiffusion').style.display = 'none';
+                document.getElementById('priceListSection').style.display = 'none'; // Ocultar lista de precios si se muestra la ruleta
+                checkRouletteStatus(); // Iniciar la lógica de la ruleta
+            } else if (urlRouletteDiscount) { // Si es enlace de ruleta y SÍ trae un descuento predefinido
+                rouletteSection.style.display = 'none'; // Ocultar la sección de la ruleta para mostrar el premio directamente
+                document.getElementById('mainOfferCard').style.display = 'block'; 
+                document.getElementById('referralPromoDiffusion').style.display = 'block';
+                document.getElementById('priceListSection').style.display = 'block'; // Mostrar lista de precios
+
+                // Configurar el premio ganado directamente desde la URL
+                wonRoulettePrize = {
+                    text: `${urlRouletteDiscount}% OFF`,
+                    type: 'discount',
+                    value: parseInt(urlRouletteDiscount),
+                    category: 'url_prize',
+                    description: `${urlRouletteDiscount}% de descuento (Premio de Ruleta)`,
+                    needsSeña: true // Asumimos que un premio directo de URL también necesita seña
+                };
+                prizeSeñaPaid = false; // La seña no está pagada por defecto al llegar con un premio de URL
+                prizeEndTime = Date.now() + PRIZE_SEÑA_DURATION_MS; // Iniciar temporizador de seña
+                saveRouletteState(); // Guardar el premio en localStorage
+
+                // Actualizar la UI para mostrar el premio y el temporizador de seña
+                updateRouletteUI();
+
+                // Ajustar el título y descripción de la oferta principal para el premio de ruleta
+                document.getElementById('offerTitle').textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
+                document.getElementById('offerDescription').innerHTML = `¡Felicidades! Has ganado <strong>${wonRoulettePrize.description}</strong>. Utiliza el botón "CONFIRMAR MI TURNO" para contactarnos y aplicar tu premio.`;
+                
+                // Mostrar los botones relevantes para el premio
+                document.getElementById('confirmBtn').style.display = 'block';
+                document.getElementById('inviteBtn').style.display = 'none';
+                document.getElementById('inviteBtnDiffusion').style.display = 'none';
+                document.getElementById('disclaimerMessage').style.display = 'block';
+                document.getElementById('disclaimerMessage').innerHTML = '<i class="fas fa-bullhorn"></i> ¡Usa tu descuento de la ruleta! Completa tus datos para contactarnos.';
+                
+            } else { // Comportamiento por defecto (sin parámetros de ruleta)
+                rouletteSection.style.display = 'none';
+                // Mostrar la oferta principal y la difusión por defecto
+                document.getElementById('mainOfferCard').style.display = 'block';
+                document.getElementById('referralPromoDiffusion').style.display = 'block';
+                document.getElementById('priceListSection').style.display = 'block'; // Mostrar lista de precios
+            }
+
+
             const confirmBtn = document.getElementById('confirmBtn');
             const inviteBtn = document.getElementById('inviteBtn');
             const inviteBtnDiffusion = document.getElementById('inviteBtnDiffusion');
+            const nameInput = document.getElementById('name');
+            const appointmentDisplayGroup = document.getElementById('appointmentDisplayGroup');
             const disclaimerMessage = document.getElementById('disclaimerMessage');
-            
-            const mainOfferCard = document.getElementById('mainOfferCard');
+            const mainTitle = document.getElementById('mainTitle');
             const offerTitle = document.getElementById('offerTitle');
             const offerDescription = document.getElementById('offerDescription');
-            const referralPromoDiffusion = document.getElementById('referralPromoDiffusion');
-            const referralPromoDiffusionP = referralPromoDiffusion.querySelector('p');
 
-            const priceListSection = document.getElementById('priceListSection'); // Nueva referencia
-            const priceListTableBody = document.getElementById('priceListTableBody'); // Nueva referencia
+            // Lógica para el enlace de recordatorio de turno
+            const appointmentDateParam = getUrlParameter('fecha');
+            const clientNameParam = getUrlParameter('nombre');
+            const isReminderLink = appointmentDateParam !== '';
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlName = urlParams.get('nombre');
-            const urlDate = urlParams.get('fecha');
-            const urlDiscount = urlParams.get('descuento');
-            const urlTreatment = urlParams.get('tratamiento');
-            const urlReferrerDiscount = urlParams.get('descuentoReferente');
-            const urlNewClientDiscount = urlParams.get('descuentoNuevoCliente');
-            const urlDiffusionReferrerDiscount = urlParams.get('descuentoReferenteDifusion');
-            const urlDiffusionNewClientDiscount = urlParams.get('descuentoNuevoClienteDifusion');
-            const urlRoulette = urlParams.get('roulette'); 
-            const urlRouletteDiscount = urlParams.get('rouletteDiscount'); 
-            const urlPrices = urlParams.get('prices'); // Nuevo parámetro
-
-            let isReminderLink = false; 
-
-            // DEBUGGING CONSOLE LOGS
-            console.log("--- DEBUGGING INDEX.HTML ---");
-            console.log("URL Parameters:");
-            console.log("  nombre =", urlName);
-            console.log("  fecha =", urlDate);
-            console.log("  descuento =", urlDiscount);
-            console.log("  tratamiento =", urlTreatment);
-            console.log("  descuentoReferente =", urlReferrerDiscount);
-            console.log("  descuentoNuevoCliente =", urlNewClientDiscount);
-            console.log("  descuentoReferenteDifusion =", urlDiffusionReferrerDiscount);
-            console.log("  descuentoNuevoClienteDifusion =", urlDiffusionNewClientDiscount);
-            console.log("  roulette =", urlRoulette);
-            console.log("  rouletteDiscount =", urlRouletteDiscount);
-            console.log("  prices =", urlPrices); // Debugging prices
-            console.log("Local Storage:");
-            console.log("  hasSpunRoulette =", localStorage.getItem('hasSpunRoulette'));
-            console.log("  wonRouletteDiscount =", localStorage.getItem('wonRouletteDiscount'));
-            console.log("  wonRoulettePrizeDescription =", localStorage.getItem('wonRoulettePrizeDescription'));
-            console.log("  lastSpinTime =", localStorage.getItem('lastSpinTime'));
-            console.log("  friendRouletteDiscount =", localStorage.getItem('friendRouletteDiscount'));
-            console.log("  spinAttempts =", localStorage.getItem('spinAttempts'));
-            console.log("  prizeWonTime =", localStorage.getItem('prizeWonTime'));
-            console.log("----------------------------");
-
-
-            // Ocultar todas las secciones por defecto para controlar su visibilidad
-            mainOfferCard.style.display = 'none';
-            rouletteSection.style.display = 'none';
-            referralPromoDiffusion.style.display = 'none';
-            appointmentDisplayGroup.style.display = 'none'; 
-            confirmBtn.style.display = 'none'; 
-            inviteBtn.style.display = 'none'; 
-            inviteBtnDiffusion.style.display = 'none'; 
-            disclaimerMessage.style.display = 'none'; 
-            priceListSection.style.display = 'none'; // Ocultar por defecto
-
-            // Lógica para mostrar las secciones según los parámetros de la URL
-            if (urlDate) { 
-                console.log("Logic Path: Reminder Link (urlDate is present)");
-                isReminderLink = true;
-                appointmentDisplayGroup.style.display = 'block'; 
-                confirmBtn.style.display = 'block'; 
-                disclaimerMessage.style.display = 'block'; 
-
-                if (urlName) {
-                    nameInput.value = urlName;
+            if (isReminderLink) {
+                appointmentDisplayGroup.style.display = 'block';
+                disclaimerMessage.innerHTML = '<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado.';
+                mainTitle.textContent = 'Confirmación de Turno';
+                // La descripción de la oferta se ajustará más abajo si hay parámetros de descuento/tratamiento
+                
+                if (clientNameParam) {
+                    nameInput.value = decodeURIComponent(clientNameParam.replace(/\+/g, ' '));
+                    nameInput.readOnly = true; // Hacer el nombre de solo lectura si viene de la URL
+                    document.getElementById('displayDate').textContent = decodeURIComponent(appointmentDateParam.replace(/\+/g, ' '));
                 } else {
-                    nameInput.value = "Estimado/a cliente/a"; 
+                    nameInput.value = 'Estimado/a cliente/a';
+                    document.getElementById('displayDate').textContent = decodeURIComponent(appointmentDateParam.replace(/\+/g, ' '));
                 }
-                
-                try {
-                    const dateObj = new Date(urlDate);
-                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' };
-                    displayDateDiv.textContent = dateObj.toLocaleDateString('es-ES', options) + ' hs';
-                } catch (e) {
-                    console.error("Error al parsear la fecha de la URL:", e);
-                    displayDateDiv.textContent = "Fecha y hora no válidas";
-                }
-                confirmBtn.innerHTML = '<i class="fas fa-calendar-check"></i> CONFIRMAR MI TURNO';
-                disclaimerMessage.innerHTML = `<i class="fas fa-info-circle"></i> Aquí puedes confirmar tu turno asignado para el <strong>${displayDateDiv.textContent}</strong>.`;
-                
+                confirmBtn.style.display = 'block';
+                inviteBtn.style.display = 'block';
+                inviteBtnDiffusion.style.display = 'none'; // Ocultar el botón de difusión en enlaces de recordatorio
+                document.getElementById('referralPromoDiffusion').style.display = 'none'; // Ocultar la sección de difusión
+
+                // Ajustar la oferta principal para enlaces de recordatorio con descuentos/tratamientos
+                const urlDiscount = getUrlParameter('descuento');
+                const urlTreatment = getUrlParameter('tratamiento');
+                const urlReferrerDiscount = getUrlParameter('descuentoReferente');
+                const urlNewClientDiscount = getUrlParameter('descuentoNuevoCliente');
+
                 if (urlDiscount && urlTreatment) {
                     offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
                     offerDescription.innerHTML = `Como cliente especial, aprovecha un <strong>${urlDiscount}% de descuento</strong> en tu servicio de <strong>${urlTreatment}</strong>. ¡No te lo pierdas!`;
@@ -1200,157 +1350,13 @@
                     offerDescription.innerHTML = `Confirma tu turno y si invitas a tus amigos en las próximas 24 horas, tú obtienes un <strong>${displayReferrerDiscount}% DE DESCUENTO</strong> por cada uno que contrate un servicio, ¡y ellos un <strong>${displayNewClientDiscount}% DE DESCUENTO</strong> en su primer tratamiento!`;
                     mainOfferCard.style.display = 'block';
                 }
-                inviteBtn.style.display = 'block'; 
-                inviteBtnDiffusion.style.display = 'none'; 
-
-            } else if (urlRoulette === 'true') { 
-                console.log("Logic Path: Roulette Link (urlRoulette is 'true') - Checking conditions...");
-                const lastSpinTime = localStorage.getItem('lastSpinTime');
-                const now = Date.now();
-                
-                const activeRoulettePrizeDescription = localStorage.getItem('wonRoulettePrizeDescription');
-                const prizeWonTime = parseInt(localStorage.getItem('prizeWonTime'));
-                const storedSpinAttempts = parseInt(localStorage.getItem('spinAttempts')); 
-
-                // Always show roulette section if it's a roulette link
-                rouletteSection.style.display = 'block';
-                mainOfferCard.style.display = 'none'; 
-                appointmentDisplayGroup.style.display = 'none';
-                confirmBtn.style.display = 'none';
-                inviteBtn.style.display = 'none';
-                disclaimerMessage.style.display = 'none';
-
-                // Always show diffusion invite card and button in roulette mode
-                referralPromoDiffusion.style.display = 'block'; 
-                inviteBtnDiffusion.style.display = 'block'; 
-
-                // Populate and show price list if available
-                if (urlPrices) {
-                    try {
-                        const prices = JSON.parse(urlPrices);
-                        if (Array.isArray(prices) && prices.length > 0) {
-                            priceListTableBody.innerHTML = ''; // Clear previous content
-                            prices.forEach(item => {
-                                const row = priceListTableBody.insertRow();
-                                const nameCell = row.insertCell();
-                                const priceCell = row.insertCell();
-                                nameCell.textContent = item.name;
-                                priceCell.textContent = item.price;
-                            });
-                            priceListSection.style.display = 'block';
-                            console.log("Price list displayed.");
-                        } else {
-                            console.log("urlPrices is empty or not an array.");
-                        }
-                    } catch (e) {
-                        console.error("Error parsing urlPrices JSON:", e);
-                    }
-                } else {
-                    console.log("urlPrices parameter not found.");
-                }
-
-                // Initial draw and animation for roulette
-                drawRoulette();
-                animateSpin(); // Start continuous spin
-
-                if (activeRoulettePrizeDescription && (now - prizeWonTime <= prizeReservationTime)) {
-                    console.log("Condition Met: Active roulette prize found and not expired. Displaying prize info.");
-                    spinBtn.style.display = 'none'; 
-                    loadingSpinner.style.display = 'none';
-                    resultMessage.textContent = `¡Tu premio activo: ${activeRoulettePrizeDescription}!`;
-                    useDiscountBtn.style.display = 'inline-block'; 
-                    mercadopagoLinkContainer.style.display = 'block'; 
-                    startPrizeTimer(); 
-                    updateSpinCountDisplay(); 
-                    nameInput.value = urlName || "Hola!"; 
-                    nameInput.focus(); 
-                    
-                } else if (lastSpinTime && (now - parseInt(lastSpinTime) < twentyFourHours)) {
-                    console.log("Condition Met: Roulette already spun today (cooldown). Displaying cooldown message.");
-                    rouletteSection.style.display = 'none'; // Hide roulette, show main offer card
-                    mainOfferCard.style.display = 'block'; 
-                    offerTitle.textContent = `¡Ya giraste la ruleta hoy!`;
-                    const timeLeft = twentyFourHours - (now - parseInt(lastSpinTime));
-                    const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-                    offerDescription.innerHTML = `Vuelve en aproximadamente <strong>${hoursLeft} horas</strong> para un nuevo intento. Mientras tanto, ¡puedes consultar por nuestros servicios!`;
-                    
-                    appointmentDisplayGroup.style.display = 'none'; 
-                    confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                    confirmBtn.style.display = 'block';
-                    inviteBtn.style.display = 'none'; 
-                    disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
-                    disclaimerMessage.style.display = 'block';
-                    nameInput.value = urlName || "Hola!"; 
-                    nameInput.focus(); 
-
-                } else {
-                    console.log("Condition Met: Roulette available to spin. Initializing spins.");
-                    if (!lastSpinTime || (now - parseInt(lastSpinTime) >= twentyFourHours) || (isNaN(storedSpinAttempts) || storedSpinAttempts === 0)) { 
-                        console.log("Resetting spin attempts and clearing old roulette data.");
-                        spinAttempts = 3;
-                        localStorage.setItem('spinAttempts', spinAttempts.toString());
-                        localStorage.removeItem('wonRouletteDiscount'); 
-                        localStorage.removeItem('wonRoulettePrizeDescription');
-                        localStorage.removeItem('prizeWonTime');
-                        localStorage.removeItem('friendRouletteDiscount'); 
-                        localStorage.removeItem('hasSpunRoulette'); 
-                    }
-                    updateSpinCountDisplay(); 
-                    spinBtn.style.display = 'block'; 
-                    useDiscountBtn.style.display = 'none'; 
-                    mercadopagoLinkContainer.style.display = 'none'; 
-                    prizeTimerDisplay.style.display = 'none'; 
-                }
-
-            } else if (urlRouletteDiscount) {
-                console.log("Logic Path: Roulette Discount Received (urlRouletteDiscount is present)");
-                rouletteSection.style.display = 'none';
-                mainOfferCard.style.display = 'block'; 
-                offerTitle.textContent = `¡Tu Descuento de Ruleta: ${urlRouletteDiscount}% OFF!`;
-                const prizeDesc = localStorage.getItem('wonRoulettePrizeDescription') || `${urlRouletteDiscount}% de descuento`;
-                offerDescription.innerHTML = `¡Felicidades! Has ganado <strong>${prizeDesc}</strong>. Utiliza el botón "CONSULTAR POR UN TURNO" para contactarnos y aplicar tu premio.`;
-                
-                localStorage.setItem('wonRouletteDiscount', urlRouletteDiscount);
-                localStorage.setItem('wonRoulettePrizeDescription', prizeDesc); 
-                
-                appointmentDisplayGroup.style.display = 'none'; 
-                confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
-                confirmBtn.style.display = 'block';
-                inviteBtn.style.display = 'none'; 
-                inviteBtnDiffusion.style.display = 'none'; 
-                disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Usa tu descuento de la ruleta! Completa tus datos para contactarnos.';
-                disclaimerMessage.style.display = 'block';
-                nameInput.value = urlName || "Hola!"; 
-                nameInput.focus(); 
-
-                // Also display price list if present
-                if (urlPrices) {
-                    try {
-                        const prices = JSON.parse(urlPrices);
-                        if (Array.isArray(prices) && prices.length > 0) {
-                            priceListTableBody.innerHTML = ''; 
-                            prices.forEach(item => {
-                                const row = priceListTableBody.insertRow();
-                                const nameCell = row.insertCell();
-                                const priceCell = row.insertCell();
-                                nameCell.textContent = item.name;
-                                priceCell.textContent = item.price;
-                            });
-                            priceListSection.style.display = 'block';
-                            console.log("Price list displayed for roulette discount link.");
-                        }
-                    } catch (e) {
-                        console.error("Error parsing urlPrices JSON for roulette discount link:", e);
-                    }
-                }
-
-            } else { 
-                console.log("Logic Path: General Promotion/Default (no specific URL parameters)");
-                isReminderLink = false;
+            } else if (!urlRouletteDiscount) { // Si no es enlace de recordatorio y tampoco trae un descuento de ruleta predefinido
+                // Comportamiento por defecto para promociones generales
                 appointmentDisplayGroup.style.display = 'none'; 
                 confirmBtn.style.display = 'block'; 
                 disclaimerMessage.style.display = 'block'; 
 
+                const urlName = getUrlParameter('nombre');
                 if (urlName) {
                     nameInput.value = urlName;
                 } else {
@@ -1358,6 +1364,11 @@
                 }
                 confirmBtn.innerHTML = '<i class="fas fa-phone-alt"></i> CONSULTAR POR UN TURNO';
                 disclaimerMessage.innerHTML = '<i class="fas fa-bullhorn"></i> ¡Bienvenido/a a Le Bardol! Aquí puedes consultar por nuestros servicios y aprovechar nuestras promociones.';
+
+                const urlDiscount = getUrlParameter('descuento');
+                const urlTreatment = getUrlParameter('tratamiento');
+                const urlDiffusionReferrerDiscount = getUrlParameter('descuentoReferenteDifusion');
+                const urlDiffusionNewClientDiscount = getUrlParameter('descuentoNuevoClienteDifusion');
 
                 if (urlDiscount && urlTreatment) {
                     offerTitle.textContent = `¡${urlDiscount}% OFF en ${urlTreatment}!`;
@@ -1386,11 +1397,13 @@
 
                 const displayDiffusionReferrerDiscount = urlDiffusionReferrerDiscount || '5';
                 const displayDiffusionNewClientDiscount = urlDiffusionNewClientDiscount || '5';
-                referralPromoDiffusionP.innerHTML = `Si reservas un turno y nos recomiendas a un amigo, obtendrás un <strong>${displayDiffusionReferrerDiscount}% DE DESCUENTO ADICIONAL</strong> en tu próxima sesión cuando tu amigo contrate su primer servicio, ¡y tu amigo obtendrá un <strong>${displayDiffusionNewClientDiscount}% DE DESCUENTO</strong> en su primer servicio!`;
+                referralPromoDiffusion.querySelector('p').innerHTML = `Si reservas un turno y nos recomiendas a un amigo, obtendrás un <strong>${displayDiffusionReferrerDiscount}% DE DESCUENTO ADICIONAL</strong> en tu próxima sesión cuando tu amigo contrate su primer servicio, ¡y tu amigo obtendrá un <strong>${displayDiffusionNewClientDiscount}% DE DESCUENTO</strong> en su primer servicio!`;
             }
 
             // Asignar eventos a los botones (siempre, independientemente de la sección visible)
             document.getElementById('confirmBtn').addEventListener('click', () => {
+                const urlDiscount = getUrlParameter('descuento'); // Re-obtener para el mensaje de WhatsApp
+                const urlTreatment = getUrlParameter('tratamiento'); // Re-obtener para el mensaje de WhatsApp
                 if (validateForm(isReminderLink)) {
                     sendWhatsAppMessage(isReminderLink, urlDiscount, urlTreatment);
                     showNotification();
@@ -1405,9 +1418,18 @@
             if (isReminderLink) {
                 toggleInviteButton(); 
             } else {
-                inviteBtn.disabled = false; 
+                // Si no es un enlace de recordatorio, el botón de invitar general debe estar habilitado por defecto
+                // a menos que el nombre esté vacío, lo cual se maneja con toggleInviteButton().
+                // Aquí solo aseguramos que no esté deshabilitado si ya hay un nombre.
+                if (nameInput.value.trim() !== '' && nameInput.value.trim() !== 'Hola!') {
+                    inviteBtn.disabled = false; 
+                }
             }
+
+            startCountdown(); // Iniciar el contador de la oferta principal
+            populatePriceList(); // Llenar la lista de precios
+            // checkRouletteStatus() se llama al inicio del bloque if/else para la ruleta
         });
     </script>
-  </body>
+</body>
 </html>
