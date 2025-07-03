@@ -1,65 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Enlaces Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos generales y reseteo */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%); /* Fondo degradado suave */
-            color: #4a2c5e; /* Color de texto principal */
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
             padding: 20px;
+            box-sizing: border-box;
         }
-        
-        /* Contenedor principal del generador */
         .container {
-            max-width: 600px;
-            width: 100%;
             background: white;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
-            overflow: hidden;
-            margin: 20px 0;
-            padding: 30px;
+            max-width: 600px;
+            width: 100%;
         }
-        
         h1 {
+            color: #4a2c5e;
             text-align: center;
-            color: #8a2be2;
             margin-bottom: 25px;
             font-size: 28px;
         }
-        
         .form-group {
             margin-bottom: 20px;
         }
-        
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: #4a2c5e;
         }
-        
-        input[type="text"],
-        input[type="datetime-local"],
-        input[type="number"],
-        textarea, 
-        select {
+        input[type="text"], input[type="datetime-local"], select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0c8f0;
@@ -67,342 +48,364 @@
             font-size: 16px;
             background: #f9f0ff;
             transition: all 0.3s;
+            box-sizing: border-box;
         }
-        
-        input[type="text"]:focus,
-        input[type="datetime-local"]:focus,
-        input[type="number"]:focus,
-        textarea:focus, 
-        select:focus {
+        input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus {
             outline: none;
             border-color: #8a2be2;
             box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
-
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap; /* Permite que los radios se envuelvan en pantallas pequeñas */
-        }
-
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-weight: normal;
-        }
-
-        .radio-group input[type="radio"] {
-            margin-right: 8px;
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
         .btn {
             display: block;
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             border: none;
             border-radius: 10px;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
+            margin-top: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        
         .btn-generate {
-            background: linear-gradient(135deg, #a855f7 0%, #8a2be2 100%);
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
             color: white;
-            margin-top: 20px;
         }
-        
         .btn-copy {
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
             color: white;
-            margin-top: 15px;
-            display: none; /* Oculto por defecto */
+            margin-top: 10px;
         }
-        
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
-        
         .btn:active {
-            transform: translateY(1px);
+            transform: translateY(0);
         }
-        
-        .generated-link-container {
+        #generatedLinkContainer {
             margin-top: 25px;
             padding: 15px;
-            background: #e0f0ff;
-            border: 1px dashed #a7d9f7;
+            background: #e0f7fa;
+            border: 1px solid #00bcd4;
             border-radius: 10px;
-            word-break: break-all; /* Para asegurar que el enlace largo se ajuste */
-            text-align: center;
+            word-wrap: break-word;
             font-size: 15px;
-            color: #007bb6;
-            font-weight: 500;
+            color: #00796b;
+            display: none; /* Hidden by default */
         }
-        /* Estilo para el enlace generado dentro del contenedor */
-        .generated-link-container a {
-            color: #007bb6; /* Mismo color que el texto del contenedor */
-            text-decoration: underline; /* Subrayado para indicar que es un enlace */
+        #generatedLink {
+            font-weight: bold;
+            color: #004d40;
         }
-
-
-        /* Notificación de copia */
-        .copy-notification {
+        .notification {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(110%);
-            background: #333;
+            right: 20px;
+            background: #4caf50;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
-            opacity: 0;
-            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
             z-index: 1000;
         }
-
-        .copy-notification.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        .option-group {
+            border: 1px solid #e0c8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #fcfaff;
         }
-
+        .option-group h3 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .option-group > div {
+            margin-bottom: 15px;
+        }
+        .price-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .price-item input {
+            flex-grow: 1;
+        }
+        .price-item .remove-price-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .price-item .remove-price-btn:hover {
+            background-color: #cc0000;
+        }
+        .add-price-btn {
+            background-color: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .add-price-btn:hover {
+            background-color: #0097a7;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <h1>Generador de Enlaces Le Bardol</h1>
+        <h1>Generador de Enlaces Le Bardol</h1>
 
-      <div class="form-group radio-group">
-        <label>
-          <input type="radio" name="linkType" value="reminder" checked>
-          Recordatorio de Turno
-        </label>
-        <label>
-          <input type="radio" name="linkType" value="promotion">
-          Difusión / Promoción
-        </label>
-        <label>
-          <input type="radio" name="linkType" value="roulette">
-          Enlace de Ruleta
-        </label>
-      </div>
+        <div class="form-group">
+            <label for="linkType">Tipo de Enlace:</label>
+            <select id="linkType">
+                <option value="reminder">Recordatorio de Turno</option>
+                <option value="promotion">Promoción General</option>
+                <option value="roulette">Enlace de Ruleta</option>
+            </select>
+        </div>
 
-      <div id="reminderFields">
-        <div class="form-group">
-          <label for="clientName">Nombre del Cliente (opcional)</label>
-          <input type="text" id="clientName" placeholder="Ej: Juan Pérez">
+        <div id="reminderOptions" class="option-group">
+            <h3>Opciones de Recordatorio de Turno</h3>
+            <div class="form-group">
+                <label for="clientNameReminder">Nombre del Cliente:</label>
+                <input type="text" id="clientNameReminder" placeholder="Ej: Juan Pérez">
+            </div>
+            <div class="form-group">
+                <label for="appointmentDate">Fecha y Hora del Turno:</label>
+                <input type="datetime-local" id="appointmentDate">
+            </div>
+            <div class="form-group">
+                <label for="discountReminder">Descuento (opcional):</label>
+                <input type="text" id="discountReminder" placeholder="Ej: 15 (solo número)">
+            </div>
+            <div class="form-group">
+                <label for="treatmentReminder">Tratamiento (opcional):</label>
+                <input type="text" id="treatmentReminder" placeholder="Ej: Limpieza Facial">
+            </div>
+            <div class="form-group">
+                <label for="referrerDiscountReminder">Descuento Referente (opcional, por defecto 10%):</label>
+                <input type="text" id="referrerDiscountReminder" placeholder="Ej: 10">
+            </div>
+            <div class="form-group">
+                <label for="newClientDiscountReminder">Descuento Nuevo Cliente (opcional, por defecto 50%):</label>
+                <input type="text" id="newClientDiscountReminder" placeholder="Ej: 50">
+            </div>
         </div>
-        <div class="form-group">
-          <label for="appointmentDate">Fecha y Hora del Turno</label>
-          <input type="datetime-local" id="appointmentDate">
-        </div>
-        <div class="form-group">
-          <label for="referrerDiscount">Descuento para el Referente (%) (opcional)</label>
-          <input type="number" id="referrerDiscount" placeholder="Ej: 10" min="0" max="100">
-        </div>
-        <div class="form-group">
-          <label for="newClientDiscount">Descuento para el Nuevo Cliente (%) (opcional)</label>
-          <input type="number" id="newClientDiscount" placeholder="Ej: 50" min="0" max="100">
-        </div>
-      </div>
 
-      <div id="promotionFields" style="display: none;">
-        <div class="form-group">
-          <label for="promoClientName">Nombre para la Promo (opcional)</label>
-          <input type="text" id="promoClientName" placeholder="Ej: María">
+        <div id="promotionOptions" class="option-group" style="display: none;">
+            <h3>Opciones de Promoción General</h3>
+            <div class="form-group">
+                <label for="clientNamePromo">Nombre del Cliente (opcional):</label>
+                <input type="text" id="clientNamePromo" placeholder="Ej: Hola!">
+            </div>
+            <div class="form-group">
+                <label for="discountPromo">Descuento (opcional):</label>
+                <input type="text" id="discountPromo" placeholder="Ej: 20 (solo número)">
+            </div>
+            <div class="form-group">
+                <label for="treatmentPromo">Tratamiento (opcional):</label>
+                <input type="text" id="treatmentPromo" placeholder="Ej: Masaje Relajante">
+            </div>
+            <div class="form-group">
+                <label for="referrerDiscountDiffusion">Descuento Referente Difusión (opcional, por defecto 5%):</label>
+                <input type="text" id="referrerDiscountDiffusion" placeholder="Ej: 5">
+            </div>
+            <div class="form-group">
+                <label for="newClientDiscountDiffusion">Descuento Nuevo Cliente Difusión (opcional, por defecto 5%):</label>
+                <input type="text" id="newClientDiscountDiffusion" placeholder="Ej: 5">
+            </div>
         </div>
-        <div class="form-group">
-          <label for="diffusionReferrerDiscount">Descuento para el Referente (Difusión) (%) (opcional)</label>
-          <input type="number" id="diffusionReferrerDiscount" placeholder="Ej: 5" min="0" max="100">
-        </div>
-        <div class="form-group">
-          <label for="diffusionNewClientDiscount">Descuento para el Nuevo Cliente (Difusión) (%) (opcional)</label>
-          <input type="number" id="diffusionNewClientDiscount" placeholder="Ej: 5" min="0" max="100">
-        </div>
-        <div class="form-group">
-          <label for="treatmentType">Tipo de Tratamiento (opcional)</label>
-          <input type="text" id="treatmentType" placeholder="Ej: Limpieza Facial">
-        </div>
-      </div>
 
-      <div id="rouletteFields" style="display: none;">
-        <div class="form-group">
-          <label for="rouletteClientName">Nombre para la Ruleta (opcional)</label>
-          <input type="text" id="rouletteClientName" placeholder="Ej: Cliente Ruleta">
+        <div id="rouletteOptions" class="option-group" style="display: none;">
+            <h3>Opciones de Enlace de Ruleta</h3>
+            <div class="form-group">
+                <label for="clientNameRoulette">Nombre del Cliente (opcional):</label>
+                <input type="text" id="clientNameRoulette" placeholder="Ej: Hola!">
+            </div>
+            <div class="form-group">
+                <label for="rouletteDiscount">Descuento Ruleta (opcional, para redirigir con premio ganado):</label>
+                <input type="text" id="rouletteDiscount" placeholder="Ej: 20">
+            </div>
+            
+            <h4>Lista de Precios (Opcional)</h4>
+            <div id="priceListEntries">
+                <!-- Aquí se agregarán dinámicamente los campos de precio -->
+            </div>
+            <button type="button" class="add-price-btn" id="addPriceBtn">
+                <i class="fas fa-plus-circle"></i> Agregar Tratamiento y Precio
+            </button>
         </div>
-      </div>
-      
-      <button class="btn btn-generate" id="generateLinkBtn">Generar Enlace</button>
-      
-      <div class="generated-link-container" id="generatedLink">
-        Aquí aparecerá el enlace generado
-      </div>
-      
-      <button class="btn btn-copy" id="copyLinkBtn">Copiar Enlace</button>
+
+        <button class="btn btn-generate" id="generateLinkBtn">
+            <i class="fas fa-link"></i> Generar Enlace
+        </button>
+
+        <div id="generatedLinkContainer">
+            <p>Tu enlace generado:</p>
+            <p id="generatedLink"></p>
+            <button class="btn btn-copy" id="copyLinkBtn">
+                <i class="fas fa-copy"></i> Copiar Enlace
+            </button>
+        </div>
     </div>
 
-    <div class="copy-notification" id="copyNotification">
-      <i class="fas fa-check-circle"></i> Enlace copiado
+    <div id="notification" class="notification">
+        Enlace copiado al portapapeles.
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const linkTypeRadios = document.querySelectorAll('input[name="linkType"]');
-            const reminderFields = document.getElementById('reminderFields');
-            const promotionFields = document.getElementById('promotionFields');
-            const rouletteFields = document.getElementById('rouletteFields'); // Nuevo: campos de ruleta
-
-            const clientNameInput = document.getElementById('clientName');
-            const appointmentDateInput = document.getElementById('appointmentDate');
-            const referrerDiscountInput = document.getElementById('referrerDiscount'); 
-            const newClientDiscountInput = document.getElementById('newClientDiscount'); 
-
-            const promoClientNameInput = document.getElementById('promoClientName');
-            const diffusionReferrerDiscountInput = document.getElementById('diffusionReferrerDiscount'); 
-            const diffusionNewClientDiscountInput = document.getElementById('diffusionNewClientDiscount'); 
-            const treatmentTypeInput = document.getElementById('treatmentType');
-
-            const rouletteClientNameInput = document.getElementById('rouletteClientName'); // Nuevo: nombre para ruleta
-
+            const linkType = document.getElementById('linkType');
+            const reminderOptions = document.getElementById('reminderOptions');
+            const promotionOptions = document.getElementById('promotionOptions');
+            const rouletteOptions = document.getElementById('rouletteOptions');
             const generateLinkBtn = document.getElementById('generateLinkBtn');
-            const generatedLinkDiv = document.getElementById('generatedLink');
+            const generatedLinkContainer = document.getElementById('generatedLinkContainer');
+            const generatedLink = document.getElementById('generatedLink');
             const copyLinkBtn = document.getElementById('copyLinkBtn');
-            const copyNotification = document.getElementById('copyNotification');
+            const notification = document.getElementById('notification');
+            const addPriceBtn = document.getElementById('addPriceBtn');
+            const priceListEntries = document.getElementById('priceListEntries');
 
-            // URL base de tu aplicación principal desplegada en Netlify
-            const baseUrl = 'https://lebardol-app.netlify.app/index.html'; 
+            // Base URL of your index.html (adjust if needed, usually just the domain)
+            const baseUrl = window.location.origin + '/index.html'; 
 
-            function toggleLinkType(type) {
-                reminderFields.style.display = 'none';
-                promotionFields.style.display = 'none';
-                rouletteFields.style.display = 'none'; // Ocultar todos por defecto
+            function toggleOptions() {
+                reminderOptions.style.display = 'none';
+                promotionOptions.style.display = 'none';
+                rouletteOptions.style.display = 'none';
 
-                // Limpiar todos los campos al cambiar de tipo
-                clientNameInput.value = '';
-                appointmentDateInput.value = '';
-                referrerDiscountInput.value = ''; 
-                newClientDiscountInput.value = ''; 
-                promoClientNameInput.value = '';
-                diffusionReferrerDiscountInput.value = ''; 
-                diffusionNewClientDiscountInput.value = ''; 
-                treatmentTypeInput.value = '';
-                rouletteClientNameInput.value = ''; // Limpiar campo de ruleta
-
-                if (type === 'reminder') {
-                    reminderFields.style.display = 'block';
-                } else if (type === 'promotion') {
-                    promotionFields.style.display = 'block';
-                } else if (type === 'roulette') { // Mostrar campos de ruleta
-                    rouletteFields.style.display = 'block';
+                if (linkType.value === 'reminder') {
+                    reminderOptions.style.display = 'block';
+                } else if (linkType.value === 'promotion') {
+                    promotionOptions.style.display = 'block';
+                } else if (linkType.value === 'roulette') {
+                    rouletteOptions.style.display = 'block';
                 }
-
-                generatedLinkDiv.innerHTML = 'Aquí aparecerá el enlace generado'; 
-                copyLinkBtn.style.display = 'none';
             }
 
-            linkTypeRadios.forEach(radio => {
-                radio.addEventListener('change', (event) => {
-                    toggleLinkType(event.target.value);
+            function showNotification() {
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+
+            function addPriceEntry() {
+                const div = document.createElement('div');
+                div.classList.add('price-item');
+                div.innerHTML = `
+                    <input type="text" class="treatment-name" placeholder="Nombre Tratamiento">
+                    <input type="text" class="treatment-price" placeholder="Precio (ej: $15.000)">
+                    <button type="button" class="remove-price-btn">X</button>
+                `;
+                priceListEntries.appendChild(div);
+
+                div.querySelector('.remove-price-btn').addEventListener('click', () => {
+                    div.remove();
                 });
-            });
+            }
 
             generateLinkBtn.addEventListener('click', () => {
-                const selectedType = document.querySelector('input[name="linkType"]:checked').value;
+                let url = baseUrl + '?';
                 const params = [];
 
-                if (selectedType === 'reminder') {
-                    const clientName = clientNameInput.value.trim();
-                    const appointmentDate = appointmentDateInput.value.trim();
-                    const referrerDiscount = referrerDiscountInput.value.trim(); 
-                    const newClientDiscount = newClientDiscountInput.value.trim(); 
+                if (linkType.value === 'reminder') {
+                    const clientName = document.getElementById('clientNameReminder').value.trim();
+                    const appointmentDate = document.getElementById('appointmentDate').value;
+                    const discount = document.getElementById('discountReminder').value.trim();
+                    const treatment = document.getElementById('treatmentReminder').value.trim();
+                    const referrerDiscount = document.getElementById('referrerDiscountReminder').value.trim();
+                    const newClientDiscount = document.getElementById('newClientDiscountReminder').value.trim();
 
-                    if (clientName) {
-                        params.push(`nombre=${encodeURIComponent(clientName)}`);
-                    }
+                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
                     if (appointmentDate) {
-                        params.push(`fecha=${encodeURIComponent(appointmentDate)}`);
-                    } else {
-                        alert('Para un Recordatorio de Turno, la fecha y hora del turno son obligatorias.');
-                        return;
+                        const formattedDate = new Date(appointmentDate).toISOString();
+                        params.push(`fecha=${encodeURIComponent(formattedDate)}`);
                     }
-                    if (referrerDiscount) { 
-                        params.push(`descuentoReferente=${encodeURIComponent(referrerDiscount)}`);
-                    }
-                    if (newClientDiscount) { 
-                        params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
-                    }
+                    if (discount) params.push(`descuento=${encodeURIComponent(discount)}`);
+                    if (treatment) params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    if (referrerDiscount) params.push(`descuentoReferente=${encodeURIComponent(referrerDiscount)}`);
+                    if (newClientDiscount) params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
 
-                } else if (selectedType === 'promotion') { 
-                    const promoClientName = promoClientNameInput.value.trim();
-                    const diffusionReferrerDiscount = diffusionReferrerDiscountInput.value.trim(); 
-                    const diffusionNewClientDiscount = diffusionNewClientDiscountInput.value.trim(); 
-                    const treatment = treatmentTypeInput.value.trim();
+                } else if (linkType.value === 'promotion') {
+                    const clientName = document.getElementById('clientNamePromo').value.trim();
+                    const discount = document.getElementById('discountPromo').value.trim();
+                    const treatment = document.getElementById('treatmentPromo').value.trim();
+                    const referrerDiscountDiffusion = document.getElementById('referrerDiscountDiffusion').value.trim();
+                    const newClientDiscountDiffusion = document.getElementById('newClientDiscountDiffusion').value.trim();
 
-                    if (promoClientName) {
-                        params.push(`nombre=${encodeURIComponent(promoClientName)}`);
-                    }
-                    if (diffusionReferrerDiscount) { 
-                        params.push(`descuentoReferenteDifusion=${encodeURIComponent(diffusionReferrerDiscount)}`);
-                    }
-                    if (diffusionNewClientDiscount) { 
-                        params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(diffusionNewClientDiscount)}`);
-                    }
-                    if (treatment) {
-                        params.push(`tratamiento=${encodeURIComponent(treatment)}`);
-                    }
+                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
+                    if (discount) params.push(`descuento=${encodeURIComponent(discount)}`);
+                    if (treatment) params.push(`tratamiento=${encodeURIComponent(treatment)}`);
+                    if (referrerDiscountDiffusion) params.push(`descuentoReferenteDifusion=${encodeURIComponent(referrerDiscountDiffusion)}`);
+                    if (newClientDiscountDiffusion) params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(newClientDiscountDiffusion)}`);
+
+                } else if (linkType.value === 'roulette') {
+                    const clientName = document.getElementById('clientNameRoulette').value.trim();
+                    const rouletteDiscount = document.getElementById('rouletteDiscount').value.trim();
                     
-                    if (!promoClientName && !diffusionReferrerDiscount && !diffusionNewClientDiscount && !treatment) {
-                        alert('Para un enlace de difusión, ingresa al menos el nombre del cliente o una promoción (descuento/tratamiento).');
-                        return;
+                    params.push('roulette=true'); // Always include for roulette links
+                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
+                    if (rouletteDiscount) params.push(`rouletteDiscount=${encodeURIComponent(rouletteDiscount)}`);
+
+                    // Collect price list data
+                    const prices = [];
+                    document.querySelectorAll('.price-item').forEach(itemDiv => {
+                        const name = itemDiv.querySelector('.treatment-name').value.trim();
+                        const price = itemDiv.querySelector('.treatment-price').value.trim();
+                        if (name && price) {
+                            prices.push({ name: name, price: price });
+                        }
+                    });
+                    if (prices.length > 0) {
+                        params.push(`prices=${encodeURIComponent(JSON.stringify(prices))}`);
                     }
-                } else if (selectedType === 'roulette') { // Lógica para enlace de ruleta
-                    const rouletteClientName = rouletteClientNameInput.value.trim();
-                    if (rouletteClientName) {
-                        params.push(`nombre=${encodeURIComponent(rouletteClientName)}`);
-                    }
-                    params.push(`roulette=true`); // Parámetro para activar la ruleta
                 }
 
-                let generatedUrl = baseUrl;
-                if (params.length > 0) {
-                    generatedUrl += `?${params.join('&')}`;
-                }
-
-                generatedLinkDiv.innerHTML = ''; 
-                const linkElement = document.createElement('a');
-                linkElement.href = generatedUrl;
-                linkElement.textContent = generatedUrl;
-                linkElement.target = '_blank'; 
-
-                generatedLinkDiv.appendChild(linkElement); 
-                copyLinkBtn.style.display = 'inline-block'; 
+                url += params.join('&');
+                generatedLink.textContent = url;
+                generatedLinkContainer.style.display = 'block';
             });
 
             copyLinkBtn.addEventListener('click', () => {
-                const linkToCopy = generatedLinkDiv.querySelector('a').href;
-                if (linkToCopy) {
-                    navigator.clipboard.writeText(linkToCopy).then(() => {
-                        copyNotification.classList.add('show');
-                        setTimeout(() => {
-                            copyNotification.classList.remove('show');
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Error al copiar el texto: ', err);
-                        alert('Hubo un error al copiar el enlace. Inténtalo manualmente.');
-                    });
-                }
+                const linkText = generatedLink.textContent;
+                navigator.clipboard.writeText(linkText).then(() => {
+                    showNotification();
+                }).catch(err => {
+                    console.error('Error al copiar el enlace: ', err);
+                    // Fallback for older browsers or if clipboard API fails (e.g., in some iframes)
+                    const tempInput = document.createElement('textarea');
+                    tempInput.value = linkText;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                    showNotification();
+                });
             });
 
-            toggleLinkType('reminder'); // Mostrar campos de recordatorio por defecto al cargar
+            linkType.addEventListener('change', toggleOptions);
+            addPriceBtn.addEventListener('click', addPriceEntry);
+
+            // Initial display
+            toggleOptions();
         });
     </script>
-  </body>
+</body>
 </html>
