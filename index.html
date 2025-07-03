@@ -861,10 +861,6 @@
             const centerY = canvas.height / 2;
             const radius = Math.min(centerX, centerY) - 20; // Un poco más pequeño para el borde
 
-            // DEBUG: Draw a simple red rectangle to confirm canvas is working
-            // ctx.fillStyle = 'blue';
-            // ctx.fillRect(0, 0, 50, 50); // Draw a small blue square at top-left
-
             ctx.save();
             ctx.translate(centerX, centerY);
             ctx.rotate(rotation);
@@ -1231,20 +1227,44 @@
             { treatment: 'Lifting de Pestañas', price: '$3500' }
         ];
 
-        function populatePriceList() {
+        function populatePriceList(customPrices = null) {
             const priceListTableBody = document.getElementById('priceListTableBody');
             priceListTableBody.innerHTML = ''; // Limpiar tabla
-            priceList.forEach(item => {
-                const row = priceListTableBody.insertRow();
-                const cell1 = row.insertCell();
-                const cell2 = row.insertCell();
-                cell1.textContent = item.treatment;
-                cell2.textContent = item.price;
-            });
+
+            let pricesToDisplay = [];
+            if (customPrices && customPrices.length > 0) {
+                pricesToDisplay = customPrices;
+            } else if (!getUrlParameter('roulette')) { // Only use default if NOT a pure roulette link
+                pricesToDisplay = priceList;
+            }
+
+            if (pricesToDisplay.length > 0) {
+                document.getElementById('priceListSection').style.display = 'block'; // Ensure it's visible if there are prices
+                pricesToDisplay.forEach(item => {
+                    const row = priceListTableBody.insertRow();
+                    const cell1 = row.insertCell();
+                    const cell2 = row.insertCell();
+                    cell1.textContent = item.name || item.treatment; // Use 'name' from URL, 'treatment' from default
+                    cell2.textContent = item.price;
+                });
+            } else {
+                document.getElementById('priceListSection').style.display = 'none'; // Hide if no prices
+            }
         }
 
         // --- Lógica de la Página Principal (Existente) ---
         document.addEventListener('DOMContentLoaded', () => {
+            const urlPricesParam = getUrlParameter('prices');
+            let customPricesFromUrl = null;
+            if (urlPricesParam) {
+                try {
+                    customPricesFromUrl = JSON.parse(urlPricesParam);
+                } catch (e) {
+                    console.error('Error parsing prices from URL:', e);
+                    customPricesFromUrl = null; // Invalid JSON, revert to null
+                }
+            }
+
             // Mostrar u ocultar la sección de la ruleta si hay un parámetro 'ruleta' en la URL
             const showRoulette = getUrlParameter('roulette');
             const urlRouletteDiscount = getUrlParameter('rouletteDiscount'); // Obtener el descuento de ruleta de la URL
@@ -1254,13 +1274,19 @@
                 // Ocultar la oferta principal y la difusión si se muestra la ruleta
                 document.getElementById('mainOfferCard').style.display = 'none';
                 document.getElementById('referralPromoDiffusion').style.display = 'none';
-                document.getElementById('priceListSection').style.display = 'none'; // Ocultar lista de precios si se muestra la ruleta
+                
+                // Controla la visibilidad de la sección de precios
+                if (!customPricesFromUrl || customPricesFromUrl.length === 0) {
+                    document.getElementById('priceListSection').style.display = 'none';
+                } else {
+                    document.getElementById('priceListSection').style.display = 'block'; // Show if custom prices exist
+                }
                 checkRouletteStatus(); // Iniciar la lógica de la ruleta
             } else if (urlRouletteDiscount) { // Si es enlace de ruleta y SÍ trae un descuento predefinido
                 rouletteSection.style.display = 'none'; // Ocultar la sección de la ruleta para mostrar el premio directamente
                 document.getElementById('mainOfferCard').style.display = 'block'; 
                 document.getElementById('referralPromoDiffusion').style.display = 'block';
-                document.getElementById('priceListSection').style.display = 'block'; // Mostrar lista de precios
+                document.getElementById('priceListSection').style.display = 'block'; // Siempre mostrar lista de precios si hay un descuento predefinido
 
                 // Configurar el premio ganado directamente desde la URL
                 wonRoulettePrize = {
@@ -1294,7 +1320,7 @@
                 // Mostrar la oferta principal y la difusión por defecto
                 document.getElementById('mainOfferCard').style.display = 'block';
                 document.getElementById('referralPromoDiffusion').style.display = 'block';
-                document.getElementById('priceListSection').style.display = 'block'; // Mostrar lista de precios
+                document.getElementById('priceListSection').style.display = 'block'; // Siempre mostrar lista de precios por defecto
             }
 
 
@@ -1434,7 +1460,7 @@
             }
 
             startCountdown(); // Iniciar el contador de la oferta principal
-            populatePriceList(); // Llenar la lista de precios
+            populatePriceList(customPricesFromUrl); // Llenar la lista de precios, pasando los de la URL si existen
             // checkRouletteStatus() se llama al inicio del bloque if/else para la ruleta
         });
     </script>
