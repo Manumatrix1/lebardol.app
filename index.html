@@ -907,16 +907,21 @@
 
                 // Dibujar texto del segmento
                 ctx.save();
-                ctx.rotate(angle + arc / 2); // Rotar al centro del segmento
+                // Rotar el contexto para que el texto esté alineado con el segmento
+                ctx.rotate(angle + arc / 2); 
                 ctx.fillStyle = '#4a2c5e'; // Color del texto
                 
                 // Tamaño de fuente responsivo: 5.5% del ancho del canvas, con un mínimo de 18px y un máximo de 30px
                 const fontSize = Math.max(18, Math.min(30, canvas.width * 0.055)); 
                 ctx.font = `bold ${fontSize}px sans-serif`; 
-                ctx.textAlign = 'right'; // El texto se alinea a la derecha del punto de dibujo
+                ctx.textAlign = 'center'; // Centrar el texto en el punto de dibujo
                 ctx.textBaseline = 'middle';
-                // Posicionar el texto un poco más hacia el centro para evitar el recorte
-                ctx.fillText(segments[i].text, radius * 0.65, 0); // Ajustado a 0.65 para más espacio
+                
+                // Posicionar el texto a una distancia del centro.
+                // Si el texto es largo, `radius * 0.5` podría ser mejor.
+                // Si el texto es corto, `radius * 0.7` podría ser mejor.
+                // Ajustamos a 0.6 para un balance.
+                ctx.fillText(segments[i].text, radius * 0.6, 0); 
                 ctx.restore();
             }
             ctx.restore();
@@ -1328,7 +1333,7 @@
                 rouletteSection.style.display = 'block';
                 // Ocultar la oferta principal si se muestra la ruleta
                 document.getElementById('mainOfferCard').style.display = 'none';
-                // La sección de difusión (referralPromoDiffusion) se mantiene visible intencionalmente
+                document.getElementById('referralPromoDiffusion').style.display = 'block'; // Asegurar que la difusión esté visible
                 
                 // Controla la visibilidad de la sección de precios
                 if (!customPricesFromUrl || customPricesFromUrl.length === 0) {
