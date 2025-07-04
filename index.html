@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Girá y Ganá en Le Bardol</title>
+    <title>Le Bardol Estética center</title> <!-- Título actualizado -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Librería para el efecto de confeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -39,7 +39,7 @@
             position: relative;
         }
         
-        /* Sección del encabezado */
+        /* Sección del encabezado (oculto según tu CSS original) */
         .header {
             background: linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 100%);
             color: white;
@@ -76,7 +76,7 @@
             border-radius: 15px;
             margin-bottom: 20px;
             text-align: center;
-            display: none; 
+            display: none; /* Se mostrará con JS */
             flex-direction: column;
             align-items: center;
             gap: 15px;
@@ -123,7 +123,7 @@
             position: relative;
             width: 90%;
             max-width: 380px;
-            margin: 0;
+            margin: 20px 0 0; /* Añadido margen superior para bajar la ruleta */
             aspect-ratio: 1 / 1;
             border-radius: 50%;
             box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
@@ -247,13 +247,80 @@
         .header, .form-container, .offer-card, .footer, .whatsapp-icon, .referral-promo-diffusion, .price-list-section {
             display: none;
         }
+
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-content h3 {
+            color: #4a2c5e;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .custom-modal-content p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .custom-modal-content button {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .custom-modal-content button:hover {
+            background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <!-- SECCIÓN DE RULETA DE CAMPAÑA -->
         <div class="roulette-section" id="rouletteSection">
-            <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Bardol y ganá! 🎁</h1>
+            <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Le Bardol Estética center y ganá! 🎁</h1> <!-- Título actualizado -->
             <p class="campaign-subtitle">Podés ganar zonas GRATIS o un 30% OFF en tu siguiente zona.</p>
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
@@ -289,12 +356,21 @@
         <!-- FIN SECCIÓN DE RULETA -->
     </div>
     
+    <!-- Ventana modal personalizada -->
+    <div id="customModalOverlay" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button id="modalCloseBtn">Entendido</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- CONFIGURACIÓN DE LA CAMPAÑA ---
-            const señaAmount = 5000;
-            const mercadopagoLinkUrl = `https://mpago.la/your-link`; // <-- REEMPLAZAR con tu link de MP
-            const whatsappNumber = '5493415216025'; // <-- REEMPLAZAR con tu número
+            const señaAmount = 8000; // Monto de la seña actualizado a 8000
+            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`; // Link de Mercado Pago actualizado
+            const whatsappNumber = '5493415216025'; // Tu número de WhatsApp
 
             // --- ELEMENTOS DEL DOM ---
             const rouletteSection = document.getElementById('rouletteSection');
@@ -308,6 +384,12 @@
             const upsellSection = document.getElementById('upsellSection');
             const upsellBtn = document.getElementById('upsellBtn');
             const shareBtn = document.getElementById('shareBtn');
+
+            // Modal elements
+            const customModalOverlay = document.getElementById('customModalOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
 
             // --- PREMIOS DE LA RULETA ---
             const segments = [
@@ -325,7 +407,7 @@
 
             // --- ESTADO DE LA RULETA (guardado en localStorage) ---
             let state = {
-                spinsLeft: 1,
+                spinsLeft: 3, // Inicializado a 3 tiros
                 lastSpinTimestamp: 0,
                 prize: null,
                 prizeEndTime: 0,
@@ -339,12 +421,33 @@
             // --- FUNCIONES PRINCIPALES ---
 
             /**
+             * Muestra una ventana modal personalizada.
+             * @param {string} title - El título de la modal.
+             * @param {string} message - El mensaje a mostrar.
+             */
+            function showCustomModal(title, message) {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                customModalOverlay.classList.add('active');
+            }
+
+            /**
+             * Oculta la ventana modal personalizada.
+             */
+            function hideCustomModal() {
+                customModalOverlay.classList.remove('active');
+            }
+
+            /**
              * Carga el estado desde localStorage o inicializa uno nuevo.
              */
             function loadState() {
                 const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
                 if (savedState) {
                     state = savedState;
+                } else {
+                    // Si no hay estado guardado, inicializa con 3 tiros
+                    state.spinsLeft = 3;
                 }
                 // Simula que los premios bajan con el tiempo
                 const now = Date.now();
@@ -390,16 +493,41 @@
                     ctx.save();
                     ctx.rotate(angle + arc / 2);
                     ctx.fillStyle = '#ffffff';
-                    const fontSize = radius * 0.11;
+                    const fontSize = 12; // Tamaño de fuente fijo a 12px
                     ctx.font = `bold ${fontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     
                     const text = segments[i].text;
                     const words = text.split(' ');
-                    if (text.length > 12) { // Dividir texto largo
-                        ctx.fillText(words.slice(0, words.length / 2).join(' '), radius * 0.6, -fontSize / 2);
-                        ctx.fillText(words.slice(words.length / 2).join(' '), radius * 0.6, fontSize / 2);
+                    // Ajuste para que el texto no se vea tan apretado
+                    if (words.length > 1 && text.length > 10) { // Si hay varias palabras y el texto es largo
+                        let line1 = '';
+                        let line2 = '';
+                        let currentLine = '';
+                        for (let j = 0; j < words.length; j++) {
+                            if (ctx.measureText(currentLine + words[j]).width < radius * 1.0) { // Ajusta este multiplicador si es necesario
+                                currentLine += (j > 0 ? ' ' : '') + words[j];
+                            } else {
+                                if (line1 === '') {
+                                    line1 = currentLine;
+                                    currentLine = words[j];
+                                } else {
+                                    line2 = currentLine;
+                                    currentLine = words[j];
+                                }
+                            }
+                        }
+                        if (line1 === '') { // Si todo cabe en una línea
+                            ctx.fillText(currentLine, radius * 0.6, 0);
+                        } else if (line2 === '') { // Si cabe en dos líneas
+                            ctx.fillText(line1, radius * 0.6, -fontSize / 2);
+                            ctx.fillText(currentLine, radius * 0.6, fontSize / 2);
+                        } else { // Si necesita más de dos líneas (caso raro, pero para prevenir)
+                            ctx.fillText(line1, radius * 0.6, -fontSize);
+                            ctx.fillText(line2, radius * 0.6, 0);
+                            ctx.fillText(currentLine, radius * 0.6, fontSize);
+                        }
                     } else {
                         ctx.fillText(text, radius * 0.6, 0);
                     }
@@ -413,7 +541,7 @@
              */
             function spin() {
                 if (state.spinsLeft <= 0) {
-                    alert("Ya utilizaste tu tiro. ¡Compartí para ganar otro!");
+                    showCustomModal("¡Sin tiros disponibles!", "Ya utilizaste tus tiros. ¡Compartí en WhatsApp para ganar otro!");
                     return;
                 }
 
@@ -525,13 +653,17 @@
                 spinBtn.disabled = state.spinsLeft <= 0;
                 if (state.spinsLeft <= 0) {
                     spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR';
+                } else {
+                    spinBtn.textContent = '👉 GIRAR LA RULETA AHORA';
                 }
 
                 // Botón de reservar/reclamar
                 reserveBtn.style.display = state.prize ? 'block' : 'none';
                 
                 // Botón de compartir
-                shareBtn.style.display = state.spinsLeft <= 0 ? 'block' : 'none';
+                // Se muestra si no quedan tiros o si ya se ganó un premio y se quiere compartir para más tiros
+                shareBtn.style.display = (state.spinsLeft <= 0 || state.prize) ? 'block' : 'none';
+
 
                 // Contador de premios
                 prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
@@ -562,16 +694,24 @@
             spinBtn.addEventListener('click', spin);
 
             reserveBtn.addEventListener('click', () => {
-                let message;
                 if (state.prize.needsSeña) {
-                    message = `¡Hola! Gané "${state.prize.description}" en la ruleta. Quiero pagar la seña de $${señaAmount} para activar mi premio.`;
-                    // Idealmente, aquí se abre el link de MercadoPago.
-                    // window.open(mercadopagoLinkUrl, '_blank');
+                    // Abre el link de Mercado Pago directamente para la seña
+                    window.open(mercadopagoLinkUrl, '_blank');
+                    // Opcional: Podrías añadir un mensaje de confirmación o un seguimiento aquí
+                    showCustomModal("¡Listo para reservar!", `Has ganado "${state.prize.description.toUpperCase()}". Haz clic en "Entendido" para ir a WhatsApp y confirmar tu reserva.`);
+                    
+                    // Después de abrir MP, redirige a WhatsApp para confirmar
+                    setTimeout(() => {
+                        const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y ya pagué la seña de $${señaAmount}. Quiero confirmar mi reserva.`;
+                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                    }, 1000); // Pequeño retraso para que el usuario vea la modal antes de ir a WhatsApp
                 } else {
-                    message = `¡Hola! Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
+                    // Para premios que no necesitan seña, va directo a WhatsApp
+                    const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
+                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
                 }
-                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-                window.open(whatsappUrl, '_blank');
             });
 
             upsellBtn.addEventListener('click', () => {
@@ -588,11 +728,19 @@
                 
                 // Dar un tiro extra después de intentar compartir
                 setTimeout(() => {
-                    alert("¡Gracias por compartir! Ganaste un tiro extra.");
+                    showCustomModal("¡Gracias por compartir!", "¡Ganaste un tiro extra en la ruleta!");
                     state.spinsLeft++;
                     saveState();
                     updateUI();
                 }, 2000);
+            });
+
+            // Event listener para cerrar la modal
+            modalCloseBtn.addEventListener('click', hideCustomModal);
+            customModalOverlay.addEventListener('click', (e) => {
+                if (e.target === customModalOverlay) {
+                    hideCustomModal();
+                }
             });
 
             window.addEventListener('resize', resizeCanvas);
