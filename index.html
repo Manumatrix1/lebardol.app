@@ -184,7 +184,7 @@
         }
         
         .btn-reserve {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); /* Rojo más llamativo */
             color: white;
             display: none;
         }
@@ -338,6 +338,23 @@
             background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
         }
 
+        /* Estilos para el campo de nombre */
+        .user-name-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .user-name-input.required {
+            border: 2px solid #ef4444; /* Rojo */
+        }
+
+        .user-name-input.filled {
+            border: 2px solid #22c55e; /* Verde */
+        }
+
     </style>
 </head>
 <body>
@@ -350,8 +367,8 @@
 
             <!-- Campo para el nombre del usuario -->
             <div style="margin-bottom: 15px; width: 90%; max-width: 380px;">
-                <label for="userName" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a2c5e; font-size: 14px;">Tu nombre (para personalizar el mensaje):</label>
-                <input type="text" id="userName" placeholder="Ej: Papu" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;">
+                <label for="userName" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a2c5e; font-size: 14px;">Tu nombre completo (para personalizar el mensaje):</label>
+                <input type="text" id="userName" class="user-name-input" placeholder="Ej: Papu Gómez" required>
             </div>
 
             <div class="roulette-canvas-container">
@@ -495,6 +512,7 @@
                 if (savedUserName) {
                     userNameInput.value = savedUserName;
                 }
+                updateUserNameInputStyle(); // Actualizar el estilo del input al cargar
 
                 // Simula que los premios bajan con el tiempo
                 const now = Date.now();
@@ -517,6 +535,19 @@
              */
             function saveUserName() {
                 localStorage.setItem('bardolUserName', userNameInput.value);
+            }
+
+            /**
+             * Actualiza el estilo del input de nombre (rojo/verde).
+             */
+            function updateUserNameInputStyle() {
+                if (userNameInput.value.trim() === '') {
+                    userNameInput.classList.add('required');
+                    userNameInput.classList.remove('filled');
+                } else {
+                    userNameInput.classList.add('filled');
+                    userNameInput.classList.remove('required');
+                }
             }
 
             /**
@@ -579,6 +610,13 @@
              * Anima el giro de la ruleta.
              */
             function spin() {
+                if (userNameInput.value.trim() === '') {
+                    showCustomModal("¡Falta tu nombre!", "Por favor, ingresa tu nombre completo para poder compartir y participar.");
+                    userNameInput.focus(); // Poner el foco en el campo
+                    updateUserNameInputStyle(); // Asegurar que el borde esté rojo
+                    return;
+                }
+
                 if (state.spinsLeft <= 0) {
                     showCustomModal("¡Sin tiros disponibles!", "Ya utilizaste tus tiros. ¡Compartí en WhatsApp para ganar otro!");
                     return;
@@ -634,9 +672,9 @@
                 if (state.prize.needsSeña) {
                     state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutos
                     startPrizeTimer();
-                    reserveBtn.textContent = `RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
+                    reserveBtn.innerHTML = `🎁 RESERVÁ TU LUGAR (SEÑA $${señaAmount}) 🎁`; // Texto con emoji
                 } else {
-                    reserveBtn.textContent = `RECLAMAR MI PREMIO`;
+                    reserveBtn.innerHTML = `🎁 RECLAMAR MI PREMIO 🎁`; // Texto con emoji
                 }
                 
                 saveState();
@@ -763,13 +801,16 @@
 
             shareBtn.addEventListener('click', () => {
                 const userName = userNameInput.value.trim();
-                let referrerNamePart = '';
-                if (userName) {
-                    referrerNamePart = ` (de parte de ${userName})`;
+                // Validar que el nombre no esté vacío antes de compartir
+                if (userName === '') {
+                    showCustomModal("¡Falta tu nombre!", "Por favor, ingresa tu nombre completo para poder compartir y desbloquear beneficios.");
+                    userNameInput.focus();
+                    updateUserNameInputStyle(); // Asegurar que el borde esté rojo
+                    return;
                 }
 
                 // Mensaje de WhatsApp para compartir con el amigo, incluyendo la instrucción para el amigo
-                const messageToFriend = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName || 'un amigo'} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
+                const messageToFriend = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
                 
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(messageToFriend)}`;
                 window.open(whatsappUrl, '_blank');
@@ -792,7 +833,10 @@
             });
 
             window.addEventListener('resize', resizeCanvas);
-            userNameInput.addEventListener('input', saveUserName); // Guardar el nombre al escribir
+            userNameInput.addEventListener('input', () => {
+                saveUserName(); // Guardar el nombre al escribir
+                updateUserNameInputStyle(); // Actualizar el estilo del input
+            });
 
             // --- INICIALIZACIÓN ---
             loadState();
