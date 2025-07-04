@@ -911,17 +911,20 @@
                 ctx.rotate(angle + arc / 2); 
                 ctx.fillStyle = '#4a2c5e'; // Color del texto
                 
-                // Tamaño de fuente responsivo: 5.5% del ancho del canvas, con un mínimo de 18px y un máximo de 30px
-                const fontSize = Math.max(18, Math.min(30, canvas.width * 0.055)); 
+                // Ajuste del tamaño de la fuente para que quepa mejor
+                // Calcula un tamaño de fuente basado en el radio, con límites mínimos y máximos
+                const minFontSize = 14; // Tamaño mínimo absoluto para legibilidad
+                const maxFontSize = 24; // Tamaño máximo para evitar desbordamiento en pantallas grandes
+                const calculatedFontSize = radius * 0.12; // Ajuste este multiplicador para controlar el tamaño
+                const fontSize = Math.max(minFontSize, Math.min(maxFontSize, calculatedFontSize));
+                
                 ctx.font = `bold ${fontSize}px sans-serif`; 
                 ctx.textAlign = 'center'; // Centrar el texto en el punto de dibujo
                 ctx.textBaseline = 'middle';
                 
                 // Posicionar el texto a una distancia del centro.
-                // Si el texto es largo, `radius * 0.5` podría ser mejor.
-                // Si el texto es corto, `radius * 0.7` podría ser mejor.
-                // Ajustamos a 0.6 para un balance.
-                ctx.fillText(segments[i].text, radius * 0.6, 0); 
+                // Ajustar el multiplicador (0.65) para mover el texto más hacia el borde o el centro
+                ctx.fillText(segments[i].text, radius * 0.65, 0); 
                 ctx.restore();
             }
             ctx.restore();
