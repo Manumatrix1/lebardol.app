@@ -558,7 +558,7 @@
             if (savedWonPrize && savedWonPrize !== 'null') wonPrize = JSON.parse(savedWonPrize);
             if (savedPrizeEndTime) prizeEndTime = parseInt(savedPrizeEndTime, 10);
             if (savedPrizeSeñaPaid) prizeSeñaPaid = (savedPrizeSeñaPaid === 'true');
-            if (savedPrizesAvailable) prizesAvailable = parseInt(savedPazesAvailable, 10);
+            if (savedPrizesAvailable) prizesAvailable = parseInt(savedPrizesAvailable, 10); // FIX: Typo corrected here
             if (savedRouletteSpinsLeft) rouletteSpinsLeft = parseInt(savedRouletteSpinsLeft, 10);
             else rouletteSpinsLeft = 1; // Si no hay giros guardados, iniciar con 1
         }
@@ -587,6 +587,7 @@
                 rouletteCanvas.width = containerWidth;
                 rouletteCanvas.height = containerWidth;
             }
+            // console.log('Canvas resized to:', rouletteCanvas.width, 'x', rouletteCanvas.height); // DEBUG
             drawRoulette(currentRotation);
         }
 
@@ -847,8 +848,7 @@
         startRouletteBtn.addEventListener('click', () => {
             landingScreen.style.display = 'none';
             rouletteScreen.style.display = 'flex'; /* Usar flex para centrar contenido */
-            resizeCanvas(); // Ajustar el tamaño del canvas al mostrar la ruleta
-            // No se inicia el giro automáticamente aquí, el usuario debe hacer clic en "Girar Ruleta"
+            setTimeout(resizeCanvas, 0); // MODIFICADO: Llamada con setTimeout
         });
 
         spinBtn.addEventListener('click', () => {
@@ -1005,7 +1005,7 @@
         window.onload = function() {
             loadGameState();
             updatePrizesAvailableDisplay();
-            resizeCanvas(); // Ajustar el tamaño del canvas al cargar
+            setTimeout(resizeCanvas, 0); // MODIFICADO: Llamada con setTimeout
             window.addEventListener('resize', resizeCanvas); // Ajustar el tamaño del canvas al redimensionar
             
             // Lógica para mostrar la pantalla inicial o la ruleta si ya hay un premio activo
