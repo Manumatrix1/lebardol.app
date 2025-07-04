@@ -594,7 +594,7 @@
                 // Dibujar texto del segmento
                 ctx.save();
                 ctx.rotate(angle + arc / 2);
-                ctx.fillStyle = '#4a2c5e';
+                ctx.fillStyle = '#FFFFFF'; // Letra blanca
                 
                 // Ajuste del tamaño de la fuente para que quepa mejor
                 // Se ha ajustado el multiplicador y los límites para una mejor visibilidad
@@ -607,8 +607,8 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                // Añadir sombra al texto para mejor contraste
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                // Añadir sombra negra al texto para mejor contraste
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)'; // Sombra negra más opaca
                 ctx.shadowBlur = 3;
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
@@ -821,7 +821,32 @@
             // No se inicia el giro automáticamente aquí, el usuario debe hacer clic en "Girar Ruleta"
         });
 
-        spinBtn.addEventListener('click', spinRoulette);
+        spinBtn.addEventListener('click', () => {
+            if (rouletteSpinsLeft > 0) { // Usar rouletteSpinsLeft aquí
+                loadingSpinner.style.display = 'block';
+                spinBtn.disabled = true;
+                rouletteSpinsLeft--; // Decrementar el giro al inicio
+                saveGameState(); // Guardar el estado de los giros
+                updateUI(); // Actualizar la UI inmediatamente
+                
+                const randomSegmentIndex = Math.floor(Math.random() * numSegments);
+                
+                let targetAngleRelativeToZero = (1.5 * Math.PI - (randomSegmentIndex * arc + arc / 2));
+                targetAngleRelativeToZero = (targetAngleRelativeToZero % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+
+                const extraRotations = 5; // Minimum 5 full spins for visual effect
+                let angleToReach = targetAngleRelativeToZero - (currentRotation % (2 * Math.PI));
+                if (angleToReach < 0) {
+                    angleToReach += (2 * Math.PI); // Ensure it spins forward to the target
+                }
+                const absoluteFinalAngle = currentRotation + angleToReach + (extraRotations * 2 * Math.PI);
+
+                animateRoulette(absoluteFinalAngle, 6000); // 6 seconds duration
+            } else {
+                updateUI(); // Asegurarse de que el mensaje de bloqueo se muestre
+            }
+        });
+
 
         markSeñaPaidBtn.addEventListener('click', () => {
             prizeSeñaPaid = true;
