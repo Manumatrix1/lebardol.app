@@ -134,7 +134,7 @@
         .roulette-canvas-container {
             position: relative;
             width: 100%; /* Ocupa todo el ancho disponible */
-            /* Eliminado max-width para que no restrinja el tamaño en móviles */
+            max-width: 500px; /* Ancho máximo en pantallas grandes */
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
             height: 0; /* Collapse height, padding-bottom defines it */
             margin: 30px auto;
@@ -393,7 +393,7 @@
                 font-size: 1.4rem;
             }
             .roulette-canvas-container {
-                width: 95vw; /* Ocupa el 95% del ancho del viewport */
+                width: 90%; /* Ocupa el 90% del ancho del contenedor padre */
                 margin: 20px auto; /* Centrar después de ajustar el ancho */
             }
         }
@@ -479,12 +479,12 @@
         // Definición de los segmentos de la ruleta
         const segments = [
             { text: 'Axilas GRATIS', type: 'free_zone', value: 'Axilas', description: 'Axilas GRATIS', needsSeña: true },
-            { text: 'Media Pierna GRATIS', type: 'free_zone', value: 'Media Pierna', description: 'Media Pierna GRATIS', needsSeña: true },
-            { text: '30% OFF Cualquier Zona', type: 'discount', value: 30, description: '30% OFF en cualquier zona', needsSeña: true },
-            { text: 'Zona Pequeña GRATIS', type: 'free_zone', value: 'Zona Pequeña', description: 'Zona pequeña a elección (bozo, mentón, línea alba, manos)', needsSeña: true },
+            { text: 'Media Pierna\nGRATIS', type: 'free_zone', value: 'Media Pierna', description: 'Media Pierna GRATIS', needsSeña: true },
+            { text: '30% OFF\nCualquier Zona', type: 'discount', value: 30, description: '30% OFF en cualquier zona', needsSeña: true },
+            { text: 'Zona Pequeña\nGRATIS', type: 'free_zone', value: 'Zona Pequeña', description: 'Zona pequeña a elección (bozo, mentón, línea alba, manos)', needsSeña: true },
             { text: '2x1 en Sesión', type: '2x1', value: 'Sesión', description: '2x1 en sesión', needsSeña: true },
             { text: 'Cupón Sorpresa!', type: 'surprise_coupon', description: '¡Ganaste un cupón sorpresa!', needsSeña: false },
-            { text: '10% OFF Asegurado', type: 'discount', value: 10, description: '10% OFF asegurado', needsSeña: false }
+            { text: '10% OFF\nAsegurado', type: 'discount', value: 10, description: '10% OFF asegurado', needsSeña: false }
         ];
 
         // Paleta de colores inspirada en el logo y los ejemplos, más vibrante
@@ -597,10 +597,9 @@
                 ctx.fillStyle = '#FFFFFF'; // Letra blanca
                 
                 // Ajuste del tamaño de la fuente para que quepa mejor
-                // Se ha ajustado el multiplicador y los límites para una mejor visibilidad
-                const minFontSize = 16; // Aumentado para mayor legibilidad en móviles
-                const maxFontSize = 24; // Ajustado para evitar desbordamiento en pantallas grandes
-                const calculatedFontSize = radius * 0.09; // Multiplicador ajustado para achicar la letra
+                const minFontSize = 18; // Aumentado para mayor legibilidad
+                const maxFontSize = 28; // Ajustado para evitar desbordamiento
+                const calculatedFontSize = radius * 0.12; // Multiplicador ajustado
                 const fontSize = Math.max(minFontSize, Math.min(maxFontSize, calculatedFontSize));
                 
                 ctx.font = `bold ${fontSize}px sans-serif`;
@@ -613,9 +612,16 @@
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
 
-                // Posicionar el texto a una distancia del centro.
-                // Ajustar el multiplicador (0.55) para mover el texto más hacia el borde o el centro
-                ctx.fillText(segments[i].text, radius * 0.55, 0); 
+                const lines = segments[i].text.split('\n');
+                const lineHeight = fontSize * 1.1; // Espacio entre líneas
+                // Ajustar la posición Y inicial para centrar el bloque de texto verticalmente
+                let textY = -((lines.length - 1) * lineHeight / 2); 
+
+                for (let j = 0; j < lines.length; j++) {
+                    // Posicionar el texto a una distancia del centro, empujándolo más hacia el borde.
+                    ctx.fillText(lines[j], radius * 0.65, textY); 
+                    textY += lineHeight; // Mover a la siguiente línea
+                }
                 ctx.restore();
             }
             ctx.restore();
