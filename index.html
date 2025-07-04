@@ -133,8 +133,8 @@
         /* Contenedor de la ruleta */
         .roulette-canvas-container {
             position: relative;
-            width: 100%;
-            max-width: 500px; /* Aumentado para hacer la ruleta más grande */
+            width: 100%; /* Ocupa todo el ancho disponible */
+            max-width: 500px; /* Ancho máximo en pantallas grandes */
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
             height: 0;
             margin: 30px auto;
@@ -394,7 +394,7 @@
                 font-size: 1.4rem;
             }
             .roulette-canvas-container {
-                max-width: 300px;
+                max-width: 90vw; /* Ocupa el 90% del ancho del viewport */
             }
         }
     </style>
@@ -598,9 +598,9 @@
                 
                 // Ajuste del tamaño de la fuente para que quepa mejor
                 // Se ha ajustado el multiplicador y los límites para una mejor visibilidad
-                const minFontSize = 9; // Reducido para permitir letras más pequeñas
-                const maxFontSize = 14; // Reducido para evitar desbordamiento
-                const calculatedFontSize = radius * 0.07; // Multiplicador ajustado para achicar la letra
+                const minFontSize = 14; // Aumentado para mayor legibilidad en móviles
+                const maxFontSize = 20; // Ajustado para evitar desbordamiento en pantallas grandes
+                const calculatedFontSize = radius * 0.09; // Multiplicador ajustado para achicar la letra
                 const fontSize = Math.max(minFontSize, Math.min(maxFontSize, calculatedFontSize));
                 
                 ctx.font = `bold ${fontSize}px sans-serif`;
@@ -822,7 +822,12 @@
         });
 
         spinBtn.addEventListener('click', () => {
-            if (rouletteSpinsLeft > 0) { // Usar rouletteSpinsLeft aquí
+            // Asumiendo que rouletteSpinsLeft es una variable global o de alcance superior
+            // Si la ruleta está en el mismo archivo que el código principal, esta variable
+            // puede ser la misma que `spinsLeft` del otro script, o una nueva.
+            // Por el contexto, parece que esta ruleta es una sección separada,
+            // así que usaremos `rouletteSpinsLeft` como su contador interno.
+            if (rouletteSpinsLeft > 0) {
                 loadingSpinner.style.display = 'block';
                 spinBtn.disabled = true;
                 rouletteSpinsLeft--; // Decrementar el giro al inicio
