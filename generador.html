@@ -247,7 +247,7 @@
                 <input type="text" id="rouletteDiscount" placeholder="Ej: 20">
             </div>
             
-            <h4>Lista de Precios (Opcional)</h4>
+            <h4>Lista de Precios (Opcional - No se incluye en el enlace por límite de caracteres)</h4>
             <div id="priceListEntries">
                 <!-- Aquí se agregarán dinámicamente los campos de precio -->
             </div>
@@ -404,18 +404,8 @@
                     if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
                     if (rouletteDiscount) params.push(`rouletteDiscount=${encodeURIComponent(rouletteDiscount)}`);
 
-                    // Recopilar datos de la lista de precios
-                    const prices = [];
-                    document.querySelectorAll('.price-item').forEach(itemDiv => {
-                        const name = itemDiv.querySelector('.treatment-name').value.trim();
-                        const price = itemDiv.querySelector('.treatment-price').value.trim();
-                        if (name && price) {
-                            prices.push({ name: name, price: price });
-                        }
-                    });
-                    if (prices.length > 0) {
-                        params.push(`prices=${encodeURIComponent(JSON.stringify(prices))}`);
-                    }
+                    // NOTA: La lista de precios no se incluye en la URL para evitar errores 413 (URL demasiado larga).
+                    // Si necesitas esta información en la página de la ruleta, deberá ser gestionada de otra manera (ej. datos fijos en la página, o una base de datos).
                 }
 
                 let finalUrl = currentBaseUrl + '/' + targetPage; // Construir la URL final con la página de destino
