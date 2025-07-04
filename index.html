@@ -143,19 +143,21 @@
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
             height: 0; /* Colapsa la altura, padding-bottom la define */
             margin: auto; /* Centra la ruleta dentro de su contenedor flex */
-            border: none; 
-            box-shadow: none;
+            /* RESTAURADO: Borde y sombra para la ruleta */
+            border: 5px solid #FFC0CB; /* Borde para el área de la ruleta */
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
             border-radius: 50%; /* Asegura que el contenedor siga siendo circular */
             overflow: hidden; /* Importante para que el canvas se recorte en círculo */
             
-            /* NUEVO: Propiedades Flexbox para centrar el canvas dentro de este contenedor */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            /* REVERTIDO: Vuelve a block, el canvas absoluto se encargará del llenado */
+            display: block; 
         }
 
         canvas {
-            /* Eliminadas propiedades de posicionamiento absoluto */
+            /* RESTAURADO: Posicionamiento absoluto para que llene el contenedor */
+            position: absolute; 
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             display: block;
@@ -556,7 +558,7 @@
             if (savedWonPrize && savedWonPrize !== 'null') wonPrize = JSON.parse(savedWonPrize);
             if (savedPrizeEndTime) prizeEndTime = parseInt(savedPrizeEndTime, 10);
             if (savedPrizeSeñaPaid) prizeSeñaPaid = (savedPrizeSeñaPaid === 'true');
-            if (savedPrizesAvailable) prizesAvailable = parseInt(savedPrizesAvailable, 10);
+            if (savedPrizesAvailable) prizesAvailable = parseInt(savedPazesAvailable, 10);
             if (savedRouletteSpinsLeft) rouletteSpinsLeft = parseInt(savedRouletteSpinsLeft, 10);
             else rouletteSpinsLeft = 1; // Si no hay giros guardados, iniciar con 1
         }
