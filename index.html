@@ -763,14 +763,15 @@
 
             shareBtn.addEventListener('click', () => {
                 const userName = userNameInput.value.trim();
-                let personalizedGreeting = '';
+                let referrerNamePart = '';
                 if (userName) {
-                    personalizedGreeting = `Soy ${userName} y `;
+                    referrerNamePart = ` (de parte de ${userName})`;
                 }
 
-                // Mensaje de WhatsApp para compartir con los nuevos beneficios
-                const message = `${personalizedGreeting}💥 ¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré y ahora podés ganar 10% OFF para vos y 50% OFF para tu amigo! ${window.location.href}`;
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                // Mensaje de WhatsApp para compartir con el amigo, incluyendo la instrucción para el amigo
+                const messageToFriend = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName || 'un amigo'} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
+                
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(messageToFriend)}`;
                 window.open(whatsappUrl, '_blank');
                 
                 // Dar un tiro extra después de intentar compartir
