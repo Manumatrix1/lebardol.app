@@ -102,9 +102,16 @@
             color: white;
         }
 
+        /* Estilo específico para el botón de Mercado Pago */
         .btn-tertiary {
-            background: linear-gradient(135deg, #00bcd4 0%, #00838f 100%); /* Turquesa a Turquesa oscuro */
-            color: white;
+            background-color: #009EE3; /* Azul de Mercado Pago */
+            color: white; /* Texto blanco */
+        }
+
+        .btn-tertiary:hover:not(:disabled) {
+            background-color: #0083c2; /* Azul ligeramente más oscuro al pasar el ratón */
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
         .btn:disabled {
@@ -418,8 +425,9 @@
             <p class="prize-timer" id="prizeTimerDisplay"></p>
             <div class="mercadopago-link-container" id="mercadopagoLinkContainer" style="display: none;">
                 <p>Para reservar tu premio, abona una seña de <span id="mercadopagoPriceDisplay"></span> aquí:</p>
-                <a href="#" id="mercadopagoLink" target="_blank" class="btn btn-tertiary">
-                    <i class="fas fa-money-bill-wave"></i> Reservar y Pagar Seña
+                <a href="#" id="mercadopagoLink" target="_blank" class="btn btn-tertiary flex items-center justify-center">
+                    <img src="https://placehold.co/24x24/ffffff/000000?text=MP" alt="Mercado Pago Logo" class="mr-2"> 
+                    Reservar y Pagar Seña
                 </a>
                 <button class="btn btn-secondary mt-2" id="markSeñaPaidBtn">
                     Marcar Seña como Pagada (Demo)
