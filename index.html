@@ -393,7 +393,8 @@
                 font-size: 1.4rem;
             }
             .roulette-canvas-container {
-                width: 90%; /* Ocupa el 90% del ancho del contenedor padre */
+                width: 95vw; /* Ocupa el 95% del ancho del viewport */
+                padding-bottom: 95vw; /* Mantiene el aspecto cuadrado (1:1) */
                 margin: 20px auto; /* Centrar después de ajustar el ancho */
             }
         }
@@ -487,8 +488,8 @@
             { text: '10% OFF\nAsegurado', type: 'discount', value: 10, description: '10% OFF asegurado', needsSeña: false }
         ];
 
-        // Paleta de colores inspirada en el logo y los ejemplos, más vibrante
-        const segmentColors = ['#FF6B6B', '#7BEEB0', '#a200ff', '#FF9AA2', '#00bcd4', '#FFD700', '#D8BFD8']; 
+        // Paleta de colores inspirada en la imagen "Promo Depi.png"
+        const segmentColors = ['#F05050', '#A0D0F0', '#60A0D0', '#E0E0E0', '#A0D0F0', '#F05050', '#60A0D0']; 
         const numSegments = segments.length;
         const arc = (2 * Math.PI) / numSegments; // Ángulo de cada segmento en radianes
 
@@ -525,6 +526,7 @@
         let prizeEndTime = 0;
         let prizeSeñaPaid = false;
         let prizesAvailable = INITIAL_PRIZES_AVAILABLE;
+        let rouletteSpinsLeft = 1; // Variable para controlar los giros disponibles
         let prizeTimerInterval;
 
         // --- FUNCIONES DE ALMACENAMIENTO (LOCALSTORAGE) ---
@@ -533,6 +535,7 @@
             localStorage.setItem('prizeEndTime', prizeEndTime);
             localStorage.setItem('prizeSeñaPaid', prizeSeñaPaid);
             localStorage.setItem('prizesAvailable', prizesAvailable);
+            localStorage.setItem('rouletteSpinsLeft', rouletteSpinsLeft); // Guardar los giros restantes
         }
 
         function loadGameState() {
@@ -540,11 +543,14 @@
             const savedPrizeEndTime = localStorage.getItem('prizeEndTime');
             const savedPrizeSeñaPaid = localStorage.getItem('prizeSeñaPaid');
             const savedPrizesAvailable = localStorage.getItem('prizesAvailable');
+            const savedRouletteSpinsLeft = localStorage.getItem('rouletteSpinsLeft');
 
             if (savedWonPrize && savedWonPrize !== 'null') wonPrize = JSON.parse(savedWonPrize);
             if (savedPrizeEndTime) prizeEndTime = parseInt(savedPrizeEndTime, 10);
             if (savedPrizeSeñaPaid) prizeSeñaPaid = (savedPrizeSeñaPaid === 'true');
             if (savedPrizesAvailable) prizesAvailable = parseInt(savedPrizesAvailable, 10);
+            if (savedRouletteSpinsLeft) rouletteSpinsLeft = parseInt(savedRouletteSpinsLeft, 10);
+            else rouletteSpinsLeft = 1; // Si no hay giros guardados, iniciar con 1
         }
 
         function resetGameState() {
@@ -597,9 +603,10 @@
                 ctx.fillStyle = '#FFFFFF'; // Letra blanca
                 
                 // Ajuste del tamaño de la fuente para que quepa mejor
-                const minFontSize = 18; // Aumentado para mayor legibilidad
-                const maxFontSize = 28; // Ajustado para evitar desbordamiento
-                const calculatedFontSize = radius * 0.12; // Multiplicador ajustado
+                // Se ha ajustado el multiplicador y los límites para una mejor visibilidad
+                const minFontSize = 28; // Apuntando a 30px
+                const maxFontSize = 32; // Apuntando a 30px
+                const calculatedFontSize = radius * 0.065; // Multiplicador ajustado para acercarse a 30px
                 const fontSize = Math.max(minFontSize, Math.min(maxFontSize, calculatedFontSize));
                 
                 ctx.font = `bold ${fontSize}px sans-serif`;
@@ -619,7 +626,7 @@
 
                 for (let j = 0; j < lines.length; j++) {
                     // Posicionar el texto a una distancia del centro, empujándolo más hacia el borde.
-                    ctx.fillText(lines[j], radius * 0.65, textY); 
+                    ctx.fillText(lines[j], radius * 0.75, textY); // Ajustado a 0.75 para más hacia el borde
                     textY += lineHeight; // Mover a la siguiente línea
                 }
                 ctx.restore();
@@ -828,11 +835,6 @@
         });
 
         spinBtn.addEventListener('click', () => {
-            // Asumiendo que rouletteSpinsLeft es una variable global o de alcance superior
-            // Si la ruleta está en el mismo archivo que el código principal, esta variable
-            // puede ser la misma que `spinsLeft` del otro script, o una nueva.
-            // Por el contexto, parece que esta ruleta es una sección separada,
-            // así que usaremos `rouletteSpinsLeft` como su contador interno.
             if (rouletteSpinsLeft > 0) {
                 loadingSpinner.style.display = 'block';
                 spinBtn.disabled = true;
@@ -854,6 +856,7 @@
 
                 animateRoulette(absoluteFinalAngle, 6000); // 6 seconds duration
             } else {
+                showCustomAlert('No te quedan más giros en la ruleta. ¡Compartí para ganar otro!');
                 updateUI(); // Asegurarse de que el mensaje de bloqueo se muestre
             }
         });
@@ -880,7 +883,7 @@
                 
                 showCustomAlert(`¡Has usado tu premio: ${wonPrize.description}! Te hemos redirigido a WhatsApp para coordinar.`);
                 resetGameState(); // Limpiar el estado del premio después de usarlo
-                spinBtn.disabled = false; // Habilitar para un nuevo giro
+                // No habilitar spinBtn aquí, ya que resetGameState lo hace
             }
         });
 
@@ -891,9 +894,9 @@
             
             // Simular que se ganó un giro adicional al compartir
             showCustomAlert('¡Gracias por compartir! Has ganado un giro adicional.');
-            // Para este demo, simplemente permitimos otro giro. En un sistema real,
-            // se debería verificar si realmente se compartió antes de dar el giro.
-            spinBtn.disabled = false; 
+            rouletteSpinsLeft++; // Incrementar los giros disponibles
+            saveGameState(); // Guardar el estado de los giros
+            updateUI(); // Actualizar la UI para reflejar el nuevo giro
             resultMessage.textContent = '¡Tienes un giro extra por compartir!';
             postSpinActions.style.display = 'none'; // Ocultar acciones post-giro para el nuevo giro
             upsellingSection.style.display = 'none';
@@ -908,7 +911,7 @@
                 showCustomAlert('¡Gracias! Te contactaremos por WhatsApp con tu cupón sorpresa.');
                 hideWhatsappModal();
                 resetGameState(); // Limpiar el estado del premio después de "enviarlo"
-                spinBtn.disabled = false;
+                // No habilitar spinBtn aquí, ya que resetGameState lo hace
             } else {
                 showCustomAlert('Por favor, ingresa tu número de WhatsApp.');
             }
@@ -935,7 +938,7 @@
             } else {
                 postSpinActions.style.display = 'none';
                 upsellingSection.style.display = 'none';
-                spinBtn.disabled = false; // Habilitar el botón de girar si no hay premio activo
+                spinBtn.disabled = (rouletteSpinsLeft <= 0); // Habilitar/deshabilitar según los giros restantes
             }
 
             // Lógica específica para Mercado Pago y botón "Usar Premio"
