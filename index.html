@@ -331,7 +331,7 @@
 
              <div class="buttons-container">
                 <button class="btn btn-spin" id="spinBtn">
-                    👉 GIRAR LA RULETA AHORA
+                    <!-- El texto se cambia con JS -->
                 </button>
                 <p id="resultMessage"></p>
                 <p class="prize-timer" id="prizeTimerDisplay"></p>
@@ -648,29 +648,31 @@
                 // Mostrar la sección de la ruleta
                 rouletteSection.style.display = 'flex';
 
-                // Botón de girar
-                spinBtn.style.display = state.prize ? 'none' : 'block';
-                spinBtn.disabled = state.spinsLeft <= 0;
-                if (state.spinsLeft <= 0) {
+                // Siempre mostrar el botón de girar, pero controlar su texto y estado
+                spinBtn.style.display = 'block'; 
+                reserveBtn.style.display = state.prize ? 'block' : 'none'; // Mostrar reservar si hay premio
+                upsellSection.style.display = state.prize ? 'block' : 'none'; // Mostrar upsell si hay premio
+
+                if (state.prize) {
+                    // Si ya se ganó un premio
+                    spinBtn.disabled = true;
+                    spinBtn.textContent = '¡Ya ganaste! Compartí para más tiros.';
+                    shareBtn.style.display = 'block'; // Mostrar botón de compartir para obtener más tiros
+                } else if (state.spinsLeft <= 0) {
+                    // Si no quedan tiros y no se ha ganado un premio aún
+                    spinBtn.disabled = true;
                     spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR';
+                    shareBtn.style.display = 'block';
                 } else {
+                    // Si hay tiros disponibles y no se ha ganado un premio
+                    spinBtn.disabled = false;
                     spinBtn.textContent = '👉 GIRAR LA RULETA AHORA';
+                    shareBtn.style.display = 'none'; // Ocultar compartir si hay tiros disponibles
                 }
-
-                // Botón de reservar/reclamar
-                reserveBtn.style.display = state.prize ? 'block' : 'none';
-                
-                // Botón de compartir
-                // Se muestra si no quedan tiros o si ya se ganó un premio y se quiere compartir para más tiros
-                shareBtn.style.display = (state.spinsLeft <= 0 || state.prize) ? 'block' : 'none';
-
 
                 // Contador de premios
                 prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
                 
-                // Sección de Upsell
-                upsellSection.style.display = state.prize ? 'block' : 'none';
-
                 // Temporizador de premio
                 if (!state.prize && prizeTimerInterval) {
                     clearInterval(prizeTimerInterval);
