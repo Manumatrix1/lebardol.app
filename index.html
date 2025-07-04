@@ -40,12 +40,17 @@
             border-radius: 20px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
             overflow: hidden;
-            margin: 20px 0;
+            margin: auto; /* Centra el contenedor principal vertical y horizontalmente */
             padding: 25px;
             text-align: center;
             backdrop-filter: blur(5px); /* Efecto de desenfoque para el fondo */
             -webkit-backdrop-filter: blur(5px);
             color: #4a2c5e; /* Restaurar color de texto para el contenedor */
+            display: flex; /* Añadido para flexbox dentro del contenedor */
+            flex-direction: column; /* Contenido en columna */
+            align-items: center; /* Centrar ítems horizontalmente */
+            justify-content: center; /* Centrar ítems verticalmente */
+            min-height: 500px; /* Altura mínima para que el contenido se vea bien */
         }
 
         /* Título animado de la landing */
@@ -137,7 +142,7 @@
             max-width: 950px; /* Ancho máximo para el círculo de 950px */
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
             height: 0; /* Collapse height, padding-bottom defines it */
-            margin: 30px auto;
+            margin: auto; /* Centra la ruleta dentro de su contenedor flex */
             border: none; 
             box-shadow: none;
             border-radius: 50%; /* Asegura que el contenedor siga siendo circular */
@@ -395,7 +400,7 @@
             .roulette-canvas-container {
                 width: 95vw; /* Ocupa el 95% del ancho del viewport */
                 padding-bottom: 95vw; /* Mantiene el aspecto cuadrado (1:1) */
-                margin: 20px auto; /* Centrar después de ajustar el ancho */
+                margin: auto; /* Centrar la ruleta dentro de su contenedor flex */
             }
         }
     </style>
@@ -633,7 +638,7 @@
 
                 for (let j = 0; j < lines.length; j++) {
                     // Posicionar el texto a una distancia del centro, empujándolo más hacia el borde.
-                    ctx.fillText(lines[j], radius * 0.7, textY); // Ajustado a 0.7 para más centrado con letra pequeña
+                    ctx.fillText(lines[j], radius * 0.6, textY); // Ajustado a 0.6 para más centrado
                     textY += lineHeight; // Mover a la siguiente línea
                 }
                 ctx.restore();
@@ -836,7 +841,7 @@
         // --- EVENT LISTENERS ---
         startRouletteBtn.addEventListener('click', () => {
             landingScreen.style.display = 'none';
-            rouletteScreen.style.display = 'block';
+            rouletteScreen.style.display = 'flex'; /* Usar flex para centrar contenido */
             resizeCanvas(); // Ajustar el tamaño del canvas al mostrar la ruleta
             // No se inicia el giro automáticamente aquí, el usuario debe hacer clic en "Girar Ruleta"
         });
@@ -1002,10 +1007,10 @@
             const now = Date.now();
             if (wonPrize && (wonPrize.needsSeña ? (now < prizeEndTime || prizeSeñaPaid) : true)) {
                 landingScreen.style.display = 'none';
-                rouletteScreen.style.display = 'block';
+                rouletteScreen.style.display = 'flex'; /* Usar flex para centrar contenido */
                 updateUI(); // Asegurarse de que la UI refleje el premio existente
             } else {
-                landingScreen.style.display = 'block';
+                landingScreen.style.display = 'flex'; /* Usar flex para centrar contenido */
                 rouletteScreen.style.display = 'none';
                 resetGameState(); // Asegurarse de que el estado esté limpio si no hay premio activo
             }
