@@ -1,464 +1,847 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Enlaces Le Bardol</title>
+    <title>Le Bardol Estética center</title> <!-- Título actualizado -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Librería para el efecto de confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        /* Estilos generales y reseteo */
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        body {
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
+            color: #4a2c5e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        /* Contenedor principal de la tarjeta */
         .container {
+            max-width: 500px;
+            width: 100%;
             background: white;
-            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
-            max-width: 600px;
-            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
         }
-        h1 {
-            color: #4a2c5e;
+        
+        /* Sección del encabezado (oculto según tu CSS original) */
+        .header {
+            background: linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 100%);
+            color: white;
+            padding: 30px 20px;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 28px;
+            position: relative;
         }
-        .form-group {
+        
+        .header-logo { 
+            display: block; 
+            margin: 0 auto 15px; 
+            max-width: 250px; /* Ajustado para el logo */
+            width: 100%;
+            height: auto;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
             margin-bottom: 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
+        
+        /* --- ESTILOS DE LA CAMPAÑA RULETA --- */
+        .roulette-section {
+            padding: 20px;
+            background: #fdfdfd;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none; /* Se mostrará con JS */
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .roulette-section .campaign-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #e91e63;
+            line-height: 1.2;
+            animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        }
+        
+        @keyframes text-pop-up-top {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-10px); opacity: 1; }
+        }
+
+        .roulette-section .campaign-subtitle {
+            font-size: 1rem;
             color: #4a2c5e;
+            padding: 0 10px;
+            max-width: 400px;
         }
-        input[type="text"], input[type="datetime-local"], select {
+
+        .prize-counter {
+            background-color: #ffeb3b;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            border: 2px solid #fbc02d;
+            animation: pulse-yellow 1.5s infinite;
+        }
+
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
+        }
+
+        .roulette-canvas-container {
+            position: relative;
+            width: 90%;
+            max-width: 380px;
+            margin: 20px 0 0; /* Añadido margen superior para bajar la ruleta */
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
+            overflow: visible;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0c8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            background: #f9f0ff;
-            transition: all 0.3s;
-            box-sizing: border-box;
+            height: 100%;
+            display: block;
+            border-radius: 50%;
         }
-        input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus {
-            outline: none;
-            border-color: #8a2be2;
-            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+
+        .wheel-indicator {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 35px solid #e91e63;
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
         }
+
+        .buttons-container {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .btn {
             display: block;
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
-            margin-top: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        .btn-generate {
+        
+        .btn-spin {
             background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
             color: white;
+            font-size: 22px;
         }
-        .btn-copy {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+        
+        .btn-reserve {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); /* Rojo más llamativo */
             color: white;
-            margin-top: 10px;
+            display: none;
         }
-        .btn-clear {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+
+        .btn-share {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
-            margin-top: 10px;
+            display: flex; /* Usar flex para alinear el icono y el texto */
+            flex-direction: column; /* Apilar el icono y el texto */
+            align-items: center; /* Centrar horizontalmente */
+            justify-content: center;
+            line-height: 1.2; /* Ajustar el interlineado */
+            padding: 12px; /* Ajustar padding para el nuevo contenido */
         }
-        .btn:hover {
-            transform: translateY(-2px);
+
+        .btn-share .share-title {
+            font-size: 18px; /* Título más grande */
+            font-weight: bold;
+            margin-bottom: 4px; /* Espacio entre título y subtítulo */
+        }
+
+        .btn-share .share-subtitle {
+            font-size: 14px; /* Subtítulo más pequeño */
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .btn-share .fab {
+            font-size: 24px; /* Tamaño del icono de WhatsApp */
+            margin-bottom: 8px; /* Espacio entre icono y texto */
+        }
+
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
-        .btn:active {
-            transform: translateY(0);
+
+        #resultMessage {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #e91e63;
         }
-        #generatedLinkContainer {
-            margin-top: 25px;
+
+        .prize-timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Sección de Upsell */
+        #upsellSection {
+            display: none;
+            margin-top: 20px;
             padding: 15px;
             background: #e0f7fa;
-            border: 1px solid #00bcd4;
-            border-radius: 10px;
-            word-wrap: break-word;
-            font-size: 15px;
+            border: 2px dashed #00bcd4;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 380px;
+        }
+        #upsellSection h3 {
             color: #00796b;
-            display: none; /* Hidden by default */
-        }
-        #generatedLink {
-            font-weight: bold;
-            color: #004d40;
-        }
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #4caf50;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 1000;
-        }
-        .option-group {
-            border: 1px solid #e0c8f0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            background-color: #fcfaff;
-        }
-        .option-group h3 {
-            color: #6a1b9a;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        .option-group > div {
-            margin-bottom: 15px;
-        }
-        .price-item {
-            display: flex;
-            gap: 10px;
+            font-size: 20px;
             margin-bottom: 10px;
-            align-items: center;
         }
-        .price-item input {
-            flex-grow: 1;
-        }
-        .price-item .remove-price-btn {
-            background-color: #ff4d4d;
+        .btn-upsell {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
             color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        .price-item .remove-price-btn:hover {
-            background-color: #cc0000;
-        }
-        .add-price-btn {
-            background-color: #00bcd4;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 16px;
             margin-top: 10px;
-            transition: background-color 0.2s;
         }
-        .add-price-btn:hover {
-            background-color: #0097a7;
+        
+        /* Ocultar elementos que no se usan en la campaña */
+        .header, .form-container, .offer-card, .footer, .whatsapp-icon, .referral-promo-diffusion, .price-list-section {
+            display: none;
         }
+
+        /* Estilos para la ventana modal personalizada */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: translateY(0);
+        }
+
+        .custom-modal-content h3 {
+            color: #4a2c5e;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .custom-modal-content p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .custom-modal-content button {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .custom-modal-content button:hover {
+            background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
+        }
+
+        /* Estilos para el campo de nombre */
+        .user-name-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .user-name-input.required {
+            border: 2px solid #ef4444; /* Rojo */
+        }
+
+        .user-name-input.filled {
+            border: 2px solid #22c55e; /* Verde */
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Generador de Enlaces Le Bardol</h1>
+        <!-- SECCIÓN DE RULETA DE CAMPAÑA -->
+        <div class="roulette-section" id="rouletteSection">
+            <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Le Bardol Estética center y ganá! 🎁</h1> <!-- Título actualizado -->
+            <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu próximo tratamiento.</p> <!-- Texto actualizado -->
+            <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
-        <div class="form-group">
-            <label for="linkType">Tipo de Enlace:</label>
-            <select id="linkType">
-                <option value="reminder">Recordatorio de Turno</option>
-                <option value="promotion">Promoción General</option>
-                <option value="roulette">Enlace de Ruleta</option>
-            </select>
-        </div>
+            <!-- Campo para el nombre del usuario -->
+            <div style="margin-bottom: 15px; width: 90%; max-width: 380px;">
+                <label for="userName" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a2c5e; font-size: 14px;">Tu nombre completo (para personalizar el mensaje):</label>
+                <input type="text" id="userName" class="user-name-input" placeholder="Ej: Papu Gómez" required>
+            </div>
 
-        <div id="reminderOptions" class="option-group">
-            <h3>Opciones de Recordatorio de Turno</h3>
-            <div class="form-group">
-                <label for="clientNameReminder">Nombre del Cliente:</label>
-                <input type="text" id="clientNameReminder" placeholder="Ej: Juan Pérez">
+            <div class="roulette-canvas-container">
+                <div class="wheel-indicator"></div>
+                <canvas id="rouletteCanvas"></canvas> 
             </div>
-            <div class="form-group">
-                <label for="appointmentDate">Fecha y Hora del Turno:</label>
-                <input type="datetime-local" id="appointmentDate">
-            </div>
-            <div class="form-group">
-                <label for="discountReminder">Descuento (opcional):</label>
-                <input type="text" id="discountReminder" placeholder="Ej: 15 (solo número)">
-            </div>
-            <div class="form-group">
-                <label for="treatmentReminder">Tratamiento (opcional):</label>
-                <input type="text" id="treatmentReminder" placeholder="Ej: Limpieza Facial">
-            </div>
-            <div class="form-group">
-                <label for="referrerDiscountReminder">Descuento Referente (opcional, por defecto 10%):</label>
-                <input type="text" id="referrerDiscountReminder" placeholder="Ej: 10">
-            </div>
-            <div class="form-group">
-                <label for="newClientDiscountReminder">Descuento Nuevo Cliente (opcional, por defecto 50%):</label>
-                <input type="text" id="newClientDiscountReminder" placeholder="Ej: 50">
-            </div>
-        </div>
 
-        <div id="promotionOptions" class="option-group" style="display: none;">
-            <h3>Opciones de Promoción General</h3>
-            <div class="form-group">
-                <label for="clientNamePromo">Nombre del Cliente (opcional):</label>
-                <input type="text" id="clientNamePromo" placeholder="Ej: Hola!">
+             <div class="buttons-container">
+                <button class="btn btn-spin" id="spinBtn">
+                    <!-- El texto se cambia con JS -->
+                </button>
+                <p id="resultMessage"></p>
+                <p class="prize-timer" id="prizeTimerDisplay"></p>
+                
+                <button class="btn btn-reserve" id="reserveBtn">
+                    <!-- El texto se cambia con JS -->
+                </button>
+
+                <button class="btn btn-share" id="shareBtn">
+                    <i class="fab fa-whatsapp"></i> 
+                    <span class="share-title">💥 Compartí y desbloqueá beneficios!</span>
+                    <span class="share-subtitle">10% OFF para vos – 50% OFF para tu amigo.</span>
+                </button> <!-- Texto actualizado con título y subtítulo -->
             </div>
-            <div class="form-group">
-                <label for="discountPromo">Descuento (opcional):</label>
-                <input type="text" id="discountPromo" placeholder="Ej: 20 (solo número)">
-            </div>
-            <div class="form-group">
-                <label for="treatmentPromo">Tratamiento (opcional):</label>
-                <input type="text" id="treatmentPromo" placeholder="Ej: Masaje Relajante">
-            </div>
-            <div class="form-group">
-                <label for="referrerDiscountDiffusion">Descuento Referente Difusión (opcional, por defecto 5%):</label>
-                <input type="text" id="referrerDiscountDiffusion" placeholder="Ej: 5">
-            </div>
-            <div class="form-group">
-                <label for="newClientDiscountDiffusion">Descuento Nuevo Cliente Difusión (opcional, por defecto 5%):</label>
-                <input type="text" id="newClientDiscountDiffusion" placeholder="Ej: 5">
+
+            <div id="upsellSection">
+                <h3>¡Potenciá tu premio!</h3>
+                <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
+                <button class="btn btn-upsell" id="upsellBtn">
+                    👉 Conocé nuestros tratamientos
+                </button> <!-- Texto actualizado -->
             </div>
         </div>
-
-        <div id="rouletteOptions" class="option-group" style="display: none;">
-            <h3>Opciones de Enlace de Ruleta</h3>
-            <div class="form-group">
-                <label for="clientNameRoulette">Nombre del Cliente (opcional):</label>
-                <input type="text" id="clientNameRoulette" placeholder="Ej: Hola!">
-            </div>
-            <div class="form-group">
-                <label for="rouletteDiscount">Descuento Ruleta (opcional, para redirigir con premio ganado):</label>
-                <input type="text" id="rouletteDiscount" placeholder="Ej: 20">
-            </div>
-            
-            <h4>Lista de Precios (Opcional)</h4>
-            <div id="priceListEntries">
-                <!-- Aquí se agregarán dinámicamente los campos de precio -->
-            </div>
-            <button type="button" class="add-price-btn" id="addPriceBtn">
-                <i class="fas fa-plus-circle"></i> Agregar Tratamiento y Precio
-            </button>
-        </div>
-
-        <button class="btn btn-generate" id="generateLinkBtn">
-            <i class="fas fa-link"></i> Generar Enlace
-        </button>
-        <button class="btn btn-clear" id="clearFormBtn">
-            <i class="fas fa-eraser"></i> Limpiar Formulario
-        </button>
-
-        <div id="generatedLinkContainer">
-            <p>Tu enlace generado:</p>
-            <p id="generatedLink"></p>
-            <button class="btn btn-copy" id="copyLinkBtn">
-                <i class="fas fa-copy"></i> Copiar Enlace
-            </button>
-        </div>
+        <!-- FIN SECCIÓN DE RULETA -->
     </div>
-
-    <div id="notification" class="notification">
-        Enlace copiado al portapapeles.
+    
+    <!-- Ventana modal personalizada -->
+    <div id="customModalOverlay" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button id="modalCloseBtn">Entendido</button>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const linkType = document.getElementById('linkType');
-            const reminderOptions = document.getElementById('reminderOptions');
-            const promotionOptions = document.getElementById('promotionOptions');
-            const rouletteOptions = document.getElementById('rouletteOptions');
-            const generateLinkBtn = document.getElementById('generateLinkBtn');
-            const clearFormBtn = document.getElementById('clearFormBtn'); // Nuevo
-            const generatedLinkContainer = document.getElementById('generatedLinkContainer');
-            const generatedLink = document.getElementById('generatedLink');
-            const copyLinkBtn = document.getElementById('copyLinkBtn');
-            const notification = document.getElementById('notification');
-            const addPriceBtn = document.getElementById('addPriceBtn');
-            const priceListEntries = document.getElementById('priceListEntries');
+            // --- CONFIGURACIÓN DE LA CAMPAÑA ---
+            const señaAmount = 8000; // Monto de la seña actualizado a 8000
+            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`; // Link de Mercado Pago actualizado
+            const whatsappNumber = '5493415216025'; // Tu número de WhatsApp
 
-            // Base URL of your index.html (adjust if needed, usually just the domain)
-            // Asegúrate de que esta URL sea la correcta para tu archivo index.html
-            const baseUrl = window.location.origin + '/index.html'; 
+            // --- ELEMENTOS DEL DOM ---
+            const rouletteSection = document.getElementById('rouletteSection');
+            const canvas = document.getElementById('rouletteCanvas');
+            const ctx = canvas.getContext('2d');
+            const spinBtn = document.getElementById('spinBtn');
+            const reserveBtn = document.getElementById('reserveBtn');
+            const resultMessage = document.getElementById('resultMessage');
+            const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
+            const prizeCounterDisplay = document.getElementById('prizeCounter');
+            const upsellSection = document.getElementById('upsellSection');
+            const upsellBtn = document.getElementById('upsellBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const userNameInput = document.getElementById('userName'); // Nuevo: Campo de nombre de usuario
 
-            function toggleOptions() {
-                reminderOptions.style.display = 'none';
-                promotionOptions.style.display = 'none';
-                rouletteOptions.style.display = 'none';
-                generatedLinkContainer.style.display = 'none'; // Ocultar el enlace generado al cambiar el tipo
+            // Modal elements
+            const customModalOverlay = document.getElementById('customModalOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
 
-                if (linkType.value === 'reminder') {
-                    reminderOptions.style.display = 'block';
-                } else if (linkType.value === 'promotion') {
-                    promotionOptions.style.display = 'block';
-                } else if (linkType.value === 'roulette') {
-                    rouletteOptions.style.display = 'block';
+            // --- PREMIOS DE LA RULETA ---
+            const segments = [
+                { text: 'Axilas GRATIS', type: 'freebie', needsSeña: true, description: 'Axilas GRATIS' },
+                { text: '30% OFF', type: 'discount', value: 30, needsSeña: true, description: '30% OFF en cualquier zona' },
+                { text: '2x1 en Sesión', type: 'bogo', needsSeña: true, description: '2x1 en tu próxima sesión' },
+                { text: '10% OFF Asegurado', type: 'discount', value: 10, needsSeña: false, description: '10% OFF asegurado' },
+                { text: 'Media Pierna GRATIS', type: 'freebie', needsSeña: true, description: 'Media Pierna GRATIS' },
+                { text: 'Cupón Sorpresa!', type: 'surprise', needsSeña: false, description: 'un Cupón Sorpresa!' },
+                { text: 'Zona Pequeña GRATIS', type: 'freebie', needsSeña: true, description: 'Zona pequeña a elección (bozo, mentón, etc.)' },
+            ];
+            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50'];
+            const numSegments = segments.length;
+            const arc = (2 * Math.PI) / numSegments;
+
+            // --- ESTADO DE LA RULETA (guardado en localStorage) ---
+            let state = {
+                spinsLeft: 3,
+                lastSpinTimestamp: 0,
+                prize: null,
+                prizeEndTime: 0,
+                prizesLeft: 999, // Inicializado con un valor por defecto
+                lastActivity: Date.now() // Inicializado con un valor por defecto
+            };
+
+            let currentRotation = 0;
+            let animationFrameId;
+            let prizeTimerInterval;
+
+            // --- FUNCIONES PRINCIPALES ---
+
+            /**
+             * Muestra una ventana modal personalizada.
+             * @param {string} title - El título de la modal.
+             * @param {string} message - El mensaje a mostrar.
+             */
+            function showCustomModal(title, message) {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                customModalOverlay.classList.add('active');
+            }
+
+            /**
+             * Oculta la ventana modal personalizada.
+             */
+            function hideCustomModal() {
+                customModalOverlay.classList.remove('active');
+            }
+
+            /**
+             * Carga el estado desde localStorage o inicializa uno nuevo.
+             */
+            function loadState() {
+                const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
+                if (savedState) {
+                    state = savedState;
+                } else {
+                    // Si no hay estado guardado, inicializa con valores por defecto
+                    state = {
+                        spinsLeft: 3,
+                        lastSpinTimestamp: 0,
+                        prize: null,
+                        prizeEndTime: 0,
+                        prizesLeft: 999, // Valor inicial de premios
+                        lastActivity: Date.now()
+                    };
+                }
+                // Cargar el nombre de usuario guardado
+                const savedUserName = localStorage.getItem('bardolUserName');
+                if (savedUserName) {
+                    userNameInput.value = savedUserName;
+                }
+                updateUserNameInputStyle(); // Actualizar el estilo del input al cargar
+
+                // Simula que los premios bajan con el tiempo
+                const now = Date.now();
+                const hoursPassed = (now - (state.lastActivity || now)) / (1000 * 60 * 60);
+                const prizesToDecrease = Math.floor(hoursPassed * 5); // Bajan 5 premios por hora
+                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease);
+                state.lastActivity = now;
+                saveState();
+            }
+
+            /**
+             * Guarda el estado actual en localStorage.
+             */
+            function saveState() {
+                localStorage.setItem('bardolRouletteState', JSON.stringify(state));
+            }
+
+            /**
+             * Guarda el nombre de usuario en localStorage.
+             */
+            function saveUserName() {
+                localStorage.setItem('bardolUserName', userNameInput.value);
+            }
+
+            /**
+             * Actualiza el estilo del input de nombre (rojo/verde).
+             */
+            function updateUserNameInputStyle() {
+                if (userNameInput.value.trim() === '') {
+                    userNameInput.classList.add('required');
+                    userNameInput.classList.remove('filled');
+                } else {
+                    userNameInput.classList.add('filled');
+                    userNameInput.classList.remove('required');
                 }
             }
 
-            function showNotification() {
-                notification.style.display = 'block';
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 3000);
+            /**
+             * Dibuja la ruleta en el canvas.
+             */
+            function drawRoulette(rotation = 0) {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = Math.min(centerX, centerY);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(rotation);
+
+                for (let i = 0; i < numSegments; i++) {
+                    const angle = i * arc;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.arc(0, 0, radius, angle, angle + arc);
+                    ctx.closePath();
+                    ctx.fillStyle = segmentColors[i % segmentColors.length];
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+
+                    ctx.save();
+                    ctx.rotate(angle + arc / 2);
+                    ctx.fillStyle = '#ffffff';
+                    const fontSize = 14; // Tamaño de fuente actualizado a 14px
+                    ctx.font = `bold ${fontSize}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    // Añadir sombra al texto
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)'; // Color de la sombra
+                    ctx.shadowBlur = 3; // Desenfoque de la sombra
+                    ctx.shadowOffsetX = 2; // Desplazamiento X de la sombra
+                    ctx.shadowOffsetY = 2; // Desplazamiento Y de la sombra
+
+                    const text = segments[i].text;
+                    const words = text.split(' ');
+                    
+                    // Nueva lógica para dividir el texto en la ruleta
+                    if (words.length > 2) {
+                        const line1 = words[0] + ' ' + words[1];
+                        const line2 = words.slice(2).join(' '); // La tercera palabra y las siguientes
+                        ctx.fillText(line1, radius * 0.6, -fontSize / 2);
+                        ctx.fillText(line2, radius * 0.6, fontSize / 2);
+                    } else {
+                        ctx.fillText(text, radius * 0.6, 0);
+                    }
+                    ctx.restore();
+                }
+                ctx.restore();
             }
 
-            function addPriceEntry() {
-                const div = document.createElement('div');
-                div.classList.add('price-item');
-                div.innerHTML = `
-                    <input type="text" class="treatment-name" placeholder="Nombre Tratamiento">
-                    <input type="text" class="treatment-price" placeholder="Precio (ej: $15.000)">
-                    <button type="button" class="remove-price-btn">X</button>
-                `;
-                priceListEntries.appendChild(div);
+            /**
+             * Anima el giro de la ruleta.
+             */
+            function spin() {
+                if (userNameInput.value.trim() === '') {
+                    showCustomModal("¡Falta tu nombre!", "Por favor, ingresa tu nombre completo para poder compartir y participar.");
+                    userNameInput.focus(); // Poner el foco en el campo
+                    updateUserNameInputStyle(); // Asegurar que el borde esté rojo
+                    return;
+                }
 
-                div.querySelector('.remove-price-btn').addEventListener('click', () => {
-                    div.remove();
+                if (state.spinsLeft <= 0) {
+                    showCustomModal("¡Sin tiros disponibles!", "Ya utilizaste tus tiros. ¡Compartí en WhatsApp para ganar otro!");
+                    return;
+                }
+
+                state.spinsLeft--;
+                state.lastSpinTimestamp = Date.now(); 
+                state.prizesLeft--; // Se resta un premio
+                saveState();
+                updateUI();
+
+                spinBtn.disabled = true;
+                spinBtn.textContent = 'GIRANDO...';
+
+                const randomSegmentIndex = Math.floor(Math.random() * numSegments);
+                state.prize = segments[randomSegmentIndex];
+
+                let targetAngle = (1.5 * Math.PI) - (randomSegmentIndex * arc + arc / 2);
+                const totalRotation = (5 * 2 * Math.PI) + targetAngle; // 5 vueltas + ángulo final
+
+                animateRoulette(currentRotation + totalRotation, 6000);
+            }
+
+            function animateRoulette(finalAngle, duration) {
+                const startAngle = currentRotation;
+                const startTime = performance.now();
+
+                function animate(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easedProgress = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+
+                    currentRotation = startAngle + (finalAngle - startAngle) * easedProgress;
+                    drawRoulette(currentRotation);
+
+                    if (progress < 1) {
+                        animationFrameId = requestAnimationFrame(animate);
+                    } else {
+                        currentRotation = finalAngle % (2 * Math.PI);
+                        handleSpinEnd();
+                    }
+                }
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            /**
+             * Se ejecuta cuando la ruleta termina de girar.
+             */
+            function handleSpinEnd() {
+                fireConfetti();
+                resultMessage.textContent = `¡FELICITACIONES! GANASTE ${state.prize.description.toUpperCase()}`;
+                
+                if (state.prize.needsSeña) {
+                    state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutos
+                    startPrizeTimer();
+                    reserveBtn.innerHTML = `🎁 RESERVÁ TU LUGAR (SEÑA $${señaAmount}) 🎁`; // Texto con emoji
+                } else {
+                    reserveBtn.innerHTML = `🎁 RECLAMAR MI PREMIO 🎁`; // Texto con emoji
+                }
+                
+                saveState();
+                updateUI();
+            }
+
+            /**
+             * Inicia el contador regresivo para reclamar el premio.
+             */
+            function startPrizeTimer() {
+                if (prizeTimerInterval) clearInterval(prizeTimerInterval);
+                prizeTimerDisplay.style.display = 'block';
+
+                prizeTimerInterval = setInterval(() => {
+                    const now = Date.now();
+                    const timeLeft = state.prizeEndTime - now;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(prizeTimerInterval);
+                        prizeTimerDisplay.textContent = 'Tu premio expiró y fue liberado.';
+                        state.prize = null;
+                        saveState();
+                        updateUI();
+                        return;
+                    }
+
+                    const minutes = Math.floor(timeLeft / (60 * 1000));
+                    const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+                    prizeTimerDisplay.textContent = `⏳ Tenés ${minutes}m ${seconds}s para reservar, o el premio se libera.`;
+                }, 1000);
+            }
+
+            /**
+             * Lanza el efecto de confeti.
+             */
+            function fireConfetti() {
+                confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.6 }
                 });
             }
 
-            function clearForm() {
-                // Limpiar campos de recordatorio
-                document.getElementById('clientNameReminder').value = '';
-                document.getElementById('appointmentDate').value = '';
-                document.getElementById('discountReminder').value = '';
-                document.getElementById('treatmentReminder').value = '';
-                document.getElementById('referrerDiscountReminder').value = '';
-                document.getElementById('newClientDiscountReminder').value = '';
+            /**
+             * Actualiza todos los elementos de la interfaz.
+             */
+            function updateUI() {
+                // Mostrar la sección de la ruleta
+                rouletteSection.style.display = 'flex';
 
-                // Limpiar campos de promoción
-                document.getElementById('clientNamePromo').value = '';
-                document.getElementById('discountPromo').value = '';
-                document.getElementById('treatmentPromo').value = '';
-                document.getElementById('referrerDiscountDiffusion').value = '';
-                document.getElementById('newClientDiscountDiffusion').value = '';
+                // Siempre mostrar el botón de girar, pero controlar su texto y estado
+                spinBtn.style.display = 'block'; 
+                reserveBtn.style.display = state.prize ? 'block' : 'none'; // Mostrar reservar si hay premio
+                upsellSection.style.display = state.prize ? 'block' : 'none'; // Mostrar upsell si hay premio
 
-                // Limpiar campos de ruleta
-                document.getElementById('clientNameRoulette').value = '';
-                document.getElementById('rouletteDiscount').value = '';
-                priceListEntries.innerHTML = ''; // Eliminar entradas de precios dinámicas
+                if (state.prize) {
+                    // Si ya se ganó un premio
+                    spinBtn.disabled = true;
+                    spinBtn.textContent = '¡Ya ganaste! Compartí para más tiros.';
+                    shareBtn.style.display = 'block'; // Mostrar botón de compartir para obtener más tiros
+                } else if (state.spinsLeft <= 0) {
+                    // Si no quedan tiros y no se ha ganado un premio aún
+                    spinBtn.disabled = true;
+                    spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR';
+                    shareBtn.style.display = 'block';
+                } else {
+                    // Si hay tiros disponibles y no se ha ganado un premio
+                    spinBtn.disabled = false;
+                    spinBtn.textContent = '👉 GIRAR LA RULETA AHORA';
+                    shareBtn.style.display = 'none'; // Ocultar compartir si hay tiros disponibles
+                }
 
-                generatedLink.textContent = '';
-                generatedLinkContainer.style.display = 'none';
-                linkType.value = 'reminder'; // Volver al tipo de enlace por defecto
-                toggleOptions(); // Actualizar la vista
+                // Contador de premios
+                prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
+                
+                // Temporizador de premio
+                if (!state.prize && prizeTimerInterval) {
+                    clearInterval(prizeTimerInterval);
+                    prizeTimerDisplay.style.display = 'none';
+                }
             }
 
-            generateLinkBtn.addEventListener('click', () => {
-                let url = baseUrl + '?';
-                const params = [];
+            /**
+             * Redimensiona el canvas al cambiar el tamaño de la ventana.
+             */
+            function resizeCanvas() {
+                const container = document.querySelector('.roulette-canvas-container');
+                const containerWidth = container.clientWidth;
+                canvas.width = containerWidth;
+                canvas.height = containerWidth;
+                drawRoulette(currentRotation);
+            }
 
-                if (linkType.value === 'reminder') {
-                    const clientName = document.getElementById('clientNameReminder').value.trim();
-                    const appointmentDate = document.getElementById('appointmentDate').value;
-                    const discount = document.getElementById('discountReminder').value.trim();
-                    const treatment = document.getElementById('treatmentReminder').value.trim();
-                    const referrerDiscount = document.getElementById('referrerDiscountReminder').value.trim();
-                    const newClientDiscount = document.getElementById('newClientDiscountReminder').value.trim();
+            // --- EVENT LISTENERS ---
 
-                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
-                    if (appointmentDate) {
-                        // Formatear la fecha para que sea legible en la URL y en el index.html
-                        const dateObj = new Date(appointmentDate);
-                        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
-                        const formattedDate = dateObj.toLocaleString('es-ES', options);
-                        params.push(`fecha=${encodeURIComponent(formattedDate)}`);
-                    }
-                    if (discount) params.push(`descuento=${encodeURIComponent(discount)}`);
-                    if (treatment) params.push(`tratamiento=${encodeURIComponent(treatment)}`);
-                    if (referrerDiscount) params.push(`descuentoReferente=${encodeURIComponent(referrerDiscount)}`);
-                    if (newClientDiscount) params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
+            spinBtn.addEventListener('click', spin);
 
-                } else if (linkType.value === 'promotion') {
-                    const clientName = document.getElementById('clientNamePromo').value.trim();
-                    const discount = document.getElementById('discountPromo').value.trim();
-                    const treatment = document.getElementById('treatmentPromo').value.trim();
-                    const referrerDiscountDiffusion = document.getElementById('referrerDiscountDiffusion').value.trim();
-                    const newClientDiscountDiffusion = document.getElementById('newClientDiscountDiffusion').value.trim();
-
-                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
-                    if (discount) params.push(`descuento=${encodeURIComponent(discount)}`);
-                    if (treatment) params.push(`tratamiento=${encodeURIComponent(treatment)}`);
-                    if (referrerDiscountDiffusion) params.push(`descuentoReferenteDifusion=${encodeURIComponent(referrerDiscountDiffusion)}`);
-                    if (newClientDiscountDiffusion) params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(newClientDiscountDiffusion)}`);
-
-                } else if (linkType.value === 'roulette') {
-                    const clientName = document.getElementById('clientNameRoulette').value.trim();
-                    const rouletteDiscount = document.getElementById('rouletteDiscount').value.trim();
+            reserveBtn.addEventListener('click', () => {
+                if (state.prize.needsSeña) {
+                    // Abre el link de Mercado Pago directamente para la seña
+                    window.open(mercadopagoLinkUrl, '_blank');
+                    // Opcional: Podrías añadir un mensaje de confirmación o un seguimiento aquí
+                    showCustomModal("¡Listo para reservar!", `Has ganado "${state.prize.description.toUpperCase()}". Haz clic en "Entendido" para ir a WhatsApp y confirmar tu reserva.`);
                     
-                    params.push('roulette=true'); // Always include for roulette links
-                    if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
-                    if (rouletteDiscount) params.push(`rouletteDiscount=${encodeURIComponent(rouletteDiscount)}`);
-
-                    // Collect price list data
-                    const prices = [];
-                    document.querySelectorAll('.price-item').forEach(itemDiv => {
-                        const name = itemDiv.querySelector('.treatment-name').value.trim();
-                        const price = itemDiv.querySelector('.treatment-price').value.trim();
-                        if (name && price) {
-                            prices.push({ name: name, price: price });
-                        }
-                    });
-                    if (prices.length > 0) {
-                        params.push(`prices=${encodeURIComponent(JSON.stringify(prices))}`);
-                    }
-                }
-
-                url += params.join('&');
-                generatedLink.textContent = url;
-                generatedLinkContainer.style.display = 'block';
-            });
-
-            copyLinkBtn.addEventListener('click', () => {
-                const linkText = generatedLink.textContent;
-                // Usar document.execCommand('copy') como método principal por su fiabilidad en iframes
-                const tempInput = document.createElement('textarea');
-                tempInput.value = linkText;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) {
-                        showNotification();
-                    } else {
-                        console.error('Fallback: Error al copiar el enlace con execCommand.');
-                        // Si execCommand falla, intentar con Clipboard API (menos probable que funcione en iframe)
-                        navigator.clipboard.writeText(linkText).then(() => {
-                            showNotification();
-                        }).catch(err => {
-                            console.error('Error al copiar el enlace con Clipboard API: ', err);
-                            alert('No se pudo copiar el enlace automáticamente. Por favor, cópialo manualmente.');
-                        });
-                    }
-                } catch (err) {
-                    console.error('Error al copiar el enlace: ', err);
-                    alert('No se pudo copiar el enlace automáticamente. Por favor, cópialo manualmente.');
-                } finally {
-                    document.body.removeChild(tempInput);
+                    // Después de abrir MP, redirige a WhatsApp para confirmar
+                    setTimeout(() => {
+                        const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y ya pagué la seña de $${señaAmount}. Quiero confirmar mi reserva.`;
+                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                    }, 1000); // Pequeño retraso para que el usuario vea la modal antes de ir a WhatsApp
+                } else {
+                    // Para premios que no necesitan seña, va directo a WhatsApp
+                    const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
+                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
                 }
             });
 
-            linkType.addEventListener('change', toggleOptions);
-            addPriceBtn.addEventListener('click', addPriceEntry);
-            clearFormBtn.addEventListener('click', clearForm); // Nuevo event listener
+            upsellBtn.addEventListener('click', () => {
+                const message = `¡Hola! Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            });
 
-            // Initial display
-            toggleOptions();
+            shareBtn.addEventListener('click', () => {
+                const userName = userNameInput.value.trim();
+                // Validar que el nombre no esté vacío antes de compartir
+                if (userName === '') {
+                    showCustomModal("¡Falta tu nombre!", "Por favor, ingresa tu nombre completo para poder compartir y desbloquear beneficios.");
+                    userNameInput.focus();
+                    updateUserNameInputStyle(); // Asegurar que el borde esté rojo
+                    return;
+                }
+
+                // Mensaje de WhatsApp para compartir con el amigo, incluyendo la instrucción para el amigo
+                const messageToFriend = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
+                
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(messageToFriend)}`;
+                window.open(whatsappUrl, '_blank');
+                
+                // Dar un tiro extra después de intentar compartir
+                setTimeout(() => {
+                    showCustomModal("¡Gracias por compartir!", "¡Ganaste un tiro extra en la ruleta!");
+                    state.spinsLeft++;
+                    saveState();
+                    updateUI();
+                }, 2000);
+            });
+
+            // Event listener para cerrar la modal
+            modalCloseBtn.addEventListener('click', hideCustomModal);
+            customModalOverlay.addEventListener('click', (e) => {
+                if (e.target === customModalOverlay) {
+                    hideCustomModal();
+                }
+            });
+
+            window.addEventListener('resize', resizeCanvas);
+            userNameInput.addEventListener('input', () => {
+                saveUserName(); // Guardar el nombre al escribir
+                updateUserNameInputStyle(); // Actualizar el estilo del input
+            });
+
+            // --- INICIALIZACIÓN ---
+            loadState();
+            updateUI();
+            resizeCanvas();
         });
     </script>
 </body>
