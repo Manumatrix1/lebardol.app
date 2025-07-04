@@ -534,34 +534,13 @@
                     
                     const text = segments[i].text;
                     const words = text.split(' ');
-                    // Ajuste para que el texto no se vea tan apretado
-                    if (words.length > 1 && text.length > 10) { // Si hay varias palabras y el texto es largo
-                        let line1 = '';
-                        let line2 = '';
-                        let currentLine = '';
-                        for (let j = 0; j < words.length; j++) {
-                            if (ctx.measureText(currentLine + words[j]).width < radius * 1.0) { // Ajusta este multiplicador si es necesario
-                                currentLine += (j > 0 ? ' ' : '') + words[j];
-                            } else {
-                                if (line1 === '') {
-                                    line1 = currentLine;
-                                    currentLine = words[j];
-                                } else {
-                                    line2 = currentLine;
-                                    currentLine = words[j];
-                                }
-                            }
-                        }
-                        if (line1 === '') { // Si todo cabe en una línea
-                            ctx.fillText(currentLine, radius * 0.6, 0);
-                        } else if (line2 === '') { // Si cabe en dos líneas
-                            ctx.fillText(line1, radius * 0.6, -fontSize / 2);
-                            ctx.fillText(currentLine, radius * 0.6, fontSize / 2);
-                        } else { // Si necesita más de dos líneas (caso raro, pero para prevenir)
-                            ctx.fillText(line1, radius * 0.6, -fontSize);
-                            ctx.fillText(line2, radius * 0.6, 0);
-                            ctx.fillText(currentLine, radius * 0.6, fontSize);
-                        }
+                    
+                    // Nueva lógica para dividir el texto en la ruleta
+                    if (words.length > 2) {
+                        const line1 = words[0] + ' ' + words[1];
+                        const line2 = words.slice(2).join(' '); // La tercera palabra y las siguientes
+                        ctx.fillText(line1, radius * 0.6, -fontSize / 2);
+                        ctx.fillText(line2, radius * 0.6, fontSize / 2);
                     } else {
                         ctx.fillText(text, radius * 0.6, 0);
                     }
