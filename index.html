@@ -134,7 +134,7 @@
         .roulette-canvas-container {
             position: relative;
             width: 100%; /* Ocupa todo el ancho disponible */
-            max-width: 500px; /* Ancho máximo en pantallas grandes */
+            max-width: 950px; /* Ancho máximo para el círculo de 950px */
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
             height: 0; /* Collapse height, padding-bottom defines it */
             margin: 30px auto;
@@ -567,8 +567,16 @@
         function resizeCanvas() {
             const container = document.querySelector('.roulette-canvas-container');
             const containerWidth = container.offsetWidth; // Usar offsetWidth para obtener el ancho calculado
-            rouletteCanvas.width = containerWidth;
-            rouletteCanvas.height = containerWidth;
+            
+            // Si el ancho del contenedor es mayor que 950px, fijar el canvas a 950px
+            // De lo contrario, dejar que el CSS responsivo (95vw) lo maneje
+            if (containerWidth > 950) {
+                rouletteCanvas.width = 950;
+                rouletteCanvas.height = 950;
+            } else {
+                rouletteCanvas.width = containerWidth;
+                rouletteCanvas.height = containerWidth;
+            }
             drawRoulette(currentRotation);
         }
 
@@ -603,10 +611,9 @@
                 ctx.fillStyle = '#FFFFFF'; // Letra blanca
                 
                 // Ajuste del tamaño de la fuente para que quepa mejor
-                // Se ha ajustado el multiplicador y los límites para una mejor visibilidad
-                const minFontSize = 28; // Apuntando a 30px
-                const maxFontSize = 32; // Apuntando a 30px
-                const calculatedFontSize = radius * 0.065; // Multiplicador ajustado para acercarse a 30px
+                const minFontSize = 15; 
+                const maxFontSize = 18; 
+                const calculatedFontSize = radius * 0.04; // Multiplicador ajustado para 15px
                 const fontSize = Math.max(minFontSize, Math.min(maxFontSize, calculatedFontSize));
                 
                 ctx.font = `bold ${fontSize}px sans-serif`;
@@ -626,7 +633,7 @@
 
                 for (let j = 0; j < lines.length; j++) {
                     // Posicionar el texto a una distancia del centro, empujándolo más hacia el borde.
-                    ctx.fillText(lines[j], radius * 0.75, textY); // Ajustado a 0.75 para más hacia el borde
+                    ctx.fillText(lines[j], radius * 0.7, textY); // Ajustado a 0.7 para más centrado con letra pequeña
                     textY += lineHeight; // Mover a la siguiente línea
                 }
                 ctx.restore();
