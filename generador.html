@@ -283,17 +283,13 @@
             const promotionOptions = document.getElementById('promotionOptions');
             const rouletteOptions = document.getElementById('rouletteOptions');
             const generateLinkBtn = document.getElementById('generateLinkBtn');
-            const clearFormBtn = document.getElementById('clearFormBtn'); // Nuevo
+            const clearFormBtn = document.getElementById('clearFormBtn');
             const generatedLinkContainer = document.getElementById('generatedLinkContainer');
             const generatedLink = document.getElementById('generatedLink');
             const copyLinkBtn = document.getElementById('copyLinkBtn');
             const notification = document.getElementById('notification');
             const addPriceBtn = document.getElementById('addPriceBtn');
             const priceListEntries = document.getElementById('priceListEntries');
-
-            // Base URL of your index.html (adjust if needed, usually just the domain)
-            // Asegúrate de que esta URL sea la correcta para tu archivo index.html
-            const baseUrl = window.location.origin + '/index.html'; 
 
             function toggleOptions() {
                 reminderOptions.style.display = 'none';
@@ -360,10 +356,12 @@
             }
 
             generateLinkBtn.addEventListener('click', () => {
-                let url = baseUrl + '?';
+                let targetPage = '';
                 const params = [];
+                const currentBaseUrl = window.location.origin; // Obtener solo el origen (ej: http://localhost:8000)
 
                 if (linkType.value === 'reminder') {
+                    targetPage = 'recordatorio.html'; // Página para recordatorios
                     const clientName = document.getElementById('clientNameReminder').value.trim();
                     const appointmentDate = document.getElementById('appointmentDate').value;
                     const discount = document.getElementById('discountReminder').value.trim();
@@ -373,7 +371,6 @@
 
                     if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
                     if (appointmentDate) {
-                        // Formatear la fecha para que sea legible en la URL y en el index.html
                         const dateObj = new Date(appointmentDate);
                         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
                         const formattedDate = dateObj.toLocaleString('es-ES', options);
@@ -385,6 +382,7 @@
                     if (newClientDiscount) params.push(`descuentoNuevoCliente=${encodeURIComponent(newClientDiscount)}`);
 
                 } else if (linkType.value === 'promotion') {
+                    targetPage = 'promocion.html'; // Página para promociones
                     const clientName = document.getElementById('clientNamePromo').value.trim();
                     const discount = document.getElementById('discountPromo').value.trim();
                     const treatment = document.getElementById('treatmentPromo').value.trim();
@@ -398,14 +396,15 @@
                     if (newClientDiscountDiffusion) params.push(`descuentoNuevoClienteDifusion=${encodeURIComponent(newClientDiscountDiffusion)}`);
 
                 } else if (linkType.value === 'roulette') {
+                    targetPage = 'index.html'; // La página de la ruleta existente
                     const clientName = document.getElementById('clientNameRoulette').value.trim();
                     const rouletteDiscount = document.getElementById('rouletteDiscount').value.trim();
                     
-                    params.push('roulette=true'); // Always include for roulette links
+                    params.push('roulette=true'); // Siempre incluir para enlaces de ruleta
                     if (clientName) params.push(`nombre=${encodeURIComponent(clientName)}`);
                     if (rouletteDiscount) params.push(`rouletteDiscount=${encodeURIComponent(rouletteDiscount)}`);
 
-                    // Collect price list data
+                    // Recopilar datos de la lista de precios
                     const prices = [];
                     document.querySelectorAll('.price-item').forEach(itemDiv => {
                         const name = itemDiv.querySelector('.treatment-name').value.trim();
@@ -419,14 +418,17 @@
                     }
                 }
 
-                url += params.join('&');
-                generatedLink.textContent = url;
+                let finalUrl = currentBaseUrl + '/' + targetPage; // Construir la URL final con la página de destino
+                if (params.length > 0) {
+                    finalUrl += `?${params.join('&')}`;
+                }
+                generatedLink.textContent = finalUrl;
                 generatedLinkContainer.style.display = 'block';
+                showNotification(); // Mostrar notificación de éxito
             });
 
             copyLinkBtn.addEventListener('click', () => {
                 const linkText = generatedLink.textContent;
-                // Usar document.execCommand('copy') como método principal por su fiabilidad en iframes
                 const tempInput = document.createElement('textarea');
                 tempInput.value = linkText;
                 document.body.appendChild(tempInput);
@@ -437,17 +439,17 @@
                         showNotification();
                     } else {
                         console.error('Fallback: Error al copiar el enlace con execCommand.');
-                        // Si execCommand falla, intentar con Clipboard API (menos probable que funcione en iframe)
                         navigator.clipboard.writeText(linkText).then(() => {
                             showNotification();
                         }).catch(err => {
                             console.error('Error al copiar el enlace con Clipboard API: ', err);
-                            alert('No se pudo copiar el enlace automáticamente. Por favor, cópialo manualmente.');
+                            // No usar alert(), ya que no se ve en iframes.
+                            // Podrías mostrar un mensaje en la interfaz de usuario si lo deseas.
                         });
                     }
                 } catch (err) {
                     console.error('Error al copiar el enlace: ', err);
-                    alert('No se pudo copiar el enlace automáticamente. Por favor, cópialo manualmente.');
+                    // No usar alert()
                 } finally {
                     document.body.removeChild(tempInput);
                 }
@@ -455,7 +457,7 @@
 
             linkType.addEventListener('change', toggleOptions);
             addPriceBtn.addEventListener('click', addPriceEntry);
-            clearFormBtn.addEventListener('click', clearForm); // Nuevo event listener
+            clearFormBtn.addEventListener('click', clearForm);
 
             // Initial display
             toggleOptions();
