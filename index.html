@@ -192,7 +192,31 @@
         .btn-share {
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
+            display: flex; /* Usar flex para alinear el icono y el texto */
+            flex-direction: column; /* Apilar el icono y el texto */
+            align-items: center; /* Centrar horizontalmente */
+            justify-content: center;
+            line-height: 1.2; /* Ajustar el interlineado */
+            padding: 12px; /* Ajustar padding para el nuevo contenido */
         }
+
+        .btn-share .share-title {
+            font-size: 18px; /* Título más grande */
+            font-weight: bold;
+            margin-bottom: 4px; /* Espacio entre título y subtítulo */
+        }
+
+        .btn-share .share-subtitle {
+            font-size: 14px; /* Subtítulo más pequeño */
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .btn-share .fab {
+            font-size: 24px; /* Tamaño del icono de WhatsApp */
+            margin-bottom: 8px; /* Espacio entre icono y texto */
+        }
+
 
         .btn:disabled {
             opacity: 0.6;
@@ -321,7 +345,7 @@
         <!-- SECCIÓN DE RULETA DE CAMPAÑA -->
         <div class="roulette-section" id="rouletteSection">
             <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Le Bardol Estética center y ganá! 🎁</h1> <!-- Título actualizado -->
-            <p class="campaign-subtitle">Podés ganar zonas GRATIS o un 30% OFF en tu siguiente zona.</p>
+            <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu siguiente zona.</p> <!-- Texto actualizado -->
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
             <div class="roulette-canvas-container">
@@ -341,16 +365,18 @@
                 </button>
 
                 <button class="btn btn-share" id="shareBtn">
-                    <i class="fab fa-whatsapp"></i> Compartí y ganá otra tirada
-                </button>
+                    <i class="fab fa-whatsapp"></i> 
+                    <span class="share-title">💥 Compartí y desbloqueá beneficios!</span>
+                    <span class="share-subtitle">10% OFF para vos – 50% OFF para tu amigo.</span>
+                </button> <!-- Texto actualizado con título y subtítulo -->
             </div>
 
             <div id="upsellSection">
                 <h3>¡Potenciá tu premio!</h3>
                 <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
                 <button class="btn btn-upsell" id="upsellBtn">
-                    👉 Ver zonas disponibles y reservar
-                </button>
+                    👉 Conocé nuestros tratamientos
+                </button> <!-- Texto actualizado -->
             </div>
         </div>
         <!-- FIN SECCIÓN DE RULETA -->
@@ -407,11 +433,12 @@
 
             // --- ESTADO DE LA RULETA (guardado en localStorage) ---
             let state = {
-                spinsLeft: 3, // Inicializado a 3 tiros
+                spinsLeft: 3,
                 lastSpinTimestamp: 0,
                 prize: null,
                 prizeEndTime: 0,
-                prizesLeft: 999
+                prizesLeft: 999, // Inicializado con un valor por defecto
+                lastActivity: Date.now() // Inicializado con un valor por defecto
             };
 
             let currentRotation = 0;
@@ -446,8 +473,15 @@
                 if (savedState) {
                     state = savedState;
                 } else {
-                    // Si no hay estado guardado, inicializa con 3 tiros
-                    state.spinsLeft = 3;
+                    // Si no hay estado guardado, inicializa con valores por defecto
+                    state = {
+                        spinsLeft: 3,
+                        lastSpinTimestamp: 0,
+                        prize: null,
+                        prizeEndTime: 0,
+                        prizesLeft: 999, // Valor inicial de premios
+                        lastActivity: Date.now()
+                    };
                 }
                 // Simula que los premios bajan con el tiempo
                 const now = Date.now();
@@ -546,7 +580,7 @@
                 }
 
                 state.spinsLeft--;
-                state.lastSpinTimestamp = Date.now();
+                state.lastSpinTimestamp = Date.now(); 
                 state.prizesLeft--; // Se resta un premio
                 saveState();
                 updateUI();
@@ -723,9 +757,9 @@
             });
 
             shareBtn.addEventListener('click', () => {
-                const message = "¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré!";
-                const urlToShare = window.location.href;
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message + " " + urlToShare)}`;
+                // Mensaje de WhatsApp para compartir con los nuevos beneficios
+                const message = "💥 ¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré y ahora podés ganar 10% OFF para vos y 50% OFF para tu amigo! " + window.location.href;
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
                 
                 // Dar un tiro extra después de intentar compartir
