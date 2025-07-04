@@ -137,22 +137,25 @@
 
         /* Contenedor de la ruleta */
         .roulette-canvas-container {
-            position: relative;
+            position: relative; /* Mantener para el indicador */
             width: 100%; /* Ocupa todo el ancho disponible */
             max-width: 950px; /* Ancho máximo para el círculo de 950px */
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
-            height: 0; /* Collapse height, padding-bottom defines it */
+            height: 0; /* Colapsa la altura, padding-bottom la define */
             margin: auto; /* Centra la ruleta dentro de su contenedor flex */
             border: none; 
             box-shadow: none;
             border-radius: 50%; /* Asegura que el contenedor siga siendo circular */
             overflow: hidden; /* Importante para que el canvas se recorte en círculo */
+            
+            /* NUEVO: Propiedades Flexbox para centrar el canvas dentro de este contenedor */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+            /* Eliminadas propiedades de posicionamiento absoluto */
             width: 100%;
             height: 100%;
             display: block;
@@ -410,7 +413,7 @@
         <h1 class="animated-title">🎉 ¡GIRÁ LA RULETA MÁGICA DE BARDOL Y GANÁ! 🎁</h1>
         <p class="subtitle">Podés ganar zonas GRATIS o un 30% OFF en tu siguiente zona.</p>
         <p class="prize-counter" id="prizesLeftDisplay">🎁 Solo quedan 1000 premios disponibles.</p>
-        <button id="startRouletteBtn" class="btn btn-primary">👉 GIRAR LA RULETA AHORA</button>
+        <button id="startRouletteBtn" class="btn btn-primary">👉 GIRAR LA RULETA AHORRA</button>
     </div>
 
     <div class="game-container" id="rouletteScreen" style="display: none;">
