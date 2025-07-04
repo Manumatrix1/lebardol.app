@@ -345,7 +345,7 @@
         <!-- SECCIÓN DE RULETA DE CAMPAÑA -->
         <div class="roulette-section" id="rouletteSection">
             <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Le Bardol Estética center y ganá! 🎁</h1> <!-- Título actualizado -->
-            <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu siguiente zona.</p> <!-- Texto actualizado -->
+            <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu próximo tratamiento.</p> <!-- Texto actualizado -->
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
             <div class="roulette-canvas-container">
@@ -527,11 +527,17 @@
                     ctx.save();
                     ctx.rotate(angle + arc / 2);
                     ctx.fillStyle = '#ffffff';
-                    const fontSize = 12; // Tamaño de fuente fijo a 12px
+                    const fontSize = 14; // Tamaño de fuente actualizado a 14px
                     ctx.font = `bold ${fontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     
+                    // Añadir sombra al texto
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)'; // Color de la sombra
+                    ctx.shadowBlur = 3; // Desenfoque de la sombra
+                    ctx.shadowOffsetX = 2; // Desplazamiento X de la sombra
+                    ctx.shadowOffsetY = 2; // Desplazamiento Y de la sombra
+
                     const text = segments[i].text;
                     const words = text.split(' ');
                     
