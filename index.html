@@ -134,11 +134,10 @@
         .roulette-canvas-container {
             position: relative;
             width: 100%; /* Ocupa todo el ancho disponible */
-            max-width: 500px; /* Ancho máximo en pantallas grandes */
+            /* Eliminado max-width para que no restrinja el tamaño en móviles */
             padding-bottom: 100%; /* Mantiene el aspecto cuadrado (1:1) */
-            height: 0;
+            height: 0; /* Collapse height, padding-bottom defines it */
             margin: 30px auto;
-            /* Eliminado el borde y la sombra para que no haya recuadro */
             border: none; 
             box-shadow: none;
             border-radius: 50%; /* Asegura que el contenedor siga siendo circular */
@@ -394,7 +393,8 @@
                 font-size: 1.4rem;
             }
             .roulette-canvas-container {
-                max-width: 90vw; /* Ocupa el 90% del ancho del viewport */
+                width: 95vw; /* Ocupa el 95% del ancho del viewport */
+                margin: 20px auto; /* Centrar después de ajustar el ancho */
             }
         }
     </style>
@@ -598,8 +598,8 @@
                 
                 // Ajuste del tamaño de la fuente para que quepa mejor
                 // Se ha ajustado el multiplicador y los límites para una mejor visibilidad
-                const minFontSize = 14; // Aumentado para mayor legibilidad en móviles
-                const maxFontSize = 20; // Ajustado para evitar desbordamiento en pantallas grandes
+                const minFontSize = 16; // Aumentado para mayor legibilidad en móviles
+                const maxFontSize = 24; // Ajustado para evitar desbordamiento en pantallas grandes
                 const calculatedFontSize = radius * 0.09; // Multiplicador ajustado para achicar la letra
                 const fontSize = Math.max(minFontSize, Math.min(maxFontSize, calculatedFontSize));
                 
