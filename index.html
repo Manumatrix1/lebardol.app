@@ -76,7 +76,7 @@
             border-radius: 15px;
             margin-bottom: 20px;
             text-align: center;
-            display: none; /* Se mostrará con JS */
+            display: flex; /* Se mostrará con JS */
             flex-direction: column;
             align-items: center;
             gap: 15px;
@@ -332,6 +332,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: background 0.3s ease;
+            margin: 5px; /* Espacio entre botones */
         }
 
         .custom-modal-content button:hover {
@@ -355,6 +356,43 @@
             border: 2px solid #22c55e; /* Verde */
         }
 
+        /* Estilos para la lista de premios ganados */
+        .won-prizes-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e9;
+            border: 2px dashed #4caf50;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 380px;
+            text-align: left;
+            display: none; /* Hidden by default, shown when prizes are won */
+        }
+        .won-prizes-section h3 {
+            color: #2e7d32;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .won-prizes-list {
+            list-style: none;
+            padding: 0;
+        }
+        .won-prizes-list li {
+            background-color: #d4edda;
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            color: #155724;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .won-prizes-list li strong {
+            color: #00796b;
+        }
     </style>
 </head>
 <body>
@@ -401,6 +439,14 @@
                     👉 Conocé nuestros tratamientos
                 </button> <!-- Texto actualizado -->
             </div>
+
+            <!-- Sección de Premios Ganados (esta sección se oculta si no la quieres) -->
+            <div id="wonPrizesSection" class="won-prizes-section" style="display: none;">
+                <h3>🏆 Tus Premios Ganados 🏆</h3>
+                <ul id="wonPrizesList" class="won-prizes-list">
+                    <!-- Los premios se listarán aquí -->
+                </ul>
+            </div>
         </div>
         <!-- FIN SECCIÓN DE RULETA -->
     </div>
@@ -410,7 +456,9 @@
         <div class="custom-modal-content">
             <h3 id="modalTitle"></h3>
             <p id="modalMessage"></p>
-            <button id="modalCloseBtn">Entendido</button>
+            <div id="modalButtons">
+                <!-- Botones se inyectarán aquí dinámicamente -->
+            </div>
         </div>
     </div>
 
@@ -434,12 +482,14 @@
             const upsellBtn = document.getElementById('upsellBtn');
             const shareBtn = document.getElementById('shareBtn');
             const userNameInput = document.getElementById('userName'); // Nuevo: Campo de nombre de usuario
+            const wonPrizesSection = document.getElementById('wonPrizesSection'); // Nueva sección de premios ganados
+            const wonPrizesList = document.getElementById('wonPrizesList'); // Lista de premios ganados
 
             // Modal elements
             const customModalOverlay = document.getElementById('customModalOverlay');
             const modalTitle = document.getElementById('modalTitle');
             const modalMessage = document.getElementById('modalMessage');
-            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalButtons = document.getElementById('modalButtons'); // Contenedor para botones dinámicos
 
             // --- PREMIOS DE LA RULETA ---
             const segments = [
@@ -457,12 +507,13 @@
 
             // --- ESTADO DE LA RULETA (guardado en localStorage) ---
             let state = {
-                spinsLeft: 3,
+                spinsLeft: 0, // Vuelve a 0 tiros iniciales
                 lastSpinTimestamp: 0,
                 prize: null,
                 prizeEndTime: 0,
                 prizesLeft: 999, // Inicializado con un valor por defecto
-                lastActivity: Date.now() // Inicializado con un valor por defecto
+                lastActivity: Date.now(), // Inicializado con un valor por defecto
+                wonPrizes: [] // Mantenemos el array por si quieres reutilizarlo en el futuro, pero no se mostrará
             };
 
             let currentRotation = 0;
@@ -472,13 +523,24 @@
             // --- FUNCIONES PRINCIPALES ---
 
             /**
-             * Muestra una ventana modal personalizada.
+             * Muestra una ventana modal personalizada con botones dinámicos.
              * @param {string} title - El título de la modal.
              * @param {string} message - El mensaje a mostrar.
+             * @param {Array<Object>} buttons - Array de objetos { text: 'Texto', class: 'clase-css', handler: function }
              */
-            function showCustomModal(title, message) {
+            function showCustomModal(title, message, buttons = [{text: 'Entendido', handler: hideCustomModal}]) {
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
+                modalButtons.innerHTML = ''; // Limpiar botones anteriores
+                buttons.forEach(btnConfig => {
+                    const button = document.createElement('button');
+                    button.textContent = btnConfig.text;
+                    if (btnConfig.class) {
+                        button.classList.add(btnConfig.class);
+                    }
+                    button.addEventListener('click', btnConfig.handler);
+                    modalButtons.appendChild(button);
+                });
                 customModalOverlay.classList.add('active');
             }
 
@@ -496,15 +558,20 @@
                 const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
                 if (savedState) {
                     state = savedState;
+                    // Asegurarse de que wonPrizes exista en el estado cargado
+                    if (!state.wonPrizes) {
+                        state.wonPrizes = [];
+                    }
                 } else {
                     // Si no hay estado guardado, inicializa con valores por defecto
                     state = {
-                        spinsLeft: 3,
+                        spinsLeft: 0, // Vuelve a 0 tiros iniciales
                         lastSpinTimestamp: 0,
                         prize: null,
                         prizeEndTime: 0,
                         prizesLeft: 999, // Valor inicial de premios
-                        lastActivity: Date.now()
+                        lastActivity: Date.now(),
+                        wonPrizes: [] 
                     };
                 }
                 // Cargar el nombre de usuario guardado
@@ -559,6 +626,7 @@
                 const radius = Math.min(centerX, centerY);
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(rotation);
@@ -618,7 +686,7 @@
                 }
 
                 if (state.spinsLeft <= 0) {
-                    showCustomModal("¡Sin tiros disponibles!", "Ya utilizaste tus tiros. ¡Compartí en WhatsApp para ganar otro!");
+                    showCustomModal("¡Sin tiros disponibles!", "¡Necesitas compartir con 5 amigos para obtener un tiro!");
                     return;
                 }
 
@@ -669,8 +737,14 @@
                 fireConfetti();
                 resultMessage.textContent = `¡FELICITACIONES! GANASTE ${state.prize.description.toUpperCase()}`;
                 
+                // Añadir el premio ganado a la lista (aunque la sección wonPrizesSection esté oculta, el dato se guarda)
+                state.wonPrizes.push({
+                    description: state.prize.description,
+                    timestamp: Date.now()
+                });
+
                 if (state.prize.needsSeña) {
-                    state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutos
+                    state.prizeEndTime = Date.now() + 20 * 60 * 1000; // 20 minutos para la seña
                     startPrizeTimer();
                     reserveBtn.innerHTML = `🎁 RESERVÁ TU LUGAR (SEÑA $${señaAmount}) 🎁`; // Texto con emoji
                 } else {
@@ -695,7 +769,7 @@
                     if (timeLeft <= 0) {
                         clearInterval(prizeTimerInterval);
                         prizeTimerDisplay.textContent = 'Tu premio expiró y fue liberado.';
-                        state.prize = null;
+                        state.prize = null; // El premio se pierde
                         saveState();
                         updateUI();
                         return;
@@ -722,39 +796,55 @@
              * Actualiza todos los elementos de la interfaz.
              */
             function updateUI() {
-                // Mostrar la sección de la ruleta
                 rouletteSection.style.display = 'flex';
-
-                // Siempre mostrar el botón de girar, pero controlar su texto y estado
                 spinBtn.style.display = 'block'; 
-                reserveBtn.style.display = state.prize ? 'block' : 'none'; // Mostrar reservar si hay premio
-                upsellSection.style.display = state.prize ? 'block' : 'none'; // Mostrar upsell si hay premio
-
-                if (state.prize) {
-                    // Si ya se ganó un premio
-                    spinBtn.disabled = true;
-                    spinBtn.textContent = '¡Ya ganaste! Compartí para más tiros.';
-                    shareBtn.style.display = 'block'; // Mostrar botón de compartir para obtener más tiros
-                } else if (state.spinsLeft <= 0) {
-                    // Si no quedan tiros y no se ha ganado un premio aún
-                    spinBtn.disabled = true;
-                    spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR';
-                    shareBtn.style.display = 'block';
+                
+                // Mostrar/ocultar botones de reserva y upsell según si hay un premio activo
+                // Si hay un premio y requiere seña, mostrar reserveBtn y upsellSection
+                if (state.prize && state.prize.needsSeña) {
+                    reserveBtn.style.display = 'block'; 
+                    upsellSection.style.display = 'block'; 
+                } else if (state.prize && !state.prize.needsSeña) {
+                    // Si hay un premio y NO requiere seña, mostrar solo reserveBtn (para reclamar)
+                    reserveBtn.style.display = 'block';
+                    upsellSection.style.display = 'none'; // Ocultar upsell si no hay seña
                 } else {
-                    // Si hay tiros disponibles y no se ha ganado un premio
-                    spinBtn.disabled = false;
-                    spinBtn.textContent = '👉 GIRAR LA RULETA AHORA';
-                    shareBtn.style.display = 'none'; // Ocultar compartir si hay tiros disponibles
+                    // Si no hay premio, ocultar ambos
+                    reserveBtn.style.display = 'none';
+                    upsellSection.style.display = 'none';
                 }
 
-                // Contador de premios
+                // Lógica principal para el botón de girar y compartir
+                if (state.spinsLeft > 0) {
+                    spinBtn.disabled = false; // Habilitar el botón si hay tiros disponibles
+                    spinBtn.textContent = `👉 GIRAR LA RULETA AHORA (${state.spinsLeft} tiros restantes)`;
+                    shareBtn.style.display = 'none'; // Ocultar el botón de compartir si hay tiros
+                    resultMessage.textContent = ''; // Limpiar el mensaje de resultado anterior
+                } else { // No quedan tiros
+                    spinBtn.disabled = true; // Deshabilitar el botón
+                    spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR';
+                    shareBtn.style.display = 'block'; // Mostrar el botón de compartir para obtener más tiros
+                    resultMessage.textContent = ''; // Limpiar el mensaje de resultado si no hay tiros
+                }
+
                 prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
                 
-                // Temporizador de premio
-                if (!state.prize && prizeTimerInterval) {
-                    clearInterval(prizeTimerInterval);
+                // Gestión del temporizador del premio
+                if (state.prize && state.prizeEndTime > Date.now()) {
+                    prizeTimerDisplay.style.display = 'block';
+                    startPrizeTimer(); // Asegurarse de que el temporizador esté corriendo si el premio está activo
+                } else {
+                    clearInterval(prizeTimerInterval); // Detener el temporizador si no hay premio o expiró
                     prizeTimerDisplay.style.display = 'none';
+                    if (state.prize && state.prizeEndTime <= Date.now()) { // Si el premio acaba de expirar
+                        state.prize = null;
+                        saveState();
+                        updateUI(); // Volver a renderizar para limpiar elementos relacionados con el premio
+                    }
                 }
+
+                // La sección de premios ganados siempre estará oculta con style="display: none;" en el HTML
+                wonPrizesSection.style.display = 'none'; 
             }
 
             /**
@@ -776,20 +866,43 @@
                 if (state.prize.needsSeña) {
                     // Abre el link de Mercado Pago directamente para la seña
                     window.open(mercadopagoLinkUrl, '_blank');
-                    // Opcional: Podrías añadir un mensaje de confirmación o un seguimiento aquí
-                    showCustomModal("¡Listo para reservar!", `Has ganado "${state.prize.description.toUpperCase()}". Haz clic en "Entendido" para ir a WhatsApp y confirmar tu reserva.`);
                     
-                    // Después de abrir MP, redirige a WhatsApp para confirmar
-                    setTimeout(() => {
-                        const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y ya pagué la seña de $${señaAmount}. Quiero confirmar mi reserva.`;
-                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
-                    }, 1000); // Pequeño retraso para que el usuario vea la modal antes de ir a WhatsApp
+                    // Muestra la modal para confirmar el pago y obtener tiro extra
+                    showCustomModal(
+                        "¡Confirmar Seña!", 
+                        `Has ganado "${state.prize.description.toUpperCase()}". Por favor, confirma si ya realizaste la seña de $${señaAmount} para obtener un tiro extra.`,
+                        [
+                            {
+                                text: 'Sí, ya pagué y quiero mi tiro!',
+                                handler: () => {
+                                    hideCustomModal();
+                                    state.spinsLeft++; // Dar tiro extra por confirmar pago
+                                    state.prize = null; // Limpiar el premio actual para que pueda girar de nuevo
+                                    clearInterval(prizeTimerInterval); // Detener el temporizador
+                                    saveState();
+                                    updateUI();
+                                    showCustomModal("¡Tiro extra!", "¡Gracias por confirmar tu seña! Has ganado un tiro extra.");
+                                }
+                            },
+                            {
+                                text: 'No, aún no he pagado',
+                                handler: () => {
+                                    hideCustomModal();
+                                    // El premio sigue activo, el temporizador sigue corriendo
+                                }
+                            }
+                        ]
+                    );
                 } else {
                     // Para premios que no necesitan seña, va directo a WhatsApp
                     const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
                     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
+                    showCustomModal("¡Premio Reclamado!", `Has reclamado "${state.prize.description.toUpperCase()}". ¡Te esperamos!`);
+                    state.prize = null; // Limpiar el premio
+                    clearInterval(prizeTimerInterval); // Detener el temporador
+                    saveState();
+                    updateUI();
                 }
             });
 
@@ -809,23 +922,47 @@
                     return;
                 }
 
-                // Mensaje de WhatsApp para compartir con el amigo, incluyendo la instrucción para el amigo
-                const messageToFriend = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
+                const shareMessage = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
                 
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(messageToFriend)}`;
-                window.open(whatsappUrl, '_blank');
-                
-                // Dar un tiro extra después de intentar compartir
-                setTimeout(() => {
-                    showCustomModal("¡Gracias por compartir!", "¡Ganaste un tiro extra en la ruleta!");
-                    state.spinsLeft++;
-                    saveState();
-                    updateUI();
-                }, 2000);
+                showCustomModal(
+                    "¡Compartí y Ganá un Tiro!", 
+                    `Para obtener un tiro en la ruleta, comparte este enlace con **5 amigos** en WhatsApp. ¡Además, por cada amigo que **contrate un servicio**, tú ganas un **10% OFF** en tu próxima sesión y tu amigo un **50% OFF** en su primera sesión! Luego, confirma aquí que lo has hecho.`,
+                    [
+                        {
+                            text: 'Compartir en WhatsApp',
+                            handler: () => {
+                                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+                                window.open(whatsappUrl, '_blank');
+                                // Después de abrir WhatsApp, cambia el contenido de la modal para pedir confirmación
+                                modalTitle.textContent = "¡Casi listo!";
+                                modalMessage.textContent = "¿Has compartido con 5 amigos? Confirma para recibir tu tiro.";
+                                modalButtons.innerHTML = ''; // Limpiar botones anteriores
+                                const yesButton = document.createElement('button');
+                                yesButton.textContent = 'Sí, compartí con 5 amigos!';
+                                yesButton.addEventListener('click', () => {
+                                    hideCustomModal();
+                                    state.spinsLeft++; // Dar tiro extra por confirmar compartir
+                                    saveState();
+                                    updateUI();
+                                    showCustomModal("¡Tiro extra!", "¡Gracias por compartir! Has ganado un tiro extra en la ruleta.");
+                                });
+                                modalButtons.appendChild(yesButton);
+
+                                const noButton = document.createElement('button');
+                                noButton.textContent = 'No, aún no';
+                                noButton.addEventListener('click', hideCustomModal);
+                                modalButtons.appendChild(noButton);
+                            }
+                        },
+                        {
+                            text: 'Cancelar',
+                            handler: hideCustomModal
+                        }
+                    ]
+                );
             });
 
             // Event listener para cerrar la modal
-            modalCloseBtn.addEventListener('click', hideCustomModal);
             customModalOverlay.addEventListener('click', (e) => {
                 if (e.target === customModalOverlay) {
                     hideCustomModal();
