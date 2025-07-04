@@ -348,6 +348,12 @@
             <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu próximo tratamiento.</p> <!-- Texto actualizado -->
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
+            <!-- Campo para el nombre del usuario -->
+            <div style="margin-bottom: 15px; width: 90%; max-width: 380px;">
+                <label for="userName" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a2c5e; font-size: 14px;">Tu nombre (para personalizar el mensaje):</label>
+                <input type="text" id="userName" placeholder="Ej: Papu" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;">
+            </div>
+
             <div class="roulette-canvas-container">
                 <div class="wheel-indicator"></div>
                 <canvas id="rouletteCanvas"></canvas> 
@@ -410,6 +416,7 @@
             const upsellSection = document.getElementById('upsellSection');
             const upsellBtn = document.getElementById('upsellBtn');
             const shareBtn = document.getElementById('shareBtn');
+            const userNameInput = document.getElementById('userName'); // Nuevo: Campo de nombre de usuario
 
             // Modal elements
             const customModalOverlay = document.getElementById('customModalOverlay');
@@ -483,6 +490,12 @@
                         lastActivity: Date.now()
                     };
                 }
+                // Cargar el nombre de usuario guardado
+                const savedUserName = localStorage.getItem('bardolUserName');
+                if (savedUserName) {
+                    userNameInput.value = savedUserName;
+                }
+
                 // Simula que los premios bajan con el tiempo
                 const now = Date.now();
                 const hoursPassed = (now - (state.lastActivity || now)) / (1000 * 60 * 60);
@@ -497,6 +510,13 @@
              */
             function saveState() {
                 localStorage.setItem('bardolRouletteState', JSON.stringify(state));
+            }
+
+            /**
+             * Guarda el nombre de usuario en localStorage.
+             */
+            function saveUserName() {
+                localStorage.setItem('bardolUserName', userNameInput.value);
             }
 
             /**
@@ -742,8 +762,14 @@
             });
 
             shareBtn.addEventListener('click', () => {
+                const userName = userNameInput.value.trim();
+                let personalizedGreeting = '';
+                if (userName) {
+                    personalizedGreeting = `Soy ${userName} y `;
+                }
+
                 // Mensaje de WhatsApp para compartir con los nuevos beneficios
-                const message = "💥 ¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré y ahora podés ganar 10% OFF para vos y 50% OFF para tu amigo! " + window.location.href;
+                const message = `${personalizedGreeting}💥 ¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré y ahora podés ganar 10% OFF para vos y 50% OFF para tu amigo! ${window.location.href}`;
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
                 
@@ -765,6 +791,7 @@
             });
 
             window.addEventListener('resize', resizeCanvas);
+            userNameInput.addEventListener('input', saveUserName); // Guardar el nombre al escribir
 
             // --- INICIALIZACIÓN ---
             loadState();
