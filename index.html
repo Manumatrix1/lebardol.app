@@ -32,11 +32,15 @@
             max-width: 500px;
             width: 100%;
             background: white;
+            padding: 30px; /* Añadido padding para que el contenido no esté pegado a los bordes */
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
             overflow: hidden;
             margin: 20px 0;
             position: relative;
+            display: flex; /* Usar flexbox para organizar el contenido dentro del container */
+            flex-direction: column;
+            align-items: center;
         }
         
         /* Sección del encabezado (oculto según tu CSS original) */
@@ -71,11 +75,7 @@
         
         /* --- ESTILOS DE LA CAMPAÑA RULETA --- */
         .roulette-section {
-            padding: 20px;
-            background: #fdfdfd;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
+            width: 100%; /* Ocupa todo el ancho del contenedor */
             display: flex; /* Se mostrará con JS */
             flex-direction: column;
             align-items: center;
@@ -87,6 +87,8 @@
             font-weight: 900;
             color: #e91e63;
             line-height: 1.2;
+            text-align: center; /* Asegurar centrado del texto */
+            width: 100%; /* Asegurar que ocupe todo el ancho para centrar */
             animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
         }
         
@@ -100,6 +102,7 @@
             color: #4a2c5e;
             padding: 0 10px;
             max-width: 400px;
+            text-align: center; /* Asegurar centrado del texto */
         }
 
         .prize-counter {
@@ -142,14 +145,14 @@
 
         .wheel-indicator {
             position: absolute;
-            top: -30px;
+            top: -30px; /* Posición del indicador */
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-bottom: 35px solid #e91e63;
+            border-bottom: 35px solid #e91e63; /* Punta hacia abajo */
             z-index: 10;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
         }
@@ -187,6 +190,12 @@
             background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); /* Rojo más llamativo */
             color: white;
             display: none;
+        }
+
+        .btn-claim-prize {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%); /* Nuevo color cian para reclamar */
+            color: white;
+            display: none; /* Oculto por defecto */
         }
 
         .btn-share {
@@ -234,27 +243,44 @@
             margin-top: 20px;
             font-size: 24px;
             font-weight: bold;
-            color: #e91e63;
+            color: #4a2c5e; /* Color de texto más neutro */
+            animation: pulse-red 1.5s infinite; /* Animación para el mensaje de premio */
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(233, 30, 99, 0.5);
+            display: none; /* Oculto por defecto, se muestra con JS */
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            line-height: 1.4;
         }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 25px rgba(233, 30, 99, 0.8); transform: scale(1.02); }
+            100% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
+        }
+
 
         .prize-timer {
             font-size: 18px;
             font-weight: bold;
             color: #d32f2f;
             margin-top: 10px;
+            text-align: center; /* Asegurar centrado del texto */
+            width: 100%; /* Asegurar que ocupe todo el ancho para centrar */
             display: none;
         }
         
         /* Sección de Upsell */
         #upsellSection {
             display: none;
-            margin-top: 20px;
             padding: 15px;
             background: #e0f7fa;
             border: 2px dashed #00bcd4;
             border-radius: 15px;
-            width: 90%;
-            max-width: 380px;
+            width: 100%; /* Ocupa todo el ancho disponible en buttons-container */
         }
         #upsellSection h3 {
             color: #00796b;
@@ -393,12 +419,38 @@
         .won-prizes-list li strong {
             color: #00796b;
         }
+
+        /* Estilos para el logo de WhatsApp */
+        .whatsapp-logo-container {
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%; /* Asegura que el contenedor del logo ocupe todo el ancho para centrar */
+        }
+        .whatsapp-logo-container img {
+            max-width: 150px; /* Ajusta el tamaño del logo */
+            height: auto;
+            border-radius: 15px; /* Bordes redondeados para el logo */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: block; /* Asegura que la imagen sea un bloque para centrar con margin auto */
+            margin: 0 auto; /* Centra la imagen */
+        }
+        .whatsapp-logo-container img:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- SECCIÓN DE RULETA DE CAMPAÑA -->
         <div class="roulette-section" id="rouletteSection">
+            <!-- Logo con link a WhatsApp -->
+            <div class="whatsapp-logo-container">
+                <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
+                    <img src="logo lb.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/150x150/8a2be2/ffffff?text=Le+Bardol+Logo';">
+                </a>
+            </div>
+
             <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Le Bardol Estética center y ganá! 🎁</h1> <!-- Título actualizado -->
             <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu próximo tratamiento.</p> <!-- Texto actualizado -->
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
@@ -411,33 +463,45 @@
 
             <div class="roulette-canvas-container">
                 <div class="wheel-indicator"></div>
-                <canvas id="rouletteCanvas"></canvas> 
+                <canvas id="rouletteCanvas"></canvas>
             </div>
 
-             <div class="buttons-container">
-                <button class="btn btn-spin" id="spinBtn">
-                    <!-- El texto se cambia con JS -->
-                </button>
-                <p id="resultMessage"></p>
-                <p class="prize-timer" id="prizeTimerDisplay"></p>
-                
+            <!-- Mensaje de resultado de premio -->
+            <p id="resultMessage"></p>
+            <!-- Temporizador del premio -->
+            <p class="prize-timer" id="prizeTimerDisplay"></p>
+
+            <div class="buttons-container">
+                <!-- Botón de Reservar (si aplica) -->
                 <button class="btn btn-reserve" id="reserveBtn">
                     <!-- El texto se cambia con JS -->
                 </button>
 
+                <!-- Nuevo Botón para Reclamar Premio (WhatsApp) -->
+                <button class="btn btn-claim-prize" id="claimPrizeBtn">
+                    <!-- El texto se cambia con JS -->
+                </button>
+
+                <!-- Botón de Compartir -->
                 <button class="btn btn-share" id="shareBtn">
-                    <i class="fab fa-whatsapp"></i> 
+                    <i class="fab fa-whatsapp"></i>
                     <span class="share-title">💥 Compartí y desbloqueá beneficios!</span>
                     <span class="share-subtitle">10% OFF para vos – 50% OFF para tu amigo.</span>
-                </button> <!-- Texto actualizado con título y subtítulo -->
-            </div>
+                </button>
 
-            <div id="upsellSection">
-                <h3>¡Potenciá tu premio!</h3>
-                <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
-                <button class="btn btn-upsell" id="upsellBtn">
-                    👉 Conocé nuestros tratamientos
-                </button> <!-- Texto actualizado -->
+                <!-- Botón de Girar (oculto si no hay tiros, se muestra Compartir) -->
+                <button class="btn btn-spin" id="spinBtn">
+                    <!-- El texto se cambia con JS -->
+                </button>
+
+                <!-- Sección de Upsell -->
+                <div id="upsellSection">
+                    <h3>¡Potenciá tu premio!</h3>
+                    <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
+                    <button class="btn btn-upsell" id="upsellBtn">
+                        👉 Conocé nuestros tratamientos
+                    </button>
+                </div>
             </div>
 
             <!-- Sección de Premios Ganados (esta sección se oculta si no la quieres) -->
@@ -450,7 +514,7 @@
         </div>
         <!-- FIN SECCIÓN DE RULETA -->
     </div>
-    
+
     <!-- Ventana modal personalizada -->
     <div id="customModalOverlay" class="custom-modal-overlay">
         <div class="custom-modal-content">
@@ -468,6 +532,7 @@
             const señaAmount = 8000; // Monto de la seña actualizado a 8000
             const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`; // Link de Mercado Pago actualizado
             const whatsappNumber = '5493415216025'; // Tu número de WhatsApp
+            const leBardolLogoUrl = 'logo lb.png'; // URL del logo de Le Bardol
 
             // --- ELEMENTOS DEL DOM ---
             const rouletteSection = document.getElementById('rouletteSection');
@@ -475,6 +540,7 @@
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spinBtn');
             const reserveBtn = document.getElementById('reserveBtn');
+            const claimPrizeBtn = document.getElementById('claimPrizeBtn'); // Nuevo botón
             const resultMessage = document.getElementById('resultMessage');
             const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
             const prizeCounterDisplay = document.getElementById('prizeCounter');
@@ -484,6 +550,10 @@
             const userNameInput = document.getElementById('userName'); // Nuevo: Campo de nombre de usuario
             const wonPrizesSection = document.getElementById('wonPrizesSection'); // Nueva sección de premios ganados
             const wonPrizesList = document.getElementById('wonPrizesList'); // Lista de premios ganados
+            const whatsappLogoImg = document.querySelector('.whatsapp-logo-container img'); // Elemento del logo
+
+            // Set the logo source
+            whatsappLogoImg.src = leBardolLogoUrl;
 
             // Modal elements
             const customModalOverlay = document.getElementById('customModalOverlay');
@@ -493,15 +563,16 @@
 
             // --- PREMIOS DE LA RULETA ---
             const segments = [
-                { text: 'Axilas GRATIS', type: 'freebie', needsSeña: true, description: 'Axilas GRATIS' },
-                { text: '30% OFF', type: 'discount', value: 30, needsSeña: true, description: '30% OFF en cualquier zona' },
-                { text: '2x1 en Sesión', type: 'bogo', needsSeña: true, description: '2x1 en tu próxima sesión' },
-                { text: '10% OFF Asegurado', type: 'discount', value: 10, needsSeña: false, description: '10% OFF asegurado' },
                 { text: 'Media Pierna GRATIS', type: 'freebie', needsSeña: true, description: 'Media Pierna GRATIS' },
-                { text: 'Cupón Sorpresa!', type: 'surprise', needsSeña: false, description: 'un Cupón Sorpresa!' },
-                { text: 'Zona Pequeña GRATIS', type: 'freebie', needsSeña: true, description: 'Zona pequeña a elección (bozo, mentón, etc.)' },
+                { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' },
+                { text: 'Axilas GRATIS', type: 'freebie', needsSeña: true, description: 'Axilas GRATIS' },
+                { text: 'Rostro GRATIS', type: 'freebie', needsSeña: true, description: 'Rostro GRATIS' },
+                { text: 'Gluteos GRATIS', type: 'freebie', needsSeña: true, description: 'Gluteos GRATIS' },
+                { text: 'Pecho GRATIS', type: 'freebie', needsSeña: true, description: 'Pecho GRATIS' },
+                { text: 'Espalda GRATIS', type: 'freebie', needsSeña: true, description: 'Espalda GRATIS' },
+                { text: 'Zona Chica 60% OFF', type: 'discount', value: 60, needsSeña: false, description: 'Zona Chica 60% OFF' },
             ];
-            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50'];
+            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4']; // Añadido un color más para el nuevo segmento
             const numSegments = segments.length;
             const arc = (2 * Math.PI) / numSegments;
 
@@ -571,7 +642,7 @@
                         prizeEndTime: 0,
                         prizesLeft: 999, // Valor inicial de premios
                         lastActivity: Date.now(),
-                        wonPrizes: [] 
+                        wonPrizes: []
                     };
                 }
                 // Cargar el nombre de usuario guardado
@@ -626,7 +697,7 @@
                 const radius = Math.min(centerX, centerY);
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
+
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(rotation);
@@ -650,7 +721,7 @@
                     ctx.font = `bold ${fontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    
+
                     // Añadir sombra al texto
                     ctx.shadowColor = 'rgba(0, 0, 0, 0.7)'; // Color de la sombra
                     ctx.shadowBlur = 3; // Desenfoque de la sombra
@@ -659,7 +730,7 @@
 
                     const text = segments[i].text;
                     const words = text.split(' ');
-                    
+
                     // Nueva lógica para dividir el texto en la ruleta
                     if (words.length > 2) {
                         const line1 = words[0] + ' ' + words[1];
@@ -691,7 +762,7 @@
                 }
 
                 state.spinsLeft--;
-                state.lastSpinTimestamp = Date.now(); 
+                state.lastSpinTimestamp = Date.now();
                 state.prizesLeft--; // Se resta un premio
                 saveState();
                 updateUI();
@@ -735,8 +806,15 @@
              */
             function handleSpinEnd() {
                 fireConfetti();
-                resultMessage.textContent = `¡FELICITACIONES! GANASTE ${state.prize.description.toUpperCase()}`;
-                
+
+                // Lógica de mensaje de resultado mejorada
+                if (state.prize.needsSeña && state.prize.type === 'freebie') {
+                    resultMessage.innerHTML = `¡FELICITACIONES! GANASTE <span style="color: #e91e63;">${state.prize.description.toUpperCase()}</span>. <br>¡Podés tener esta zona GRATIS al contratar otra zona de depilación definitiva! <br>La seña es para reservar tu turno.`;
+                } else {
+                    resultMessage.innerHTML = `¡FELICITACIONES! GANASTE <span style="color: #e91e63;">${state.prize.description.toUpperCase()}</span>`;
+                }
+                resultMessage.style.display = 'block'; // Asegurarse de que el mensaje de resultado sea visible
+
                 // Añadir el premio ganado a la lista (aunque la sección wonPrizesSection esté oculta, el dato se guarda)
                 state.wonPrizes.push({
                     description: state.prize.description,
@@ -747,10 +825,12 @@
                     state.prizeEndTime = Date.now() + 20 * 60 * 1000; // 20 minutos para la seña
                     startPrizeTimer();
                     reserveBtn.innerHTML = `🎁 RESERVÁ TU LUGAR (SEÑA $${señaAmount}) 🎁`; // Texto con emoji
+                    claimPrizeBtn.innerHTML = `💬 CONTACTAR PARA RECLAMAR ${state.prize.description.toUpperCase()}`;
                 } else {
-                    reserveBtn.innerHTML = `🎁 RECLAMAR MI PREMIO 🎁`; // Texto con emoji
+                    reserveBtn.innerHTML = `🎁 RECLAMAR MI PREMIO 🎁`; // Este texto no se usará si el botón de reserva se oculta
+                    claimPrizeBtn.innerHTML = `💬 RECLAMAR MI PREMIO: ${state.prize.description.toUpperCase()}`;
                 }
-                
+
                 saveState();
                 updateUI();
             }
@@ -797,54 +877,52 @@
              */
             function updateUI() {
                 rouletteSection.style.display = 'flex';
-                spinBtn.style.display = 'block'; 
-                
-                // Mostrar/ocultar botones de reserva y upsell según si hay un premio activo
-                // Si hay un premio y requiere seña, mostrar reserveBtn y upsellSection
-                if (state.prize && state.prize.needsSeña) {
-                    reserveBtn.style.display = 'block'; 
-                    upsellSection.style.display = 'block'; 
-                } else if (state.prize && !state.prize.needsSeña) {
-                    // Si hay un premio y NO requiere seña, mostrar solo reserveBtn (para reclamar)
-                    reserveBtn.style.display = 'block';
-                    upsellSection.style.display = 'none'; // Ocultar upsell si no hay seña
-                } else {
-                    // Si no hay premio, ocultar ambos
-                    reserveBtn.style.display = 'none';
-                    upsellSection.style.display = 'none';
-                }
 
-                // Lógica principal para el botón de girar y compartir
-                if (state.spinsLeft > 0) {
-                    spinBtn.disabled = false; // Habilitar el botón si hay tiros disponibles
-                    spinBtn.textContent = `👉 GIRAR LA RULETA AHORA (${state.spinsLeft} tiros restantes)`;
-                    shareBtn.style.display = 'none'; // Ocultar el botón de compartir si hay tiros
-                    resultMessage.textContent = ''; // Limpiar el mensaje de resultado anterior
-                } else { // No quedan tiros
-                    spinBtn.disabled = true; // Deshabilitar el botón
-                    spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR';
-                    shareBtn.style.display = 'block'; // Mostrar el botón de compartir para obtener más tiros
-                    resultMessage.textContent = ''; // Limpiar el mensaje de resultado si no hay tiros
-                }
-
-                prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
-                
-                // Gestión del temporizador del premio
-                if (state.prize && state.prizeEndTime > Date.now()) {
-                    prizeTimerDisplay.style.display = 'block';
-                    startPrizeTimer(); // Asegurarse de que el temporizador esté corriendo si el premio está activo
+                // Mostrar/ocultar mensaje de premio y temporizador
+                if (state.prize) {
+                    resultMessage.style.display = 'block';
+                    if (state.prize.needsSeña) {
+                        prizeTimerDisplay.style.display = 'block';
+                        startPrizeTimer();
+                    } else {
+                        prizeTimerDisplay.style.display = 'none';
+                        clearInterval(prizeTimerInterval);
+                    }
                 } else {
-                    clearInterval(prizeTimerInterval); // Detener el temporizador si no hay premio o expiró
+                    resultMessage.style.display = 'none';
                     prizeTimerDisplay.style.display = 'none';
-                    if (state.prize && state.prizeEndTime <= Date.now()) { // Si el premio acaba de expirar
-                        state.prize = null;
-                        saveState();
-                        updateUI(); // Volver a renderizar para limpiar elementos relacionados con el premio
+                    clearInterval(prizeTimerInterval);
+                }
+
+                // Lógica de visibilidad y texto de los botones
+                if (state.prize) { // Si hay un premio ganado, mostrar botones de acción de premio
+                    reserveBtn.style.display = state.prize.needsSeña ? 'block' : 'none'; // Mostrar si requiere seña
+                    claimPrizeBtn.style.display = 'block'; // Mostrar siempre el botón de reclamar por WhatsApp
+                    shareBtn.style.display = 'none'; // Ocultar compartir si ya ganó y tiene que reservar/reclamar
+                    spinBtn.style.display = 'none'; // Ocultar girar si ya ganó
+                    upsellSection.style.display = 'block'; // Mostrar siempre upsell si hay premio
+                } else { // Si no hay premio ganado, mostrar botones de juego
+                    reserveBtn.style.display = 'none';
+                    claimPrizeBtn.style.display = 'none'; // Ocultar el botón de reclamar si no hay premio
+                    upsellSection.style.display = 'none';
+
+                    if (state.spinsLeft > 0) {
+                        spinBtn.disabled = false;
+                        spinBtn.textContent = `👉 GIRAR LA RULETA AHORA (${state.spinsLeft} tiros restantes)`;
+                        spinBtn.style.display = 'block';
+                        shareBtn.style.display = 'none';
+                    } else {
+                        spinBtn.disabled = true;
+                        spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR'; // Este texto no se verá si spinBtn.style.display es 'none'
+                        spinBtn.style.display = 'none'; // Ocultar el botón de girar cuando no hay tiros
+                        shareBtn.style.display = 'block'; // Mostrar el botón de compartir
                     }
                 }
 
+                prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
+
                 // La sección de premios ganados siempre estará oculta con style="display: none;" en el HTML
-                wonPrizesSection.style.display = 'none'; 
+                wonPrizesSection.style.display = 'none';
             }
 
             /**
@@ -894,7 +972,8 @@
                         ]
                     );
                 } else {
-                    // Para premios que no necesitan seña, va directo a WhatsApp
+                    // Esta rama no debería ser alcanzada si el botón de reserva solo se muestra para premios con seña
+                    // Pero si por algún motivo se clickea, se comportaría como reclamar directamente
                     const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
                     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
@@ -905,6 +984,21 @@
                     updateUI();
                 }
             });
+
+            // Nuevo Event Listener para el botón de Reclamar Premio
+            claimPrizeBtn.addEventListener('click', () => {
+                if (state.prize) {
+                    const message = `¡Hola! Gané "${state.prize.description}" en la ruleta de Le Bardol Estética Center y quiero reclamar mi premio.`;
+                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                    showCustomModal("¡Premio Reclamado!", `Has reclamado "${state.prize.description.toUpperCase()}". ¡Te esperamos!`);
+                    state.prize = null; // Limpiar el premio después de reclamar
+                    clearInterval(prizeTimerInterval); // Detener el temporizador
+                    saveState();
+                    updateUI();
+                }
+            });
+
 
             upsellBtn.addEventListener('click', () => {
                 const message = `¡Hola! Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
@@ -922,11 +1016,11 @@
                     return;
                 }
 
-                const shareMessage = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y yo gane un tiro extra. ¡No te lo pierdas!`;
+                const shareMessage = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y tu amigo un **50% OFF** en su primera sesión! ¡No te lo pierdas!`;
                 
                 showCustomModal(
                     "¡Compartí y Ganá un Tiro!", 
-                    `Para obtener un tiro en la ruleta, comparte este enlace con **5 amigos** en WhatsApp. ¡Además, por cada amigo que **contrate un servicio**, tú ganas un **10% OFF** en tu próxima sesión y tu amigo un **50% OFF** en su primera sesión! Luego, confirma aquí que lo has hecho.`,
+                    `Para obtener un tiro en la ruleta, comparte este enlace con **5 amigos** en WhatsApp. ¡Además, por cada amigo que **contrate un servicio**, tú ganas un **10% OFF** en tu próxima sesión y su amigo un **50% OFF** en su primera sesión! Luego, confirma aquí que lo has hecho.`,
                     [
                         {
                             text: 'Compartir en WhatsApp',
