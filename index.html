@@ -145,14 +145,14 @@
 
         .wheel-indicator {
             position: absolute;
-            top: -30px; /* Posición del indicador */
+            top: -35px; /* Coloca la punta del triángulo en el borde superior del contenedor */
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-bottom: 35px solid #e91e63; /* Punta hacia abajo */
+            border-top: 35px solid #e91e63; /* Hace que el triángulo apunte hacia abajo */
             z-index: 10;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
         }
@@ -816,8 +816,10 @@
                 const randomSegmentIndex = Math.floor(Math.random() * numSegments);
                 state.prize = segments[randomSegmentIndex];
 
-                let targetAngle = (1.5 * Math.PI) - (randomSegmentIndex * arc + arc / 2);
-                const totalRotation = (5 * 2 * Math.PI) + targetAngle; // 5 vueltas + ángulo final
+                // Calcula el ángulo objetivo para que el centro del segmento ganado quede en la posición de las 12 en punto
+                // (3 * Math.PI / 2) es 270 grados, que es la posición de las 12 en punto si 0 es 3 en punto (derecha)
+                const targetAngle = (3 * Math.PI / 2) - (randomSegmentIndex * arc + arc / 2);
+                const totalRotation = (5 * 2 * Math.PI) + targetAngle; // 5 vueltas completas + ángulo final
 
                 animateRoulette(currentRotation + totalRotation, 6000);
             }
@@ -1100,7 +1102,7 @@
                                 const noButton = document.createElement('button');
                                 noButton.textContent = 'No, aún no';
                                 noButton.addEventListener('click', hideCustomModal);
-                                modalButtons.appendChild(noButton);
+                                modalButtons.appendChild(noBUtton);
                             }
                         },
                         {
