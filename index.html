@@ -226,6 +226,11 @@
             margin-bottom: 8px; /* Espacio entre icono y texto */
         }
 
+        .btn-play-again {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%); /* Nuevo color para 'Volver a Jugar' */
+            color: white;
+            display: none; /* Oculto por defecto */
+        }
 
         .btn:disabled {
             opacity: 0.6;
@@ -420,14 +425,14 @@
             color: #00796b;
         }
 
-        /* Estilos para el logo de WhatsApp */
+        /* Estilos para el logo de WhatsApp superior */
         .whatsapp-logo-container {
             margin-bottom: 20px;
             text-align: center;
             width: 100%; /* Asegura que el contenedor del logo ocupe todo el ancho para centrar */
         }
         .whatsapp-logo-container img {
-            max-width: 150px; /* Ajusta el tamaño del logo */
+            max-width: 250px; /* Ajusta el tamaño del logo para que no se corte */
             height: auto;
             border-radius: 15px; /* Bordes redondeados para el logo */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -438,6 +443,33 @@
         .whatsapp-logo-container img:hover {
             transform: scale(1.05);
         }
+
+        /* Estilos para el botón flotante de WhatsApp */
+        .whatsapp-float-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366; /* Color de WhatsApp */
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            text-decoration: none;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .whatsapp-float-btn:hover {
+            transform: scale(1.1);
+            background-color: #1DA851;
+        }
+        .whatsapp-float-btn i {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -447,7 +479,7 @@
             <!-- Logo con link a WhatsApp -->
             <div class="whatsapp-logo-container">
                 <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
-                    <img src="logo lb.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/150x150/8a2be2/ffffff?text=Le+Bardol+Logo';">
+                    <img src="logo lb.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x100/8a2be2/ffffff?text=Le+Bardol+Estetica+Center';">
                 </a>
             </div>
 
@@ -480,6 +512,11 @@
                 <!-- Nuevo Botón para Reclamar Premio (WhatsApp) -->
                 <button class="btn btn-claim-prize" id="claimPrizeBtn">
                     <!-- El texto se cambia con JS -->
+                </button>
+
+                <!-- Nuevo Botón para Volver a Jugar -->
+                <button class="btn btn-play-again" id="playAgainBtn">
+                    ✨ Volver a Jugar
                 </button>
 
                 <!-- Botón de Compartir -->
@@ -515,6 +552,11 @@
         <!-- FIN SECCIÓN DE RULETA -->
     </div>
 
+    <!-- Botón flotante de WhatsApp -->
+    <a href="https://wa.me/5493415216025" class="whatsapp-float-btn" target="_blank" aria-label="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <!-- Ventana modal personalizada -->
     <div id="customModalOverlay" class="custom-modal-overlay">
         <div class="custom-modal-content">
@@ -541,6 +583,7 @@
             const spinBtn = document.getElementById('spinBtn');
             const reserveBtn = document.getElementById('reserveBtn');
             const claimPrizeBtn = document.getElementById('claimPrizeBtn'); // Nuevo botón
+            const playAgainBtn = document.getElementById('playAgainBtn'); // Nuevo botón
             const resultMessage = document.getElementById('resultMessage');
             const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
             const prizeCounterDisplay = document.getElementById('prizeCounter');
@@ -584,7 +627,7 @@
                 prizeEndTime: 0,
                 prizesLeft: 999, // Inicializado con un valor por defecto
                 lastActivity: Date.now(), // Inicializado con un valor por defecto
-                wonPrizes: [] // Mantenemos el array por si quieres reutilizarlo en el futuro, pero no se mostrará
+                wonPrizes: []
             };
 
             let currentRotation = 0;
@@ -898,13 +941,15 @@
                 if (state.prize) { // Si hay un premio ganado, mostrar botones de acción de premio
                     reserveBtn.style.display = state.prize.needsSeña ? 'block' : 'none'; // Mostrar si requiere seña
                     claimPrizeBtn.style.display = 'block'; // Mostrar siempre el botón de reclamar por WhatsApp
-                    shareBtn.style.display = 'none'; // Ocultar compartir si ya ganó y tiene que reservar/reclamar
-                    spinBtn.style.display = 'none'; // Ocultar girar si ya ganó
                     upsellSection.style.display = 'block'; // Mostrar siempre upsell si hay premio
+                    playAgainBtn.style.display = 'block'; // Mostrar "Volver a Jugar"
+                    shareBtn.style.display = 'none'; // Ocultar compartir
+                    spinBtn.style.display = 'none'; // Ocultar girar
                 } else { // Si no hay premio ganado, mostrar botones de juego
                     reserveBtn.style.display = 'none';
                     claimPrizeBtn.style.display = 'none'; // Ocultar el botón de reclamar si no hay premio
                     upsellSection.style.display = 'none';
+                    playAgainBtn.style.display = 'none'; // Ocultar "Volver a Jugar" si no hay premio activo
 
                     if (state.spinsLeft > 0) {
                         spinBtn.disabled = false;
@@ -997,6 +1042,16 @@
                     saveState();
                     updateUI();
                 }
+            });
+
+            // Nuevo Event Listener para el botón "Volver a Jugar"
+            playAgainBtn.addEventListener('click', () => {
+                state.spinsLeft = 0; // Resetear tiros para que vuelva a la pantalla de compartir
+                state.prize = null; // Limpiar cualquier premio activo
+                state.prizeEndTime = 0; // Limpiar el tiempo del premio
+                clearInterval(prizeTimerInterval); // Asegurarse de detener el temporizador
+                saveState();
+                updateUI(); // Actualizar la UI para mostrar el estado inicial
             });
 
 
