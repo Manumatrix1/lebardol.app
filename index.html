@@ -3,9 +3,8 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bardol Estética center</title> <!-- Título actualizado -->
+    <title>Girá y Ganá en Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Librería para el efecto de confeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         /* Estilos generales y reseteo */
@@ -32,69 +31,39 @@
             max-width: 500px;
             width: 100%;
             background: white;
-            padding: 30px; /* Añadido padding para que el contenido no esté pegado a los bordes */
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
             overflow: hidden;
             margin: 20px 0;
             position: relative;
-            display: flex; /* Usar flexbox para organizar el contenido dentro del container */
+            display: flex;
             flex-direction: column;
             align-items: center;
         }
         
-        /* Sección del encabezado (oculto según tu CSS original) */
-        .header {
-            background: linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 100%);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .header-logo { 
-            display: block; 
-            margin: 0 auto 15px; 
-            max-width: 250px; /* Ajustado para el logo */
-            width: 100%;
-            height: auto;
-        }
-        
-        h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        .subtitle {
-            font-size: 18px;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-        
         /* --- ESTILOS DE LA CAMPAÑA RULETA --- */
         .roulette-section {
-            width: 100%; /* Ocupa todo el ancho del contenedor */
-            display: flex; /* Se mostrará con JS */
+            width: 100%;
+            display: flex;
             flex-direction: column;
             align-items: center;
             gap: 15px;
         }
 
         .roulette-section .campaign-title {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: #e91e63;
             line-height: 1.2;
-            text-align: center; /* Asegurar centrado del texto */
-            width: 100%; /* Asegurar que ocupe todo el ancho para centrar */
+            text-align: center;
+            width: 100%;
             animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
         }
         
         @keyframes text-pop-up-top {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-10px); opacity: 1; }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
         }
 
         .roulette-section .campaign-subtitle {
@@ -102,7 +71,7 @@
             color: #4a2c5e;
             padding: 0 10px;
             max-width: 400px;
-            text-align: center; /* Asegurar centrado del texto */
+            text-align: center;
         }
 
         .prize-counter {
@@ -126,7 +95,7 @@
             position: relative;
             width: 90%;
             max-width: 380px;
-            margin: 20px 0 0; /* Añadido margen superior para bajar la ruleta */
+            margin: 15px 0 0;
             aspect-ratio: 1 / 1;
             border-radius: 50%;
             box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
@@ -145,14 +114,15 @@
 
         .wheel-indicator {
             position: absolute;
-            top: -35px; /* Coloca la punta del triángulo en el borde superior del contenedor */
+            /* Adjusted to point upwards, positioning it above the wheel */
+            top: -15px; /* Adjusted to be slightly above the wheel */
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-top: 35px solid #e91e63; /* Hace que el triángulo apunte hacia abajo */
+            border-top: 35px solid #e91e63; /* Changed to border-top to make it point upwards */
             z-index: 10;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
         }
@@ -167,7 +137,10 @@
         }
 
         .btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             width: 100%;
             padding: 16px;
             border: none;
@@ -187,49 +160,43 @@
         }
         
         .btn-reserve {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); /* Rojo más llamativo */
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
             color: white;
-            display: none;
         }
 
         .btn-claim-prize {
-            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%); /* Nuevo color cian para reclamar */
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
             color: white;
-            display: none; /* Oculto por defecto */
         }
 
         .btn-share {
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
-            display: flex; /* Usar flex para alinear el icono y el texto */
-            flex-direction: column; /* Apilar el icono y el texto */
-            align-items: center; /* Centrar horizontalmente */
-            justify-content: center;
-            line-height: 1.2; /* Ajustar el interlineado */
-            padding: 12px; /* Ajustar padding para el nuevo contenido */
+            flex-direction: column;
+            line-height: 1.2;
+            padding: 12px;
         }
 
         .btn-share .share-title {
-            font-size: 18px; /* Título más grande */
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 4px; /* Espacio entre título y subtítulo */
+            margin-bottom: 4px;
         }
 
         .btn-share .share-subtitle {
-            font-size: 14px; /* Subtítulo más pequeño */
+            font-size: 14px;
             font-weight: normal;
             opacity: 0.9;
         }
 
         .btn-share .fab {
-            font-size: 24px; /* Tamaño del icono de WhatsApp */
-            margin-bottom: 8px; /* Espacio entre icono y texto */
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
         .btn-play-again {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%); /* Nuevo color para 'Volver a Jugar' */
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
             color: white;
-            display: none; /* Oculto por defecto */
         }
 
         .btn:disabled {
@@ -245,20 +212,26 @@
         }
 
         #resultMessage {
-            margin-top: 20px;
-            font-size: 24px;
+            margin-top: 10px;
+            font-size: 22px;
             font-weight: bold;
-            color: #4a2c5e; /* Color de texto más neutro */
-            animation: pulse-red 1.5s infinite; /* Animación para el mensaje de premio */
+            color: #4a2c5e;
+            animation: pulse-red 1.5s infinite;
             padding: 10px;
             border-radius: 10px;
             background-color: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 15px rgba(233, 30, 99, 0.5);
-            display: none; /* Oculto por defecto, se muestra con JS */
             text-align: center;
             width: 90%;
             max-width: 380px;
             line-height: 1.4;
+        }
+
+        #resultMessage small {
+            font-size: 15px; /* Tamaño más pequeño para la aclaración */
+            font-weight: normal;
+            color: #333;
+            display: block;
+            margin-top: 8px;
         }
 
         @keyframes pulse-red {
@@ -267,25 +240,21 @@
             100% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
         }
 
-
         .prize-timer {
             font-size: 18px;
             font-weight: bold;
             color: #d32f2f;
             margin-top: 10px;
-            text-align: center; /* Asegurar centrado del texto */
-            width: 100%; /* Asegurar que ocupe todo el ancho para centrar */
-            display: none;
+            text-align: center;
+            width: 100%;
         }
         
-        /* Sección de Upsell */
         #upsellSection {
-            display: none;
             padding: 15px;
             background: #e0f7fa;
             border: 2px dashed #00bcd4;
             border-radius: 15px;
-            width: 100%; /* Ocupa todo el ancho disponible en buttons-container */
+            width: 100%;
         }
         #upsellSection h3 {
             color: #00796b;
@@ -298,158 +267,48 @@
             margin-top: 10px;
         }
         
-        /* Ocultar elementos que no se usan en la campaña */
-        .header, .form-container, .offer-card, .footer, .whatsapp-icon, .referral-promo-diffusion, .price-list-section {
-            display: none;
-        }
-
-        /* Estilos para la ventana modal personalizada */
-        .custom-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .custom-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .custom-modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-
-        .custom-modal-overlay.active .custom-modal-content {
-            transform: translateY(0);
-        }
-
-        .custom-modal-content h3 {
-            color: #4a2c5e;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .custom-modal-content p {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-        .custom-modal-content button {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            margin: 5px; /* Espacio entre botones */
-        }
-
-        .custom-modal-content button:hover {
-            background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
-        }
-
-        /* Estilos para el campo de nombre */
         .user-name-input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             font-size: 16px;
+            border: 2px solid #ccc;
             transition: border-color 0.3s ease;
         }
-
+        .user-name-input:focus {
+            outline: none;
+            border-color: #8a2be2;
+        }
         .user-name-input.required {
-            border: 2px solid #ef4444; /* Rojo */
+            border-color: #ef4444;
         }
-
         .user-name-input.filled {
-            border: 2px solid #22c55e; /* Verde */
+            border-color: #22c55e;
         }
 
-        /* Estilos para la lista de premios ganados */
-        .won-prizes-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #e8f5e9;
-            border: 2px dashed #4caf50;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 380px;
-            text-align: left;
-            display: none; /* Hidden by default, shown when prizes are won */
-        }
-        .won-prizes-section h3 {
-            color: #2e7d32;
-            font-size: 20px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .won-prizes-list {
-            list-style: none;
-            padding: 0;
-        }
-        .won-prizes-list li {
-            background-color: #d4edda;
-            border: 1px solid #28a745;
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-            color: #155724;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .won-prizes-list li strong {
-            color: #00796b;
-        }
-
-        /* Estilos para el logo de WhatsApp superior */
         .whatsapp-logo-container {
             margin-bottom: 20px;
             text-align: center;
-            width: 100%; /* Asegura que el contenedor del logo ocupe todo el ancho para centrar */
+            width: 100%;
         }
         .whatsapp-logo-container img {
-            max-width: 250px; /* Ajusta el tamaño del logo para que no se corte */
+            max-width: 250px;
             height: auto;
-            border-radius: 15px; /* Bordes redondeados para el logo */
+            border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
-            display: block; /* Asegura que la imagen sea un bloque para centrar con margin auto */
-            margin: 0 auto; /* Centra la imagen */
+            display: block;
+            margin: 0 auto;
         }
         .whatsapp-logo-container img:hover {
             transform: scale(1.05);
         }
 
-        /* Estilos para el botón flotante de WhatsApp */
         .whatsapp-float-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #25D366; /* Color de WhatsApp */
+            background-color: #25D366;
             color: white;
             border-radius: 50%;
             width: 60px;
@@ -470,27 +329,143 @@
         .whatsapp-float-btn i {
             color: white;
         }
+
+        /* --- ESTILOS PARA LA VENTANA MODAL DE POLÍTICAS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #4a2c5e;
+        }
+        .modal-content p, .modal-content li {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .modal-content ul {
+            padding-left: 20px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: #888;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .policies-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8a2be2;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* --- ESTILOS PARA LA VENTANA MODAL DE MENSAJES (CUSTOM ALERT) --- */
+        .message-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001; /* Higher than policies modal */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .message-modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .message-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-out;
+        }
+        .message-modal-overlay.visible .message-modal-content {
+            transform: translateY(0);
+        }
+        .message-modal-content h3 {
+            color: #e91e63;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .message-modal-content p {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .message-modal-content button {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .message-modal-content button:hover {
+            background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- SECCIÓN DE RULETA DE CAMPAÑA -->
         <div class="roulette-section" id="rouletteSection">
-            <!-- Logo con link a WhatsApp -->
             <div class="whatsapp-logo-container">
                 <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
-                    <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x100/FFFFFF/000000?text=Le+Bardol+Estetica+Center';">
+                    <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
                 </a>
             </div>
 
-            <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica de Le Bardol Estética center y ganá! 🎁</h1> <!-- Título actualizado -->
-            <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu próximo tratamiento.</p> <!-- Texto actualizado -->
+            <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica y ganá! 🎁</h1>
+            <p class="campaign-subtitle">Podés ganar zonas GRATIS en depilación definitiva o un 30% OFF en tu próximo tratamiento.</p>
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
-            <!-- Campo para el nombre del usuario -->
             <div style="margin-bottom: 15px; width: 90%; max-width: 380px;">
                 <label for="userName" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a2c5e; font-size: 14px;">Tu nombre completo (para personalizar el mensaje):</label>
-                <input type="text" id="userName" class="user-name-input" placeholder="Ej: Papu Gómez" required>
+                <input type="text" id="userName" class="user-name-input" placeholder="Ej: Maria Lopez" required>
             </div>
 
             <div class="roulette-canvas-container">
@@ -498,249 +473,212 @@
                 <canvas id="rouletteCanvas"></canvas>
             </div>
 
-            <!-- Mensaje de resultado de premio -->
-            <p id="resultMessage"></p>
-            <!-- Temporizador del premio -->
+            <p id="resultMessage" style="display: none;"></p>
             <p class="prize-timer" id="prizeTimerDisplay"></p>
 
             <div class="buttons-container">
-                <!-- Botón de Reservar (si aplica) -->
-                <button class="btn btn-reserve" id="reserveBtn">
-                    <!-- El texto se cambia con JS -->
-                </button>
-
-                <!-- Nuevo Botón para Reclamar Premio (WhatsApp) -->
-                <button class="btn btn-claim-prize" id="claimPrizeBtn">
-                    <!-- El texto se cambia con JS -->
-                </button>
-
-                <!-- Nuevo Botón para Volver a Jugar -->
-                <button class="btn btn-play-again" id="playAgainBtn">
-                    ✨ Volver a Jugar
-                </button>
-
-                <!-- Botón de Compartir -->
+                <button class="btn btn-spin" id="spinBtn" style="display: none;">👉 GIRAR LA RULETA AHORA</button>
+                <button class="btn btn-reserve" id="reserveBtn" style="display: none;"></button>
+                <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;"></button>
+                <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar</button>
                 <button class="btn btn-share" id="shareBtn">
                     <i class="fab fa-whatsapp"></i>
-                    <span class="share-title">💥 Compartí y desbloqueá beneficios!</span>
-                    <span class="share-subtitle">10% OFF para vos – 50% OFF para tu amigo.</span>
+                    <span class="share-title">💥 ¡Compartí para girar!</span>
+                    <span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>
                 </button>
-
-                <!-- Botón de Girar (oculto si no hay tiros, se muestra Compartir) -->
-                <button class="btn btn-spin" id="spinBtn">
-                    <!-- El texto se cambia con JS -->
-                </button>
-
-                <!-- Sección de Upsell -->
-                <div id="upsellSection">
+                <div id="upsellSection" style="display: none;">
                     <h3>¡Potenciá tu premio!</h3>
                     <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
-                    <button class="btn btn-upsell" id="upsellBtn">
-                        👉 Conocé nuestros tratamientos
-                    </button>
+                    <button class="btn btn-upsell" id="upsellBtn">👉 Ver zonas disponibles</button>
                 </div>
             </div>
 
-            <!-- Sección de Premios Ganados (esta sección se oculta si no la quieres) -->
-            <div id="wonPrizesSection" class="won-prizes-section" style="display: none;">
-                <h3>🏆 Tus Premios Ganados 🏆</h3>
-                <ul id="wonPrizesList" class="won-prizes-list">
-                    <!-- Los premios se listarán aquí -->
-                </ul>
-            </div>
+            <!-- Enlace para abrir las políticas -->
+            <p id="policiesLink" class="policies-link">Ver Términos y Condiciones del Juego</p>
         </div>
-        <!-- FIN SECCIÓN DE RULETA -->
     </div>
 
     <!-- Botón flotante de WhatsApp -->
     <a href="https://wa.me/5493415216025" class="whatsapp-float-btn" target="_blank" aria-label="Contactar por WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
+    
+    <!-- Ventana Modal para las Políticas -->
+    <div id="policiesModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closePoliciesModal" class="close-modal">&times;</button>
+            <h2>LE BARDOL – POLÍTICAS DE PROMOCIÓN</h2>
+            <h3>Juego “Girá la Ruleta y Ganá tu Zona Gratis” – Depilación Definitiva</h3>
+            <p><strong>1. Objeto del juego:</strong><br>El juego “Girá la Ruleta y Ganá tu Zona” es una acción promocional de Le Bardol destinada a premiar a clientes nuevos o actuales que participen cumpliendo con las condiciones detalladas a continuación.</p>
+            <p><strong>2. Premios posibles:</strong><br>El participante puede ganar una zona gratuita de depilación definitiva al azar:</p>
+            <ul>
+                <li>Zona Chica</li>
+                <li>Zona Mediana</li>
+                <li>Zona Grande</li>
+            </ul>
+            <p><strong>3. Condición de participación:</strong><br>Para hacer válido el premio obtenido en la ruleta, el participante deberá:
+            <br>a) Señar una zona adicional (de cualquier tamaño) dentro de los 30 minutos posteriores al giro.
+            <br>b) Compartir el juego con al menos 5 personas dentro del mismo plazo de 30 minutos.
+            <br>Si no se cumple con ambas condiciones dentro de ese tiempo, el beneficio de la zona gratuita queda anulado.</p>
+            <p><strong>4. Beneficio por referidos:</strong><br>Por cada persona referida que señe o compre una zona dentro de las 24 horas posteriores al giro, el participante titular del juego acumula un 10% de descuento para su segunda sesión de tratamiento.</p>
+            <ul>
+                <li>5 referidos señados = 50% de descuento</li>
+                <li>10 referidos señados = 100% de descuento (zona gratis)</li>
+            </ul>
+            <p><strong>5. Vigencia del beneficio por referidos:</strong><br>El tiempo límite para que los referidos realicen su seña o compra válida es de 24 horas desde el momento en que el participante titular gira la ruleta.</p>
+            <p><strong>6. Igualdad de beneficios para referidos:</strong><br>Las personas referidas pueden participar del mismo juego si cumplen con las condiciones (señar una zona + compartir con 5 personas), accediendo así a su propio beneficio de zona gratuita y programa de descuentos acumulables.</p>
+            <p><strong>7. Definición de zonas según tamaño:</strong></p>
+            <ul>
+                <li><strong>Zonas chicas:</strong> bozo, mentón, línea alba, dedos de pies/manos, tiro de cola.</li>
+                <li><strong>Zonas medianas:</strong> cavado, media pierna, medio brazo, glúteos, rostro completo.</li>
+                <li><strong>Zonas grandes:</strong> piernas completas, pecho completo, espalda completa.</li>
+            </ul>
+            <p><strong>8. Aplicación de los beneficios:</strong></p>
+            <ul>
+                <li>La zona gratuita obtenida solo se activa si se cumple con la seña y el envío del juego a 5 personas en los primeros 30 minutos.</li>
+                <li>El descuento acumulado solo se aplica a la segunda sesión, y exclusivamente sobre zonas nuevas.</li>
+                <li>No es válido para sesiones abonadas previamente ni zonas en las cuales el cliente ya se encuentre en tratamiento activo.</li>
+            </ul>
+            <p><strong>9. Generalidades:</strong></p>
+            <ul>
+                <li>Los beneficios son personales e intransferibles.</li>
+                <li>No acumulables con otras promociones.</li>
+                <li>Le Bardol se reserva el derecho de modificar o suspender esta promoción sin previo aviso si se detectan usos indebidos o cambios operativos.</li>
+            </ul>
+        </div>
+    </div>
 
-    <!-- Ventana modal personalizada -->
-    <div id="customModalOverlay" class="custom-modal-overlay">
-        <div class="custom-modal-content">
-            <h3 id="modalTitle"></h3>
-            <p id="modalMessage"></p>
-            <div id="modalButtons">
-                <!-- Botones se inyectarán aquí dinámicamente -->
-            </div>
+    <!-- Ventana Modal para Mensajes (Custom Alert) -->
+    <div id="messageModal" class="message-modal-overlay">
+        <div class="message-modal-content">
+            <h3 id="messageModalTitle"></h3>
+            <p id="messageModalText"></p>
+            <button id="closeMessageModal">Entendido</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- CONFIGURACIÓN DE LA CAMPAÑA ---
-            const señaAmount = 8000; // Monto de la seña actualizado a 8000
-            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`; // Link de Mercado Pago actualizado
-            const whatsappNumber = '5493415216025'; // Tu número de WhatsApp
-            const leBardolLogoUrl = 'logo lb negro.png'; // URL del logo de Le Bardol - ¡ACTUALIZADO!
+            // --- CAMPAIGN CONFIGURATION ---
+            const señaAmount = 8000;
+            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
+            const whatsappNumber = '5493415216025';
 
-            // --- ELEMENTOS DEL DOM ---
-            const rouletteSection = document.getElementById('rouletteSection');
+            // --- DOM ELEMENTS ---
             const canvas = document.getElementById('rouletteCanvas');
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spinBtn');
             const reserveBtn = document.getElementById('reserveBtn');
-            const claimPrizeBtn = document.getElementById('claimPrizeBtn'); // Nuevo botón
-            const playAgainBtn = document.getElementById('playAgainBtn'); // Nuevo botón
+            const claimPrizeBtn = document.getElementById('claimPrizeBtn');
+            const playAgainBtn = document.getElementById('playAgainBtn');
             const resultMessage = document.getElementById('resultMessage');
             const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
             const prizeCounterDisplay = document.getElementById('prizeCounter');
             const upsellSection = document.getElementById('upsellSection');
             const upsellBtn = document.getElementById('upsellBtn');
             const shareBtn = document.getElementById('shareBtn');
-            const userNameInput = document.getElementById('userName'); // Nuevo: Campo de nombre de usuario
-            const wonPrizesSection = document.getElementById('wonPrizesSection'); // Nueva sección de premios ganados
-            const wonPrizesList = document.getElementById('wonPrizesList'); // Lista de premios ganados
-            const whatsappLogoImg = document.querySelector('.whatsapp-logo-container img'); // Elemento del logo
+            const userNameInput = document.getElementById('userName');
+            const policiesLink = document.getElementById('policiesLink');
+            const policiesModal = document.getElementById('policiesModal');
+            const closePoliciesModal = document.getElementById('closePoliciesModal');
 
-            // Set the logo source
-            whatsappLogoImg.src = leBardolLogoUrl;
+            // Custom Message Modal elements
+            const messageModal = document.getElementById('messageModal');
+            const messageModalTitle = document.getElementById('messageModalTitle');
+            const messageModalText = document.getElementById('messageModalText');
+            const closeMessageModal = document.getElementById('closeMessageModal');
 
-            // Modal elements
-            const customModalOverlay = document.getElementById('customModalOverlay');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalMessage = document.getElementById('modalMessage');
-            const modalButtons = document.getElementById('modalButtons'); // Contenedor para botones dinámicos
-
-            // --- PREMIOS DE LA RULETA ---
+            // --- ROULETTE PRIZES ---
             const segments = [
-                { text: 'Media Pierna GRATIS', type: 'freebie', needsSeña: true, description: 'Media Pierna GRATIS' },
-                { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' },
-                { text: 'Axilas GRATIS', type: 'freebie', needsSeña: true, description: 'Axilas GRATIS' },
-                { text: 'Rostro GRATIS', type: 'freebie', needsSeña: true, description: 'Rostro GRATIS' },
-                { text: 'Gluteos GRATIS', type: 'freebie', needsSeña: true, description: 'Gluteos GRATIS' },
-                { text: 'Pecho GRATIS', type: 'freebie', needsSeña: true, description: 'Pecho GRATIS' },
-                { text: 'Espalda GRATIS', type: 'freebie', needsSeña: true, description: 'Espalda GRATIS' },
-                { text: 'Zona Chica 60% OFF', type: 'discount', value: 60, needsSeña: false, description: 'Zona Chica 60% OFF' },
+                { text: 'Zona Grande GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Grande GRATIS' },
+                { text: '50% OFF', type: 'discount', value: 50, needsSeña: false, description: '50% OFF' },
+                { text: 'Zona Chica GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Chica GRATIS' },
+                { text: '70% OFF', type: 'discount', value: 70, needsSeña: false, description: '70% OFF' },
+                { text: 'Zona Mediana GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Mediana GRATIS' },
+                { text: '60% OFF', type: 'discount', value: 60, needsSeña: false, description: '60% OFF' },
+                { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' }, 
             ];
-            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4']; // Añadido un color más para el nuevo segmento
+            // Shuffle the segments array to make them appear out of order
+            segments.sort(() => Math.random() - 0.5);
+
+            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4'];
+            // Ensure segmentColors array has enough colors for all segments after removal
+            while (segmentColors.length < segments.length) {
+                segmentColors.push(segmentColors[segmentColors.length % 8]); // Cycle through existing colors
+            }
             const numSegments = segments.length;
             const arc = (2 * Math.PI) / numSegments;
 
-            // --- ESTADO DE LA RULETA (guardado en localStorage) ---
-            let state = {
-                spinsLeft: 0, // Vuelve a 0 tiros iniciales
-                lastSpinTimestamp: 0,
-                prize: null,
-                prizeEndTime: 0,
-                prizesLeft: 999, // Inicializado con un valor por defecto
-                lastActivity: Date.now(), // Inicializado con un valor por defecto
-                wonPrizes: []
-            };
-
+            // --- ROULETTE STATE ---
+            let state = {};
             let currentRotation = 0;
             let animationFrameId;
             let prizeTimerInterval;
 
-            // --- FUNCIONES PRINCIPALES ---
+            // --- FUNCTIONS ---
 
             /**
-             * Muestra una ventana modal personalizada con botones dinámicos.
-             * @param {string} title - El título de la modal.
-             * @param {string} message - El mensaje a mostrar.
-             * @param {Array<Object>} buttons - Array de objetos { text: 'Texto', class: 'clase-css', handler: function }
+             * Displays a custom message modal.
+             * @param {string} title - The title for the modal.
+             * @param {string} message - The message content for the modal.
              */
-            function showCustomModal(title, message, buttons = [{text: 'Entendido', handler: hideCustomModal}]) {
-                modalTitle.textContent = title;
-                modalMessage.textContent = message;
-                modalButtons.innerHTML = ''; // Limpiar botones anteriores
-                buttons.forEach(btnConfig => {
-                    const button = document.createElement('button');
-                    button.textContent = btnConfig.text;
-                    if (btnConfig.class) {
-                        button.classList.add(btnConfig.class);
-                    }
-                    button.addEventListener('click', btnConfig.handler);
-                    modalButtons.appendChild(button);
-                });
-                customModalOverlay.classList.add('active');
+            function showMessageModal(title, message) {
+                messageModalTitle.textContent = title;
+                messageModalText.textContent = message;
+                messageModal.classList.add('visible');
             }
 
             /**
-             * Oculta la ventana modal personalizada.
+             * Hides the custom message modal.
              */
-            function hideCustomModal() {
-                customModalOverlay.classList.remove('active');
+            function hideMessageModal() {
+                messageModal.classList.remove('visible');
             }
 
             /**
-             * Carga el estado desde localStorage o inicializa uno nuevo.
+             * Loads the game state from localStorage. Initializes with default values if no state is found.
+             * Also updates the prize counter based on elapsed time since last activity.
              */
             function loadState() {
                 const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
-                if (savedState) {
-                    state = savedState;
-                    // Asegurarse de que wonPrizes exista en el estado cargado
-                    if (!state.wonPrizes) {
-                        state.wonPrizes = [];
-                    }
-                } else {
-                    // Si no hay estado guardado, inicializa con valores por defecto
-                    state = {
-                        spinsLeft: 0, // Vuelve a 0 tiros iniciales
-                        lastSpinTimestamp: 0,
-                        prize: null,
-                        prizeEndTime: 0,
-                        prizesLeft: 999, // Valor inicial de premios
-                        lastActivity: Date.now(),
-                        wonPrizes: []
-                    };
-                }
-                // Cargar el nombre de usuario guardado
-                const savedUserName = localStorage.getItem('bardolUserName');
-                if (savedUserName) {
-                    userNameInput.value = savedUserName;
-                }
-                updateUserNameInputStyle(); // Actualizar el estilo del input al cargar
-
-                // Simula que los premios bajan con el tiempo
+                const defaultState = {
+                    spinsLeft: 0,
+                    prize: null,
+                    prizeEndTime: 0,
+                    prizesLeft: 999,
+                    lastActivity: Date.now(),
+                    userName: ''
+                };
+                state = { ...defaultState, ...savedState };
+                userNameInput.value = state.userName;
+                
                 const now = Date.now();
-                const hoursPassed = (now - (state.lastActivity || now)) / (1000 * 60 * 60);
-                const prizesToDecrease = Math.floor(hoursPassed * 5); // Bajan 5 premios por hora
-                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease);
+                const hoursPassed = (now - state.lastActivity) / (1000 * 60 * 60);
+                const prizesToDecrease = Math.floor(hoursPassed * 5); // Decrease 5 prizes per hour of inactivity
+                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Ensure at least 50 prizes remain
                 state.lastActivity = now;
-                saveState();
+                
+                saveState(); // Save updated state (especially lastActivity and prizesLeft)
             }
 
             /**
-             * Guarda el estado actual en localStorage.
+             * Saves the current game state to localStorage.
              */
             function saveState() {
+                state.userName = userNameInput.value.trim();
                 localStorage.setItem('bardolRouletteState', JSON.stringify(state));
             }
-
+            
             /**
-             * Guarda el nombre de usuario en localStorage.
-             */
-            function saveUserName() {
-                localStorage.setItem('bardolUserName', userNameInput.value);
-            }
-
-            /**
-             * Actualiza el estilo del input de nombre (rojo/verde).
-             */
-            function updateUserNameInputStyle() {
-                if (userNameInput.value.trim() === '') {
-                    userNameInput.classList.add('required');
-                    userNameInput.classList.remove('filled');
-                } else {
-                    userNameInput.classList.add('filled');
-                    userNameInput.classList.remove('required');
-                }
-            }
-
-            /**
-             * Dibuja la ruleta en el canvas.
+             * Draws the roulette wheel on the canvas.
+             * @param {number} rotation - The current rotation angle of the wheel in radians.
              */
             function drawRoulette(rotation = 0) {
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
-                const radius = Math.min(centerX, centerY);
+                const radius = Math.min(centerX, centerY) * 0.95;
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(rotation);
@@ -760,28 +698,32 @@
                     ctx.save();
                     ctx.rotate(angle + arc / 2);
                     ctx.fillStyle = '#ffffff';
-                    const fontSize = 14; // Tamaño de fuente actualizado a 14px
+                    const fontSize = radius * 0.10;
                     ctx.font = `bold ${fontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-
-                    // Añadir sombra al texto
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)'; // Color de la sombra
-                    ctx.shadowBlur = 3; // Desenfoque de la sombra
-                    ctx.shadowOffsetX = 2; // Desplazamiento X de la sombra
-                    ctx.shadowOffsetY = 2; // Desplazamiento Y de la sombra
-
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                    ctx.shadowBlur = 3;
+                    
                     const text = segments[i].text;
-                    const words = text.split(' ');
+                    const lines = text.split('\n'); // Split by newline character
 
-                    // Nueva lógica para dividir el texto en la ruleta
-                    if (words.length > 2) {
-                        const line1 = words[0] + ' ' + words[1];
-                        const line2 = words.slice(2).join(' '); // La tercera palabra y las siguientes
-                        ctx.fillText(line1, radius * 0.6, -fontSize / 2);
-                        ctx.fillText(line2, radius * 0.6, fontSize / 2);
+                    if (lines.length > 1) {
+                        // Draw multi-line text
+                        for (let j = 0; j < lines.length; j++) {
+                            ctx.fillText(lines[j], radius * 0.6, (j - (lines.length - 1) / 2) * fontSize * 1.1);
+                        }
                     } else {
-                        ctx.fillText(text, radius * 0.6, 0);
+                        // Draw single-line text, potentially splitting by words if too long
+                        const words = text.split(' ');
+                        if (words.length > 2 && text.indexOf('\n') === -1) { // Only split by words if no explicit newline
+                            const line1 = words.slice(0, 2).join(' ');
+                            const line2 = words.slice(2).join(' ');
+                            ctx.fillText(line1, radius * 0.6, -fontSize / 2);
+                            ctx.fillText(line2, radius * 0.6, fontSize / 2);
+                        } else {
+                            ctx.fillText(text, radius * 0.6, 0);
+                        }
                     }
                     ctx.restore();
                 }
@@ -789,41 +731,75 @@
             }
 
             /**
-             * Anima el giro de la ruleta.
+             * Initiates the roulette spin.
+             * Performs validation checks before spinning.
              */
             function spin() {
                 if (userNameInput.value.trim() === '') {
-                    showCustomModal("¡Falta tu nombre!", "Por favor, ingresa tu nombre completo para poder compartir y participar.");
-                    userNameInput.focus(); // Poner el foco en el campo
-                    updateUserNameInputStyle(); // Asegurar que el borde esté rojo
+                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar.");
+                    userNameInput.focus();
+                    userNameInput.classList.add('required');
                     return;
                 }
+                userNameInput.classList.remove('required'); // Remove highlight if valid
 
                 if (state.spinsLeft <= 0) {
-                    showCustomModal("¡Sin tiros disponibles!", "¡Necesitas compartir con 5 amigos para obtener un tiro!");
+                    showMessageModal("¡No tenés tiros!", "Compartí con 5 amigos para ganar uno.");
                     return;
                 }
 
                 state.spinsLeft--;
-                state.lastSpinTimestamp = Date.now();
-                state.prizesLeft--; // Se resta un premio
-                saveState();
-                updateUI();
-
+                state.prizesLeft--; // Decrement available prizes
                 spinBtn.disabled = true;
                 spinBtn.textContent = 'GIRANDO...';
+                
+                // Filter out 'nowin' segments for actual prize selection
+                const winnableSegments = segments.filter(s => s.type !== 'nowin');
+                const randomWinnableIndex = Math.floor(Math.random() * winnableSegments.length);
+                const actualWinningSegment = winnableSegments[randomWinnableIndex];
+                state.prize = actualWinningSegment; // This is the actual prize won
 
-                const randomSegmentIndex = Math.floor(Math.random() * numSegments);
-                state.prize = segments[randomSegmentIndex];
+                // Find the original index of the actual winning segment in the full segments array
+                // This ensures the wheel visually lands on the correct segment.
+                const visualLandingIndex = segments.indexOf(actualWinningSegment);
 
-                // Calcula el ángulo objetivo para que el centro del segmento ganado quede en la posición de las 12 en punto
-                // (3 * Math.PI / 2) es 270 grados, que es la posición de las 12 en punto si 0 es 3 en punto (derecha)
-                const targetAngle = (3 * Math.PI / 2) - (randomSegmentIndex * arc + arc / 2);
-                const totalRotation = (5 * 2 * Math.PI) + targetAngle; // 5 vueltas completas + ángulo final
+                // Calculate final rotation for the selected segment
+                // The indicator is at the top (12 o'clock), which is -Math.PI / 2 radians in standard math.
+                // In canvas, 0 is right, Math.PI/2 is down, Math.PI is left, 3*Math.PI/2 is up.
+                // So, the top is 3*Math.PI/2 or -Math.PI/2. Let's use -Math.PI/2 for consistency with rotation direction.
+                const desiredIndicatorAngle = -Math.PI / 2; 
 
-                animateRoulette(currentRotation + totalRotation, 6000);
+                // Angle of the center of the target segment (relative to 0 radians / 3 o'clock)
+                const targetSegmentCenterAngle = visualLandingIndex * arc + arc / 2;
+
+                // Calculate the rotation needed to bring the center of the target segment to the indicator
+                // We want the wheel to rotate such that the targetSegmentCenterAngle aligns with desiredIndicatorAngle.
+                // The rotation needed is the difference between the desired final position and the segment's current position.
+                let rotationOffset = desiredIndicatorAngle - targetSegmentCenterAngle;
+
+                // Normalize rotationOffset to be within [0, 2*PI) for a positive clockwise spin
+                // This ensures the shortest positive rotation to the target.
+                rotationOffset = (rotationOffset % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+
+                // Add multiple full spins to make it spin a few times before landing
+                const numFullSpins = 5; 
+                let totalRotation = currentRotation + rotationOffset + (numFullSpins * 2 * Math.PI);
+
+                // Ensure the final rotation is always enough to pass the current position and land correctly.
+                // This handles cases where rotationOffset might be very small or negative if currentRotation is large,
+                // ensuring at least one full spin from the *start* of the animation.
+                while (totalRotation <= currentRotation + (2 * Math.PI)) { 
+                    totalRotation += (2 * Math.PI);
+                }
+
+                animateRoulette(totalRotation, 6000); // 6 seconds animation
             }
 
+            /**
+             * Animates the roulette wheel rotation.
+             * @param {number} finalAngle - The target rotation angle.
+             * @param {number} duration - The duration of the animation in milliseconds.
+             */
             function animateRoulette(finalAngle, duration) {
                 const startAngle = currentRotation;
                 const startTime = performance.now();
@@ -831,14 +807,15 @@
                 function animate(currentTime) {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
-                    const easedProgress = 1 - Math.pow(1 - progress, 4); // easeOutQuart
-
+                    // Easing function for a smoother stop (ease-out effect)
+                    const easedProgress = 1 - Math.pow(1 - progress, 4); 
                     currentRotation = startAngle + (finalAngle - startAngle) * easedProgress;
                     drawRoulette(currentRotation);
 
                     if (progress < 1) {
                         animationFrameId = requestAnimationFrame(animate);
                     } else {
+                        // Ensure the wheel stops exactly at the final angle
                         currentRotation = finalAngle % (2 * Math.PI);
                         handleSpinEnd();
                     }
@@ -847,289 +824,179 @@
             }
 
             /**
-             * Se ejecuta cuando la ruleta termina de girar.
+             * Handles actions after the roulette spin animation ends.
+             * Displays prize, starts timer if needed, and updates UI.
              */
             function handleSpinEnd() {
-                fireConfetti();
+                fireConfetti(); // Celebrate the win!
+                
+                const prize = state.prize;
+                const userName = state.userName.split(' ')[0] || 'crack'; // Get first name or default to 'crack'
 
-                // Lógica de mensaje de resultado mejorada
-                if (state.prize.needsSeña && state.prize.type === 'freebie') {
-                    resultMessage.innerHTML = `¡FELICITACIONES! GANASTE <span style="color: #e91e63;">${state.prize.description.toUpperCase()}</span>. <br>¡Podés tener esta zona GRATIS al contratar otra zona de depilación definitiva! <br>La seña es para reservar tu turno.`;
+                // Customize result message based on prize type
+                if (prize.type === 'freebie' && prize.needsSeña) {
+                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br><small>Podés tener esta zona gratis al contratar otra zona de depilación definitiva.</small><br><strong style="color: #d32f2f; font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>`;
                 } else {
-                    resultMessage.innerHTML = `¡FELICITACIONES! GANASTE <span style="color: #e91e63;">${state.prize.description.toUpperCase()}</span>`;
+                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong>`;
                 }
-                resultMessage.style.display = 'block'; // Asegurarse de que el mensaje de resultado sea visible
-
-                // Añadir el premio ganado a la lista (aunque la sección wonPrizesSection esté oculta, el dato se guarda)
-                state.wonPrizes.push({
-                    description: state.prize.description,
-                    timestamp: Date.now()
-                });
-
-                if (state.prize.needsSeña) {
-                    state.prizeEndTime = Date.now() + 20 * 60 * 1000; // 20 minutos para la seña
+                
+                // Start prize timer if a deposit is needed
+                if (prize.needsSeña) {
+                    state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes from now
                     startPrizeTimer();
-                    reserveBtn.innerHTML = `🎁 RESERVÁ TU LUGAR (SEÑA $${señaAmount}) 🎁`; // Texto con emoji
-                    claimPrizeBtn.innerHTML = `💬 CONTACTAR PARA RECLAMAR ${state.prize.description.toUpperCase()}`;
-                } else {
-                    reserveBtn.innerHTML = `🎁 RECLAMAR MI PREMIO 🎁`; // Este texto no se usará si el botón de reserva se oculta
-                    claimPrizeBtn.innerHTML = `💬 RECLAMAR MI PREMIO: ${state.prize.description.toUpperCase()}`;
                 }
-
-                saveState();
-                updateUI();
+                
+                saveState(); // Save the new state with the won prize
+                updateUI(); // Update button visibility and messages
             }
 
             /**
-             * Inicia el contador regresivo para reclamar el premio.
+             * Starts or updates the countdown timer for prize reservation.
+             * Clears existing timer if any.
              */
             function startPrizeTimer() {
-                if (prizeTimerInterval) clearInterval(prizeTimerInterval);
-                prizeTimerDisplay.style.display = 'block';
+                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Clear any previous timer
+                prizeTimerDisplay.style.display = 'block'; // Show the timer display
 
                 prizeTimerInterval = setInterval(() => {
-                    const now = Date.now();
-                    const timeLeft = state.prizeEndTime - now;
-
+                    const timeLeft = state.prizeEndTime - Date.now();
                     if (timeLeft <= 0) {
                         clearInterval(prizeTimerInterval);
                         prizeTimerDisplay.textContent = 'Tu premio expiró y fue liberado.';
-                        state.prize = null; // El premio se pierde
+                        state.prize = null; // Clear the prize
                         saveState();
                         updateUI();
                         return;
                     }
-
-                    const minutes = Math.floor(timeLeft / (60 * 1000));
-                    const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+                    const minutes = Math.floor(timeLeft / 60000);
+                    const seconds = Math.floor((timeLeft % 60000) / 1000);
                     prizeTimerDisplay.textContent = `⏳ Tenés ${minutes}m ${seconds}s para reservar, o el premio se libera.`;
-                }, 1000);
+                }, 1000); // Update every second
             }
 
             /**
-             * Lanza el efecto de confeti.
+             * Triggers a confetti animation.
              */
             function fireConfetti() {
-                confetti({
-                    particleCount: 150,
-                    spread: 90,
-                    origin: { y: 0.6 }
-                });
+                confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
             }
 
             /**
-             * Actualiza todos los elementos de la interfaz.
+             * Updates the visibility and content of various UI elements based on the current game state.
              */
             function updateUI() {
-                rouletteSection.style.display = 'flex';
-
-                // Mostrar/ocultar mensaje de premio y temporizador
-                if (state.prize) {
-                    resultMessage.style.display = 'block';
-                    if (state.prize.needsSeña) {
-                        prizeTimerDisplay.style.display = 'block';
-                        startPrizeTimer();
-                    } else {
-                        prizeTimerDisplay.style.display = 'none';
-                        clearInterval(prizeTimerInterval);
-                    }
-                } else {
-                    resultMessage.style.display = 'none';
-                    prizeTimerDisplay.style.display = 'none';
-                    clearInterval(prizeTimerInterval);
-                }
-
-                // Lógica de visibilidad y texto de los botones
-                if (state.prize) { // Si hay un premio ganado, mostrar botones de acción de premio
-                    reserveBtn.style.display = state.prize.needsSeña ? 'block' : 'none'; // Mostrar si requiere seña
-                    claimPrizeBtn.style.display = 'block'; // Mostrar siempre el botón de reclamar por WhatsApp
-                    upsellSection.style.display = 'block'; // Mostrar siempre upsell si hay premio
-                    playAgainBtn.style.display = 'block'; // Mostrar "Volver a Jugar"
-                    shareBtn.style.display = 'none'; // Ocultar compartir
-                    spinBtn.style.display = 'none'; // Ocultar girar
-                } else { // Si no hay premio ganado, mostrar botones de juego
-                    reserveBtn.style.display = 'none';
-                    claimPrizeBtn.style.display = 'none'; // Ocultar el botón de reclamar si no hay premio
-                    upsellSection.style.display = 'none';
-                    playAgainBtn.style.display = 'none'; // Ocultar "Volver a Jugar" si no hay premio activo
-
-                    if (state.spinsLeft > 0) {
-                        spinBtn.disabled = false;
-                        spinBtn.textContent = `👉 GIRAR LA RULETA AHORA (${state.spinsLeft} tiros restantes)`;
-                        spinBtn.style.display = 'block';
-                        shareBtn.style.display = 'none';
-                    } else {
-                        spinBtn.disabled = true;
-                        spinBtn.textContent = 'COMPARTÍ PARA VOLVER A GIRAR'; // Este texto no se verá si spinBtn.style.display es 'none'
-                        spinBtn.style.display = 'none'; // Ocultar el botón de girar cuando no hay tiros
-                        shareBtn.style.display = 'block'; // Mostrar el botón de compartir
-                    }
-                }
-
                 prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
+                
+                const hasPrize = !!state.prize; // Check if a prize has been won
+                resultMessage.style.display = hasPrize ? 'block' : 'none';
+                prizeTimerDisplay.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
+                upsellSection.style.display = hasPrize ? 'block' : 'none';
+                playAgainBtn.style.display = hasPrize ? 'block' : 'none';
+                
+                // Show spin button if no prize won and spins are left, otherwise show share button
+                spinBtn.style.display = !hasPrize && state.spinsLeft > 0 ? 'block' : 'none';
+                shareBtn.style.display = !hasPrize && state.spinsLeft <= 0 ? 'block' : 'none';
+                
+                // Show reserve or claim button based on prize type
+                reserveBtn.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
+                reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
+                
+                claimPrizeBtn.style.display = hasPrize && !state.prize.needsSeña ? 'block' : 'none';
+                claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
 
-                // La sección de premios ganados siempre estará oculta con style="display: none;" en el HTML
-                wonPrizesSection.style.display = 'none';
+                // Update spin button text with remaining spins
+                spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
+                spinBtn.disabled = false; // Re-enable spin button if it was disabled
             }
 
             /**
-             * Redimensiona el canvas al cambiar el tamaño de la ventana.
+             * Resets the game state to allow for a new spin (clears current prize).
+             */
+            function resetForNewSpin() {
+                state.prize = null; // Clear the won prize
+                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Stop any running timer
+                saveState(); // Save the cleared state
+                updateUI(); // Update UI to reflect reset state
+            }
+
+            /**
+             * Resizes the canvas to fit its container, maintaining aspect ratio.
+             * Redraws the roulette after resizing.
              */
             function resizeCanvas() {
                 const container = document.querySelector('.roulette-canvas-container');
+                if (!container) return; // Exit if container is not found
                 const containerWidth = container.clientWidth;
                 canvas.width = containerWidth;
                 canvas.height = containerWidth;
-                drawRoulette(currentRotation);
+                drawRoulette(currentRotation); // Redraw roulette to fit new size
             }
 
             // --- EVENT LISTENERS ---
-
             spinBtn.addEventListener('click', spin);
-
-            reserveBtn.addEventListener('click', () => {
-                if (state.prize.needsSeña) {
-                    // Abre el link de Mercado Pago directamente para la seña
-                    window.open(mercadopagoLinkUrl, '_blank');
-                    
-                    // Muestra la modal para confirmar el pago y obtener tiro extra
-                    showCustomModal(
-                        "¡Confirmar Seña!", 
-                        `Has ganado "${state.prize.description.toUpperCase()}". Por favor, confirma si ya realizaste la seña de $${señaAmount} para obtener un tiro extra.`,
-                        [
-                            {
-                                text: 'Sí, ya pagué y quiero mi tiro!',
-                                handler: () => {
-                                    hideCustomModal();
-                                    state.spinsLeft++; // Dar tiro extra por confirmar pago
-                                    state.prize = null; // Limpiar el premio actual para que pueda girar de nuevo
-                                    clearInterval(prizeTimerInterval); // Detener el temporizador
-                                    saveState();
-                                    updateUI();
-                                    showCustomModal("¡Tiro extra!", "¡Gracias por confirmar tu seña! Has ganado un tiro extra.");
-                                }
-                            },
-                            {
-                                text: 'No, aún no he pagado',
-                                handler: () => {
-                                    hideCustomModal();
-                                    // El premio sigue activo, el temporizador sigue corriendo
-                                }
-                            }
-                        ]
-                    );
+            playAgainBtn.addEventListener('click', resetForNewSpin);
+            userNameInput.addEventListener('input', () => {
+                saveState(); // Save user name on input change
+                // Add/remove 'filled' class for visual feedback
+                if (userNameInput.value.trim() !== '') {
+                    userNameInput.classList.add('filled');
                 } else {
-                    // Esta rama no debería ser alcanzada si el botón de reserva solo se muestra para premios con seña
-                    // Pero si por algún motivo se clickea, se comportaría como reclamar directamente
-                    const message = `¡Hola! Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
-                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-                    window.open(whatsappUrl, '_blank');
-                    showCustomModal("¡Premio Reclamado!", `Has reclamado "${state.prize.description.toUpperCase()}". ¡Te esperamos!`);
-                    state.prize = null; // Limpiar el premio
-                    clearInterval(prizeTimerInterval); // Detener el temporador
-                    saveState();
-                    updateUI();
+                    userNameInput.classList.remove('filled');
                 }
             });
 
-            // Nuevo Event Listener para el botón de Reclamar Premio
+            reserveBtn.addEventListener('click', () => window.open(mercadopagoLinkUrl, '_blank'));
+
             claimPrizeBtn.addEventListener('click', () => {
-                if (state.prize) {
-                    const message = `¡Hola! Gané "${state.prize.description}" en la ruleta de Le Bardol Estética Center y quiero reclamar mi premio.`;
-                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-                    window.open(whatsappUrl, '_blank');
-                    showCustomModal("¡Premio Reclamado!", `Has reclamado "${state.prize.description.toUpperCase()}". ¡Te esperamos!`);
-                    state.prize = null; // Limpiar el premio después de reclamar
-                    clearInterval(prizeTimerInterval); // Detener el temporizador
-                    saveState();
-                    updateUI();
-                }
+                const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
             });
-
-            // Nuevo Event Listener para el botón "Volver a Jugar"
-            playAgainBtn.addEventListener('click', () => {
-                state.spinsLeft = 0; // Resetear tiros para que vuelva a la pantalla de compartir
-                state.prize = null; // Limpiar cualquier premio activo
-                state.prizeEndTime = 0; // Limpiar el tiempo del premio
-                clearInterval(prizeTimerInterval); // Asegurarse de detener el temporizador
-                saveState();
-                updateUI(); // Actualizar la UI para mostrar el estado inicial
-            });
-
 
             upsellBtn.addEventListener('click', () => {
-                const message = `¡Hola! Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
-                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-                window.open(whatsappUrl, '_blank');
+                const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
             });
 
             shareBtn.addEventListener('click', () => {
-                const userName = userNameInput.value.trim();
-                // Validar que el nombre no esté vacío antes de compartir
-                if (userName === '') {
-                    showCustomModal("¡Falta tu nombre!", "Por favor, ingresa tu nombre completo para poder compartir y desbloquear beneficios.");
+                if (userNameInput.value.trim() === '') {
+                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
                     userNameInput.focus();
-                    updateUserNameInputStyle(); // Asegurar que el borde esté rojo
+                    userNameInput.classList.add('required');
                     return;
                 }
-
-                const shareMessage = `¡Hola! Te comparto esta ruleta de Le Bardol Estética center: ${window.location.href}. ¡Podés ganar depilaciones GRATIS! Cuando reserves, mencioná que venís de parte de ${userName} para que vos tengas 50% OFF en tu primera sesión y tu amigo un **50% OFF** en su primera sesión! ¡No te lo pierdas!`;
-                
-                showCustomModal(
-                    "¡Compartí y Ganá un Tiro!", 
-                    `Para obtener un tiro en la ruleta, comparte este enlace con **5 amigos** en WhatsApp. ¡Además, por cada amigo que **contrate un servicio**, tú ganas un **10% OFF** en tu próxima sesión y su amigo un **50% OFF** en su primera sesión! Luego, confirma aquí que lo has hecho.`,
-                    [
-                        {
-                            text: 'Compartir en WhatsApp',
-                            handler: () => {
-                                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
-                                window.open(whatsappUrl, '_blank');
-                                // Después de abrir WhatsApp, cambia el contenido de la modal para pedir confirmación
-                                modalTitle.textContent = "¡Casi listo!";
-                                modalMessage.textContent = "¿Has compartido con 5 amigos? Confirma para recibir tu tiro.";
-                                modalButtons.innerHTML = ''; // Limpiar botones anteriores
-                                const yesButton = document.createElement('button');
-                                yesButton.textContent = 'Sí, compartí con 5 amigos!';
-                                yesButton.addEventListener('click', () => {
-                                    hideCustomModal();
-                                    state.spinsLeft++; // Dar tiro extra por confirmar compartir
-                                    saveState();
-                                    updateUI();
-                                    showCustomModal("¡Tiro extra!", "¡Gracias por compartir! Has ganado un tiro extra en la ruleta.");
-                                });
-                                modalButtons.appendChild(yesButton);
-
-                                const noButton = document.createElement('button');
-                                noButton.textContent = 'No, aún no';
-                                noButton.addEventListener('click', hideCustomModal);
-                                modalButtons.appendChild(noBUtton);
-                            }
-                        },
-                        {
-                            text: 'Cancelar',
-                            handler: hideCustomModal
-                        }
-                    ]
-                );
+                const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                // Simulate a share after a delay and grant an extra spin
+                setTimeout(() => {
+                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra.");
+                    state.spinsLeft++;
+                    saveState();
+                    updateUI();
+                }, 3000); // Wait 3 seconds before granting spin
             });
 
-            // Event listener para cerrar la modal
-            customModalOverlay.addEventListener('click', (e) => {
-                if (e.target === customModalOverlay) {
-                    hideCustomModal();
+            // Listeners for the policies modal
+            policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
+            closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
+            policiesModal.addEventListener('click', (e) => {
+                if (e.target === policiesModal) {
+                    policiesModal.classList.remove('visible');
                 }
             });
 
-            window.addEventListener('resize', resizeCanvas);
-            userNameInput.addEventListener('input', () => {
-                saveUserName(); // Guardar el nombre al escribir
-                updateUserNameInputStyle(); // Actualizar el estilo del input
+            // Listener for the custom message modal
+            closeMessageModal.addEventListener('click', hideMessageModal);
+            messageModal.addEventListener('click', (e) => {
+                if (e.target === messageModal) {
+                    hideMessageModal();
+                }
             });
 
-            // --- INICIALIZACIÓN ---
-            loadState();
-            updateUI();
-            resizeCanvas();
+            // --- INITIALIZATION ---
+            loadState(); // Load game state on page load
+            updateUI(); // Update UI based on loaded state
+            resizeCanvas(); // Initial canvas resize
+            window.addEventListener('resize', resizeCanvas); // Resize canvas on window resize
         });
     </script>
 </body>
