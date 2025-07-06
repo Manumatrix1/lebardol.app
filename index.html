@@ -49,6 +49,7 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
+            margin-bottom: 40px; /* Added margin to separate from card game */
         }
 
         .roulette-section .campaign-title {
@@ -116,15 +117,14 @@
 
         .wheel-indicator {
             position: absolute;
-            /* Adjusted to point upwards, positioning it above the wheel */
-            top: -15px; /* Adjusted to be slightly above the wheel */
+            top: -15px; 
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-top: 35px solid #e91e63; /* Changed to border-top to make it point upwards */
+            border-top: 35px solid #e91e63; 
             z-index: 10;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
         }
@@ -450,6 +450,133 @@
         .message-modal-content button:hover {
             background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
         }
+
+        /* --- ESTILOS JUEGO DE CARTAS --- */
+        .card-game-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px dashed #ffc0cb; /* Separator */
+        }
+
+        .card-game-section .campaign-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #00bcd4; /* Different color for distinction */
+            line-height: 1.2;
+            text-align: center;
+            width: 100%;
+        }
+
+        .card-game-section .campaign-subtitle {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4a2c5e;
+            padding: 0 10px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns for 6 cards, will create 2 rows */
+            gap: 15px;
+            width: 90%;
+            max-width: 380px;
+            perspective: 1000px; /* For 3D flip effect */
+        }
+
+        .card {
+            width: 100%;
+            height: 120px; /* Fixed height for cards */
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            line-height: 1.2;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #ff7043 0%, #e64a19 100%); /* Orange/Red for front */
+            transform: rotateY(180deg); /* Hidden initially */
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%); /* Purple for back */
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .card-back .icon {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        .card-back .text {
+            font-size: 1rem;
+        }
+
+        .card.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        #cardResultMessage {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #00796b;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(224, 247, 250, 0.8);
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            line-height: 1.4;
+            display: none;
+        }
+        #cardResultMessage small {
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .card-game-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            display: none; /* Hidden by default, shown when played */
+        }
     </style>
 </head>
 <body>
@@ -497,6 +624,21 @@
 
             <!-- Enlace para abrir las políticas -->
             <p id="policiesLink" class="policies-link">Ver Términos y Condiciones del Juego</p>
+        </div>
+
+        <!-- --- NUEVA SECCIÓN DE JUEGO DE CARTAS --- -->
+        <div class="card-game-section" id="cardGameSection">
+            <h1 class="campaign-title">🃏 ¡Descubrí tu descuento sorpresa!</h1>
+            <p class="campaign-subtitle">Elegí una carta y ganá un descuento exclusivo.</p>
+            
+            <div class="cards-container" id="cardsContainer">
+                <!-- Cards will be dynamically inserted here by JavaScript -->
+            </div>
+            <p id="cardResultMessage" style="display: none;"></p>
+            <button class="btn btn-claim-prize" id="claimCardPrizeBtn" style="display: none; margin-top: 15px;">
+                <i class="fab fa-whatsapp"></i> RECLAMAR PREMIO DE CARTAS
+            </button>
+            <p id="cardGameInfo" class="card-game-info">Los premios de este juego no son acumulables. Puedes jugar una vez al día.</p>
         </div>
     </div>
 
@@ -566,6 +708,16 @@
         </div>
     </div>
 
+    <!-- Audio para el giro de la ruleta -->
+    <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
+    <!-- Audio para el premio ganado -->
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-win-2010.mp3" preload="auto"></audio>
+    <!-- Audio para voltear carta -->
+    <audio id="cardFlipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-1033.mp3" preload="auto"></audio>
+    <!-- Audio para ganar carta -->
+    <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- CAMPAIGN CONFIGURATION ---
@@ -597,6 +749,12 @@
             const messageModalText = document.getElementById('messageModalText');
             const closeMessageModal = document.getElementById('closeMessageModal');
 
+            // Audio elements
+            const spinSound = document.getElementById('spinSound');
+            const winSound = document.getElementById('winSound');
+            const cardFlipSound = document.getElementById('cardFlipSound');
+            const cardWinSound = document.getElementById('cardWinSound');
+
             // --- ROULETTE PRIZES ---
             const segments = [
                 { text: 'Zona Grande GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Grande GRATIS' },
@@ -623,6 +781,24 @@
             let currentRotation = 0;
             let animationFrameId;
             let prizeTimerInterval;
+
+            // --- CARD GAME ELEMENTS AND STATE ---
+            const cardsContainer = document.getElementById('cardsContainer');
+            const cardResultMessage = document.getElementById('cardResultMessage');
+            const cardGameInfo = document.getElementById('cardGameInfo'); // New info element
+            const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn'); // New button element
+
+            const cardPrizes = [
+                { text: '15% OFF Manicuría', icon: '💅', description: '15% OFF en tu próxima manicuría' },
+                { text: '20% OFF Masajes', icon: '💆', description: '20% OFF en tu próximo masaje' },
+                { text: '15% OFF Facial', icon: '✨', description: '15% OFF en tu próximo tratamiento facial' },
+                { text: '10% OFF Productos', icon: '🧴', description: '10% OFF en productos Le Bardol' },
+                { text: '25% OFF Cejas', icon: '👁️', description: '25% OFF en depilación de cejas' },
+                { text: '15% OFF Pestañas', icon: '👁️', description: '15% OFF en tratamiento de pestañas' },
+            ];
+            let cards = []; // Array to hold card DOM elements
+            let cardGameActive = false; // To prevent multiple card flips
+            let currentCardPrize = null; // To store the prize won from the card game
 
             // --- FUNCTIONS ---
 
@@ -656,7 +832,8 @@
                     prizeEndTime: 0,
                     prizesLeft: 999,
                     lastActivity: Date.now(),
-                    userName: ''
+                    userName: '',
+                    lastCardPlayDate: null // New state for card game daily limit
                 };
                 state = { ...defaultState, ...savedState };
                 userNameInput.value = state.userName;
@@ -762,6 +939,12 @@
                 spinBtn.disabled = true;
                 spinBtn.textContent = 'GIRANDO...';
                 
+                // Play spin sound
+                if (spinSound) {
+                    spinSound.currentTime = 0; // Rewind to start
+                    spinSound.play().catch(e => console.error("Error playing spin sound:", e));
+                }
+
                 // Filter out 'nowin' segments for actual prize selection
                 const winnableSegments = segments.filter(s => s.type !== 'nowin');
                 const randomWinnableIndex = Math.floor(Math.random() * winnableSegments.length);
@@ -839,6 +1022,12 @@
             function handleSpinEnd() {
                 fireConfetti(); // Celebrate the win!
                 
+                // Play win sound
+                if (winSound) {
+                    winSound.currentTime = 0; // Rewind to start
+                    winSound.play().catch(e => console.error("Error playing win sound:", e));
+                }
+
                 const prize = state.prize;
                 const userName = state.userName.split(' ')[0] || 'crack'; // Get first name or default to 'crack'
 
@@ -916,6 +1105,23 @@
                 // Update spin button text with remaining spins
                 spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
                 spinBtn.disabled = false; // Re-enable spin button if it was disabled
+
+                // Card game UI update
+                const today = new Date().toDateString();
+                const hasPlayedCardGameToday = state.lastCardPlayDate === today;
+
+                if (hasPlayedCardGameToday) {
+                    cardsContainer.classList.add('disabled'); // Disable cards after playing
+                    cardGameInfo.style.display = 'block';
+                    cardGameInfo.textContent = 'Ya jugaste hoy. Vuelve mañana para otra oportunidad. Los premios de este juego no son acumulables.';
+                } else {
+                    cardsContainer.classList.remove('disabled');
+                    cardGameInfo.style.display = 'block'; // Always show info about non-cumulative prizes
+                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables. Puedes jugar una vez al día.';
+                }
+
+                // Show/hide claim card prize button
+                claimCardPrizeBtn.style.display = currentCardPrize ? 'block' : 'none';
             }
 
             /**
@@ -939,6 +1145,108 @@
                 canvas.width = containerWidth;
                 canvas.height = containerWidth;
                 drawRoulette(currentRotation); // Redraw roulette to fit new size
+            }
+
+            // --- CARD GAME FUNCTIONS ---
+
+            /**
+             * Initializes the card game by creating and shuffling cards.
+             */
+            function initializeCardGame() {
+                cardsContainer.innerHTML = ''; // Clear existing cards
+                cards = []; // Reset cards array
+                currentCardPrize = null; // Reset current card prize
+
+                // Create cards based on cardPrizes
+                const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5); // Shuffle prizes
+                
+                for (let i = 0; i < 6; i++) { // Changed to 6 cards
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.dataset.index = i; // Store original index if needed, or just for identification
+
+                    const cardBack = document.createElement('div');
+                    cardBack.classList.add('card-face', 'card-back');
+                    cardBack.innerHTML = `<i class="fas fa-question icon"></i><span class="text">ELIGE UNO</span>`;
+
+                    const cardFront = document.createElement('div');
+                    cardFront.classList.add('card-face', 'card-front');
+                    cardFront.textContent = shuffledPrizes[i].text; // Assign a shuffled prize to each card
+                    cardFront.dataset.prize = JSON.stringify(shuffledPrizes[i]); // Store prize data
+
+                    card.appendChild(cardBack);
+                    card.appendChild(cardFront);
+                    cardsContainer.appendChild(card);
+                    cards.push(card);
+
+                    card.addEventListener('click', handleCardClick);
+                }
+                cardGameActive = true; // Enable card clicks
+                cardResultMessage.style.display = 'none';
+                updateUI(); // Update UI for card game state (disabling if already played today)
+            }
+
+            /**
+             * Handles a click on a card.
+             * @param {Event} event - The click event.
+             */
+            function handleCardClick(event) {
+                const today = new Date().toDateString();
+                if (state.lastCardPlayDate === today) {
+                    showMessageModal("¡Ya jugaste hoy!", "Ya usaste tu oportunidad diaria en el juego de cartas. Vuelve mañana para un nuevo intento.");
+                    return;
+                }
+
+                if (!cardGameActive) {
+                    return; // Do nothing if game is not active (e.g., during flip animation)
+                }
+
+                const clickedCard = event.currentTarget;
+                if (clickedCard.classList.contains('flipped')) {
+                    return; // Do nothing if already flipped
+                }
+
+                // Play card flip sound
+                if (cardFlipSound) {
+                    cardFlipSound.currentTime = 0;
+                    cardFlipSound.play().catch(e => console.error("Error playing card flip sound:", e));
+                }
+
+                clickedCard.classList.add('flipped');
+                cardGameActive = false; // Disable further clicks
+                state.lastCardPlayDate = today; // Mark game as played for today
+                saveState();
+
+                // Disable all other cards
+                cards.forEach(card => {
+                    if (card !== clickedCard) {
+                        card.classList.add('disabled');
+                    }
+                    card.removeEventListener('click', handleCardClick); // Remove listener from all cards
+                });
+
+                setTimeout(() => {
+                    const prizeData = JSON.parse(clickedCard.querySelector('.card-front').dataset.prize);
+                    currentCardPrize = prizeData; // Store the won prize
+                    displayCardPrize(prizeData);
+                    // Play card win sound
+                    if (cardWinSound) {
+                        cardWinSound.currentTime = 0;
+                        cardWinSound.play().catch(e => console.error("Error playing card win sound:", e));
+                    }
+                    fireConfetti(); // Celebrate win
+                    updateUI(); // Update UI to show claim button
+                }, 600); // Wait for flip animation
+            }
+
+            /**
+             * Displays the prize won from the card game.
+             * @param {Object} prize - The prize object.
+             */
+            function displayCardPrize(prize) {
+                const userName = state.userName.split(' ')[0] || 'crack';
+                cardResultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #00bcd4;">${prize.description.toUpperCase()}</strong>`;
+                cardResultMessage.style.display = 'block';
             }
 
             // --- EVENT LISTENERS ---
@@ -1001,10 +1309,19 @@
                 }
             });
 
+            // New event listener for claiming card prize
+            claimCardPrizeBtn.addEventListener('click', () => {
+                if (currentCardPrize) {
+                    const message = `¡Hola! Soy ${state.userName}. Gané "${currentCardPrize.description}" en el juego de cartas y quiero reclamar mi descuento.`;
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                }
+            });
+
             // --- INITIALIZATION ---
             loadState(); // Load game state on page load
             updateUI(); // Update UI based on loaded state
             resizeCanvas(); // Initial canvas resize
+            initializeCardGame(); // Initialize the card game
             window.addEventListener('resize', resizeCanvas); // Resize canvas on window resize
         });
     </script>
