@@ -691,14 +691,14 @@
             <p class="card-prize-timer" id="cardPrizeTimerDisplay"></p>
 
             <button class="btn btn-claim-prize" id="claimCardPrizeBtn" style="display: none; margin-top: 15px;">
-                <i class="fab fa-whatsapp"></i> RECLAMAR PREMIO DE CARTAS
+                <i class="fab fa-whatsapp"></i> RECLAMAR MIS PREMIOS
             </button>
             <button class="btn btn-card-game-share" id="shareCardGameBtn" style="display: none; margin-top: 15px;">
                 <i class="fab fa-whatsapp"></i>
                 <span class="share-title">¡Compartí para Jugar!</span>
-                <span class="share-subtitle">Ganá un tiro extra en el juego de cartas.</span>
+                <span class="share-subtitle">Obtén 3 tiros para el juego de cartas.</span>
             </button>
-            <button class="btn btn-play-again" id="playAgainCardBtn" style="display: none; margin-top: 15px;">✨ Volver a Jugar Cartas</button>
+            <!-- El botón "Jugar Mañana" se ha eliminado para una limitación estricta de 3 tiros -->
             <p id="cardGameInfo" class="card-game-info">Los premios de este juego no son acumulables.</p>
         </div>
 
@@ -857,7 +857,8 @@
             const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn'); // New button element
             const cardPlaysCounter = document.getElementById('cardPlaysCounter'); // New element for card plays left
             const shareCardGameBtn = document.getElementById('shareCardGameBtn'); // New share button for card game
-            const playAgainCardBtn = document.getElementById('playAgainCardBtn'); // New play again button for card game
+            // const playAgainCardBtn = document.getElementById('playAgainCardBtn'); // Eliminado para el límite estricto de 3 tiros
+            const cardPrizeTimerDisplay = document.getElementById('cardPrizeTimerDisplay'); // Timer for card game prize reservation
 
             const cardPrizes = [
                 { text: 'Pilling 20% OFF', description: 'Pilling 20% OFF', needsReservation: true },
@@ -871,10 +872,9 @@
                 { text: 'Boucher $5000 de Regalo', description: 'Boucher $5000 de Regalo', needsReservation: true }
             ];
             let cards = []; // Array to hold card DOM elements
-            let cardGameActive = false; // To prevent multiple card flips
-            let currentCardPrize = null; // To store the prize won from the card game
-            let cardPrizeTimerInterval; // Timer for card game prize reservation
-            let cardPrizeEndTime = 0; // End time for card game prize reservation
+            let cardGameActive = false; // To prevent multiple card flips during animation
+            let currentCardPrize = null; // To store the last prize won from the card game for display
+            let cardSessionTimerInterval; // Timer for card game session prize reservation
 
             // --- FUNCTIONS ---
 
@@ -909,30 +909,30 @@
                     prizesLeft: 999,
                     lastActivity: Date.now(),
                     userName: '',
-                    lastCardPlayDate: null, // New state for card game daily limit
-                    cardPlaysLeft: 3, // Initial plays for card game
-                    cardPrize: null, // Prize won from card game
-                    cardPrizeEndTime: 0 // End time for card game prize reservation
+                    cardPlaysLeft: 0, // Inicia en 0, el usuario debe compartir para obtener los 3 tiros
+                    wonCardPrizes: [], // Array para almacenar los premios ganados en la sesión de 3 cartas
+                    cardSessionEndTime: 0, // Tiempo de finalización para la reserva de premios de cartas
+                    hasPlayedAllCardPlays: false // Nuevo flag para indicar si ya usó los 3 tiros
                 };
                 state = { ...defaultState, ...savedState };
                 userNameInput.value = state.userName;
                 
                 const now = Date.now();
                 const hoursPassed = (now - state.lastActivity) / (1000 * 60 * 60);
-                const prizesToDecrease = Math.floor(hoursPassed * 5); // Decrease 5 prizes per hour of inactivity
-                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Ensure at least 50 prizes remain
+                const prizesToDecrease = Math.floor(hoursPassed * 5); // Disminuye 5 premios por hora de inactividad
+                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Asegura que queden al menos 50 premios
                 state.lastActivity = now;
 
-                // Reset card plays daily
-                const today = new Date().toDateString();
-                if (state.lastCardPlayDate !== today) {
-                    state.cardPlaysLeft = 3; // Reset to 3 plays each new day
-                    state.lastCardPlayDate = today;
-                    state.cardPrize = null; // Clear previous card prize
-                    state.cardPrizeEndTime = 0; // Clear previous card prize timer
+                // Si el usuario ya usó sus 3 tiros, no se reinician.
+                // Si es la primera vez que carga la app o si el flag no existe, se inicializa a 0.
+                if (state.hasPlayedAllCardPlays === undefined) {
+                    state.hasPlayedAllCardPlays = false;
+                }
+                if (state.cardPlaysLeft === undefined) {
+                    state.cardPlaysLeft = 0;
                 }
                 
-                saveState(); // Save updated state (especially lastActivity and prizesLeft)
+                saveState(); // Guarda el estado actualizado
             }
 
             /**
@@ -1194,41 +1194,65 @@
                 spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
                 spinBtn.disabled = false; // Re-enable spin button if it was disabled
 
-                // Card game UI update
+                // --- Card game UI update ---
+                const allCardsFlippedInSession = state.wonCardPrizes.length === 3; // Todas las 3 cartas volteadas
+                const canPlayCardGame = state.cardPlaysLeft > 0;
+                const hasPlayedAllCardPlaysEver = state.hasPlayedAllCardPlays; // Si ya usó los 3 tiros alguna vez
+
                 cardPlaysCounter.textContent = `Te quedan ${state.cardPlaysLeft} tiro${state.cardPlaysLeft !== 1 ? 's' : ''} de cartas.`;
 
-                const hasPlayedCardGameToday = state.lastCardPlayDate === new Date().toDateString() && state.cardPlaysLeft === 0;
-                
-                if (hasPlayedCardGameToday) {
-                    cardsContainer.classList.add('disabled'); // Disable cards after playing
-                    cardGameInfo.style.display = 'block';
-                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables.'; // Updated text
-                    shareCardGameBtn.style.display = 'none'; // Hide share button if no plays left today
-                    playAgainCardBtn.style.display = 'block'; // Show play again button to reset for next day
-                } else if (state.cardPlaysLeft > 0) {
+                // Controlar la clickabilidad del contenedor de cartas
+                if (canPlayCardGame && !hasPlayedAllCardPlaysEver) {
                     cardsContainer.classList.remove('disabled');
-                    cardGameInfo.style.display = 'block'; // Always show info about non-cumulative prizes
-                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables.'; // Updated text
-                    shareCardGameBtn.style.display = 'none'; // Hide share button if plays are left
-                    playAgainCardBtn.style.display = 'none'; // Hide play again button
-                } else { // No plays left and not yet reset for today
+                    cardGameActive = true; // Habilitar clics en las cartas
+                } else {
                     cardsContainer.classList.add('disabled');
-                    cardGameInfo.style.display = 'block';
-                    cardGameInfo.textContent = 'No te quedan tiros de cartas. ¡Compartí para ganar más!';
-                    shareCardGameBtn.style.display = 'block'; // Show share button to get more plays
-                    playAgainCardBtn.style.display = 'none'; // Hide play again button
+                    cardGameActive = false; // Deshabilitar clics en las cartas
                 }
 
-                // Show/hide claim card prize button
-                claimCardPrizeBtn.style.display = currentCardPrize ? 'block' : 'none';
+                // Controlar la visibilidad de los botones del juego de cartas
+                if (hasPlayedAllCardPlaysEver) { // Si ya jugó sus 3 tiros totales
+                    claimCardPrizeBtn.style.display = 'none'; // Ya no hay más premios que reclamar
+                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
+                    shareCardGameBtn.style.display = 'none'; // Ya no se pueden obtener más tiros
+                    cardGameInfo.textContent = 'Ya has jugado tus 3 tiros. ¡Gracias por participar!';
+                } else if (allCardsFlippedInSession) { // Si acaba de voltear las 3 cartas de la sesión actual
+                    claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar
+                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
+                    shareCardGameBtn.style.display = 'none'; // Ocultar compartir si ya usó los 3 tiros
+                    cardGameInfo.textContent = '¡Has usado todos tus tiros! Reclama tus premios.';
+                } else if (state.cardPlaysLeft === 0 && state.wonCardPrizes.length === 0) { // Estado inicial o después de reclamar si no hay tiros
+                    claimCardPrizeBtn.style.display = 'none';
+                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
+                    shareCardGameBtn.style.display = 'block'; // Mostrar compartir para obtener los 3 tiros iniciales
+                    cardGameInfo.textContent = '¡Comparte para obtener 3 tiros y descubrir tu descuento!';
+                } else { // Todavía tiene tiros disponibles o está en medio de una sesión
+                    claimCardPrizeBtn.style.display = 'none';
+                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
+                    shareCardGameBtn.style.display = 'none';
+                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables.';
+                }
 
-                // Card game prize timer display
-                if (state.cardPrize && state.cardPrize.needsReservation && state.cardPrizeEndTime > Date.now()) {
+                // Mostrar el último premio ganado o un resumen para el juego de cartas
+                if (state.wonCardPrizes.length > 0) {
+                    if (state.wonCardPrizes.length < 3) { // Mientras se están jugando las cartas
+                        cardResultMessage.innerHTML = `¡FELICITACIONES! GANASTE <strong style="color: #00bcd4;">${state.wonCardPrizes[state.wonCardPrizes.length - 1].description.toUpperCase()}</strong>`;
+                    } else { // Todas las 3 cartas volteadas
+                        const prizesList = state.wonCardPrizes.map(p => p.description).join(', ');
+                        cardResultMessage.innerHTML = `¡Has ganado: <strong style="color: #00bcd4;">${prizesList}</strong>!`;
+                    }
+                    cardResultMessage.style.display = 'block';
+                } else {
+                    cardResultMessage.style.display = 'none';
+                }
+
+                // Mostrar el temporizador de premios de cartas
+                if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
                     cardPrizeTimerDisplay.style.display = 'block';
-                    startCardPrizeTimer();
+                    startCardSessionTimer(); // Asegurar que el temporizador esté corriendo
                 } else {
                     cardPrizeTimerDisplay.style.display = 'none';
-                    if (cardPrizeTimerInterval) clearInterval(cardPrizeTimerInterval);
+                    if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval);
                 }
             }
 
@@ -1258,19 +1282,20 @@
             // --- CARD GAME FUNCTIONS ---
 
             /**
-             * Starts or updates the countdown timer for card prize reservation.
+             * Starts or updates the countdown timer for the entire card game session.
              * Clears existing timer if any.
              */
-            function startCardPrizeTimer() {
-                if (cardPrizeTimerInterval) clearInterval(cardPrizeTimerInterval); // Clear any previous timer
+            function startCardSessionTimer() {
+                if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval); // Clear any previous timer
                 cardPrizeTimerDisplay.style.display = 'block'; // Show the timer display
 
-                cardPrizeTimerInterval = setInterval(() => {
-                    const timeLeft = state.cardPrizeEndTime - Date.now();
+                cardSessionTimerInterval = setInterval(() => {
+                    const timeLeft = state.cardSessionEndTime - Date.now();
                     if (timeLeft <= 0) {
-                        clearInterval(cardPrizeTimerInterval);
-                        cardPrizeTimerDisplay.textContent = 'Tu premio de carta expiró y fue liberado.';
-                        state.cardPrize = null; // Clear the prize
+                        clearInterval(cardSessionTimerInterval);
+                        cardPrizeTimerDisplay.textContent = '¡El tiempo para tus premios de carta ha expirado!';
+                        state.wonCardPrizes = []; // Clear all won prizes
+                        state.cardSessionEndTime = 0; // Clear session timer
                         currentCardPrize = null; // Also clear local variable
                         saveState();
                         updateUI();
@@ -1278,40 +1303,40 @@
                     }
                     const minutes = Math.floor(timeLeft / 60000);
                     const seconds = Math.floor((timeLeft % 60000) / 1000);
-                    cardPrizeTimerDisplay.innerHTML = `⏳ Tenés ${minutes}m ${seconds}s para reservar, o el premio se libera.<br><strong>¡RESERVÁ AHORA Y NO PIERDAS TU DESCUENTO!</strong>`;
+                    cardPrizeTimerDisplay.innerHTML = `⏳ Tenés ${minutes}m ${seconds}s para reservar tus premios.<br><strong>¡RESERVÁ AHORA Y NO PIERDAS TU DESCUENTO!</strong>`;
                 }, 1000); // Update every second
             }
 
             /**
-             * Resets the card game state for a new day or new session.
+             * Resets the card game state for a new session (after claiming prizes or timer expires).
+             * This function is now only called internally after claiming prizes or expiration.
              */
-            function resetCardGame() {
-                state.cardPlaysLeft = 3; // Reset plays for the new day
-                state.lastCardPlayDate = new Date().toDateString(); // Update last play date
-                state.cardPrize = null; // Clear any previous prize
-                state.cardPrizeEndTime = 0; // Clear prize timer
-                currentCardPrize = null; // Clear local prize variable
+            function resetCardGameSession() {
+                state.cardPlaysLeft = 0; // Se asume que ya se usaron los 3 tiros o el timer expiró
+                state.wonCardPrizes = []; // Limpiar los premios ganados
+                state.cardSessionEndTime = 0; // Limpiar el temporizador
+                currentCardPrize = null; // Limpiar la variable local
+                state.hasPlayedAllCardPlays = true; // Marcar que ya jugó sus 3 tiros totales
                 saveState();
-                initializeCardGame(); // Re-initialize cards
-                updateUI(); // Update UI
+                initializeCardGame(); // Reinicializar las cartas (voltearlas a su estado original)
+                updateUI(); // Actualizar la UI
             }
 
             /**
              * Initializes the card game by creating and shuffling cards.
              */
             function initializeCardGame() {
-                cardsContainer.innerHTML = ''; // Clear existing cards
-                cards = []; // Reset cards array
-                currentCardPrize = null; // Reset current card prize
+                cardsContainer.innerHTML = ''; // Limpiar cartas existentes
+                cards = []; // Resetear el array de cartas
+                currentCardPrize = null; // Resetear el premio actual para mostrar
 
-                // Create cards based on cardPrizes
-                const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5); // Shuffle prizes
+                const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5); // Barajar premios
                 
-                // Create 9 cards
+                // Crear 9 cartas
                 for (let i = 0; i < 9; i++) { 
                     const card = document.createElement('div');
                     card.classList.add('card');
-                    card.dataset.index = i; // Store original index if needed, or just for identification
+                    card.dataset.index = i;
 
                     const cardBack = document.createElement('div');
                     cardBack.classList.add('card-face', 'card-back');
@@ -1319,9 +1344,8 @@
 
                     const cardFront = document.createElement('div');
                     cardFront.classList.add('card-face', 'card-front');
-                    // Assign a shuffled prize to each card, cycling through prizes if fewer than 9 unique ones
-                    cardFront.textContent = shuffledPrizes[i % shuffledPrizes.length].text;
-                    cardFront.dataset.prize = JSON.stringify(shuffledPrizes[i % shuffledPrizes.length]); // Store prize data
+                    cardFront.textContent = shuffledPrizes[i].text;
+                    cardFront.dataset.prize = JSON.stringify(shuffledPrizes[i]);
 
                     card.appendChild(cardBack);
                     card.appendChild(cardFront);
@@ -1330,9 +1354,9 @@
 
                     card.addEventListener('click', handleCardClick);
                 }
-                cardGameActive = true; // Enable card clicks
+                // cardGameActive se controla por updateUI basado en state.cardPlaysLeft
                 cardResultMessage.style.display = 'none';
-                updateUI(); // Update UI for card game state (disabling if already played today)
+                // updateUI se llama después de esto en DOMContentLoaded
             }
 
             /**
@@ -1349,72 +1373,69 @@
                 userNameInput.classList.remove('required'); // Remove highlight if valid
 
                 if (state.cardPlaysLeft <= 0) {
-                    showMessageModal("¡No te quedan tiros!", "Compartí con amigos para ganar más tiros de cartas.");
+                    showMessageModal("¡No te quedan tiros!", "Ya has usado tus 3 tiros en el juego de cartas.");
                     return;
                 }
 
-                if (!cardGameActive) {
-                    return; // Do nothing if game is not active (e.g., during flip animation)
+                if (!cardGameActive) { // Este flag previene clics rápidos durante la animación
+                    return; 
                 }
 
                 const clickedCard = event.currentTarget;
-                if (clickedCard.classList.contains('flipped')) {
-                    return; // Do nothing if already flipped
+                if (clickedCard.classList.contains('flipped') || clickedCard.classList.contains('disabled')) {
+                    return; // No hacer nada si ya está volteada o deshabilitada
                 }
 
-                // Play card flip sound
+                cardGameActive = false; // Deshabilitar temporalmente el juego para evitar clics rápidos durante la animación
+
+                // Reproducir sonido de voltear carta
                 if (cardFlipSound) {
                     cardFlipSound.currentTime = 0;
                     cardFlipSound.play().catch(e => console.error("Error playing card flip sound:", e));
                 }
 
                 clickedCard.classList.add('flipped');
-                cardGameActive = false; // Disable further clicks
-                state.cardPlaysLeft--; // Decrement plays left
+                
+                state.cardPlaysLeft--; // Disminuir tiros restantes
+                
+                const prizeData = JSON.parse(clickedCard.querySelector('.card-front').dataset.prize);
+                state.wonCardPrizes.push(prizeData); // Añadir premio a la lista de premios ganados
+                currentCardPrize = prizeData; // Establecer para mostrar inmediatamente el último premio ganado
+
+                // Iniciar el temporizador de sesión si es la primera carta volteada en la sesión actual
+                if (state.wonCardPrizes.length === 1) {
+                    state.cardSessionEndTime = Date.now() + 30 * 60 * 1000; // 30 minutos para la reserva
+                    startCardSessionTimer();
+                }
+                
                 saveState();
 
-                // Disable all other cards
-                cards.forEach(card => {
-                    if (card !== clickedCard) {
-                        card.classList.add('disabled');
-                    }
-                    card.removeEventListener('click', handleCardClick); // Remove listener from all cards
-                });
+                // Deshabilitar solo la carta clickeada permanentemente
+                clickedCard.classList.add('disabled');
+                clickedCard.removeEventListener('click', handleCardClick);
 
                 setTimeout(() => {
-                    const prizeData = JSON.parse(clickedCard.querySelector('.card-front').dataset.prize);
-                    currentCardPrize = prizeData; // Store the won prize
-                    state.cardPrize = prizeData; // Store in state as well
-                    state.cardPrizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes for reservation
-                    saveState();
-                    displayCardPrize(prizeData);
-                    // Play card win sound
-                    if (cardWinSound) {
-                        cardWinSound.currentTime = 0;
-                        cardWinSound.play().catch(e => console.error("Error playing card win sound:", e));
+                    // Volver a habilitar el juego si aún quedan tiros y no se han volteado las 3 cartas
+                    if (state.cardPlaysLeft > 0 && state.wonCardPrizes.length < 3) {
+                        cardGameActive = true;
+                    } else if (state.wonCardPrizes.length === 3) {
+                        // Si ya se voltearon las 3 cartas, marcar que ya jugó todos sus tiros
+                        state.hasPlayedAllCardPlays = true;
+                        saveState();
                     }
-                    fireConfetti(); // Celebrate win
-                    updateUI(); // Update UI to show claim button and remaining plays
-                    startCardPrizeTimer(); // Start the timer for the card prize
-                }, 600); // Wait for flip animation
-            }
-
-            /**
-             * Displays the prize won from the card game.
-             * @param {Object} prize - The prize object.
-             */
-            function displayCardPrize(prize) {
-                const userName = state.userName.split(' ')[0] || 'crack';
-                cardResultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #00bcd4;">${prize.description.toUpperCase()}</strong>`;
-                cardResultMessage.style.display = 'block';
+                    
+                    fireConfetti(); // Celebrar el premio
+                    updateUI(); // Actualizar la UI para mostrar el botón de reclamar y los tiros restantes
+                    
+                }, 600); // Esperar la animación de volteo
             }
 
             // --- EVENT LISTENERS ---
             spinBtn.addEventListener('click', spin);
             playAgainBtn.addEventListener('click', resetForNewSpin);
             userNameInput.addEventListener('input', () => {
-                saveState(); // Save user name on input change
-                // Add/remove 'filled' class for visual feedback
+                saveState(); // Guardar nombre de usuario al cambiar input
+                // Añadir/quitar clase 'filled' para feedback visual
                 if (userNameInput.value.trim() !== '') {
                     userNameInput.classList.add('filled');
                 } else {
@@ -1425,6 +1446,7 @@
             reserveBtn.addEventListener('click', () => window.open(mercadopagoLinkUrl, '_blank'));
 
             claimPrizeBtn.addEventListener('click', () => {
+                // Este botón de reclamar es para premios de ruleta
                 const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
             });
@@ -1443,16 +1465,16 @@
                 }
                 const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simulate a share after a delay and grant an extra spin
+                // Simular un compartir después de un retraso y otorgar un tiro extra
                 setTimeout(() => {
                     showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en la ruleta.");
                     state.spinsLeft++;
                     saveState();
                     updateUI();
-                }, 3000); // Wait 3 seconds before granting spin
+                }, 3000); // Esperar 3 segundos antes de otorgar el tiro
             });
 
-            // Listeners for the policies modal
+            // Listeners para el modal de políticas
             policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
             closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
             policiesModal.addEventListener('click', (e) => {
@@ -1461,7 +1483,7 @@
                 }
             });
 
-            // Listener for the custom message modal
+            // Listener para el modal de mensajes (alerta personalizada)
             closeMessageModal.addEventListener('click', hideMessageModal);
             messageModal.addEventListener('click', (e) => {
                 if (e.target === messageModal) {
@@ -1469,15 +1491,22 @@
                 }
             });
 
-            // New event listener for claiming card prize
-            claimCardPrizeBtn.addEventListener('click', () => {
-                if (state.cardPrize) {
-                    const message = `¡Hola! Soy ${state.userName}. Gané "${state.cardPrize.description}" en el juego de cartas y quiero reclamar mi descuento.`;
+            // Nuevo event listener para reclamar TODOS los premios de cartas
+            document.getElementById('claimCardPrizeBtn').addEventListener('click', () => {
+                if (state.wonCardPrizes && state.wonCardPrizes.length > 0) {
+                    const prizesList = state.wonCardPrizes.map(p => `"${p.description}"`).join(', ');
+                    const message = `¡Hola! Soy ${state.userName}. Gané los siguientes premios en el juego de cartas: ${prizesList}. Quiero reclamar mis descuentos.`;
                     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                    
+                    // Después de reclamar, limpiar los premios y el temporizador de la sesión
+                    resetCardGameSession(); // Reiniciar la sesión de cartas
+                    showMessageModal("¡Premios Reclamados!", "Tus premios han sido enviados a WhatsApp. ¡Disfrútalos!");
+                } else {
+                    showMessageModal("Sin premios", "No hay premios de cartas para reclamar en este momento.");
                 }
             });
 
-            // Event listener for sharing card game
+            // Event listener para compartir el juego de cartas (para obtener los 3 tiros iniciales)
             shareCardGameBtn.addEventListener('click', () => {
                 if (userNameInput.value.trim() === '') {
                     showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
@@ -1485,31 +1514,35 @@
                     userNameInput.classList.add('required');
                     return;
                 }
+                if (state.hasPlayedAllCardPlays) {
+                    showMessageModal("¡Juego completado!", "Ya has usado tus 3 tiros en el juego de cartas. ¡Gracias por participar!");
+                    return;
+                }
                 const message = `¡Mira este increíble juego de cartas de Le Bardol! Gana descuentos y sorpresas. ¡Juega aquí: ${window.location.href}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simulate a share after a delay and grant an extra play
+                // Simular un compartir después de un retraso y otorgar 3 tiros para hoy
                 setTimeout(() => {
-                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en el juego de cartas.");
-                    state.cardPlaysLeft++;
+                    showMessageModal("¡Gracias por compartir!", "¡Has ganado 3 tiros para el juego de cartas!");
+                    state.cardPlaysLeft = 3; // Otorgar 3 tiros
+                    state.lastCardPlayDate = new Date().toDateString(); // Marcar hoy como el día en que se otorgaron los tiros
                     saveState();
+                    initializeCardGame(); // Reiniciar cartas y habilitarlas
                     updateUI();
-                }, 3000); // Wait 3 seconds before granting play
+                }, 3000); // Esperar 3 segundos antes de otorgar los tiros
             });
 
-            // Event listener for "Play Again" button in card game
-            playAgainCardBtn.addEventListener('click', resetCardGame);
+            // El botón "Jugar Mañana" se ha eliminado para una limitación estricta de 3 tiros
 
+            // --- INICIALIZACIÓN ---
+            loadState(); // Cargar estado del juego al cargar la página
+            updateUI(); // Actualizar la UI según el estado cargado
+            resizeCanvas(); // Redimensionar el canvas inicial
+            initializeCardGame(); // Inicializar el juego de cartas (configura las cartas, pero no las habilita hasta que se otorguen tiros)
+            window.addEventListener('resize', resizeCanvas); // Redimensionar el canvas al cambiar el tamaño de la ventana
 
-            // --- INITIALIZATION ---
-            loadState(); // Load game state on page load
-            updateUI(); // Update UI based on loaded state
-            resizeCanvas(); // Initial canvas resize
-            initializeCardGame(); // Initialize the card game
-            window.addEventListener('resize', resizeCanvas); // Resize canvas on window resize
-
-            // If there's an active card prize with a timer, restart it on load
-            if (state.cardPrize && state.cardPrizeEndTime > Date.now()) {
-                startCardPrizeTimer();
+            // Si hay un temporizador de sesión de cartas activo, reiniciarlo al cargar
+            if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
+                startCardSessionTimer();
             }
         });
     </script>
