@@ -577,17 +577,68 @@
             max-width: 380px;
             display: none; /* Hidden by default, shown when played */
         }
+
+        /* Styles for card game specific buttons */
+        .btn-card-game-share {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            flex-direction: column;
+            line-height: 1.2;
+            padding: 12px;
+        }
+        .btn-card-game-share .share-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .btn-card-game-share .share-subtitle {
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        .btn-card-game-share .fab {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .card-game-attempts {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4a2c5e;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .card-prize-timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* New footer style */
+        .footer-info {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            width: 100%;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="roulette-section" id="rouletteSection">
-            <div class="whatsapp-logo-container">
-                <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
-                    <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
-                </a>
-            </div>
+        <div class="whatsapp-logo-container">
+            <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
+                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
+            </a>
+        </div>
 
+        <div class="roulette-section" id="rouletteSection">
             <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica y ganá! 🎁</h1>
             <p class="campaign-subtitle">Gana una zona gratis y más beneficios...</p>
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
@@ -626,20 +677,36 @@
             <p id="policiesLink" class="policies-link">Ver Términos y Condiciones del Juego</p>
         </div>
 
-        <!-- --- NUEVA SECCIÓN DE JUEGO DE CARTAS --- -->
+        <!-- --- SECCIÓN DE JUEGO DE CARTAS --- -->
         <div class="card-game-section" id="cardGameSection">
             <h1 class="campaign-title">🃏 ¡Descubrí tu descuento sorpresa!</h1>
             <p class="campaign-subtitle">Elegí una carta y ganá un descuento exclusivo.</p>
             
+            <div id="cardPlaysCounter" class="card-game-attempts"></div>
+
             <div class="cards-container" id="cardsContainer">
                 <!-- Cards will be dynamically inserted here by JavaScript -->
             </div>
             <p id="cardResultMessage" style="display: none;"></p>
+            <p class="card-prize-timer" id="cardPrizeTimerDisplay"></p>
+
             <button class="btn btn-claim-prize" id="claimCardPrizeBtn" style="display: none; margin-top: 15px;">
                 <i class="fab fa-whatsapp"></i> RECLAMAR PREMIO DE CARTAS
             </button>
-            <p id="cardGameInfo" class="card-game-info">Los premios de este juego no son acumulables. Puedes jugar una vez al día.</p>
+            <button class="btn btn-card-game-share" id="shareCardGameBtn" style="display: none; margin-top: 15px;">
+                <i class="fab fa-whatsapp"></i>
+                <span class="share-title">¡Compartí para Jugar!</span>
+                <span class="share-subtitle">Ganá un tiro extra en el juego de cartas.</span>
+            </button>
+            <button class="btn btn-play-again" id="playAgainCardBtn" style="display: none; margin-top: 15px;">✨ Volver a Jugar Cartas</button>
+            <p id="cardGameInfo" class="card-game-info">Los premios de este juego no son acumulables.</p>
         </div>
+
+        <!-- Nuevo pie de página -->
+        <p class="footer-info">
+            Le Bardol Centro de Estética - 3415 21 60 25.<br>
+            Nos reservamos el derecho de modificar esta promoción en cualquier momento.
+        </p>
     </div>
 
     <!-- Botón flotante de WhatsApp -->
@@ -717,13 +784,14 @@
     <!-- Audio para ganar carta -->
     <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- CAMPAIGN CONFIGURATION ---
             const señaAmount = 8000;
             const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
             const whatsappNumber = '5493415216025';
+            // URL base de la aplicación para los enlaces de referido. Asegúrate de que esta URL sea la real de tu sitio.
+            const appBaseUrl = window.location.origin + window.location.pathname; 
 
             // --- DOM ELEMENTS ---
             const canvas = document.getElementById('rouletteCanvas');
@@ -787,18 +855,26 @@
             const cardResultMessage = document.getElementById('cardResultMessage');
             const cardGameInfo = document.getElementById('cardGameInfo'); // New info element
             const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn'); // New button element
+            const cardPlaysCounter = document.getElementById('cardPlaysCounter'); // New element for card plays left
+            const shareCardGameBtn = document.getElementById('shareCardGameBtn'); // New share button for card game
+            const playAgainCardBtn = document.getElementById('playAgainCardBtn'); // New play again button for card game
 
             const cardPrizes = [
-                { text: '15% OFF Manicuría', icon: '💅', description: '15% OFF en tu próxima manicuría' },
-                { text: '20% OFF Masajes', icon: '💆', description: '20% OFF en tu próximo masaje' },
-                { text: '15% OFF Facial', icon: '✨', description: '15% OFF en tu próximo tratamiento facial' },
-                { text: '10% OFF Productos', icon: '🧴', description: '10% OFF en productos Le Bardol' },
-                { text: '25% OFF Cejas', icon: '👁️', description: '25% OFF en depilación de cejas' },
-                { text: '15% OFF Pestañas', icon: '👁️', description: '15% OFF en tratamiento de pestañas' },
+                { text: 'Pilling 20% OFF', description: 'Pilling 20% OFF', needsReservation: true },
+                { text: 'Oleación Ayurveda 20% OFF', description: 'Oleación Ayurveda 20% OFF', needsReservation: true },
+                { text: 'Radiofrecuencia Facial 30% OFF', description: 'Radiofrecuencia Facial 30% OFF', needsReservation: true },
+                { text: 'Masajes 15% OFF', description: 'Masajes 15% OFF', needsReservation: true },
+                { text: 'Manicuría 25% OFF', description: 'Manicuría 25% OFF', needsReservation: true },
+                { text: 'Cosmetología 20% OFF', description: 'Cosmetología 20% OFF', needsReservation: true },
+                { text: '$8000 de Regalo', description: '$8000 de Regalo para cualquier servicio', needsReservation: true },
+                { text: 'Boucher $6000 de Regalo', description: 'Boucher $6000 de Regalo', needsReservation: true },
+                { text: 'Boucher $5000 de Regalo', description: 'Boucher $5000 de Regalo', needsReservation: true }
             ];
             let cards = []; // Array to hold card DOM elements
             let cardGameActive = false; // To prevent multiple card flips
             let currentCardPrize = null; // To store the prize won from the card game
+            let cardPrizeTimerInterval; // Timer for card game prize reservation
+            let cardPrizeEndTime = 0; // End time for card game prize reservation
 
             // --- FUNCTIONS ---
 
@@ -833,7 +909,10 @@
                     prizesLeft: 999,
                     lastActivity: Date.now(),
                     userName: '',
-                    lastCardPlayDate: null // New state for card game daily limit
+                    lastCardPlayDate: null, // New state for card game daily limit
+                    cardPlaysLeft: 3, // Initial plays for card game
+                    cardPrize: null, // Prize won from card game
+                    cardPrizeEndTime: 0 // End time for card game prize reservation
                 };
                 state = { ...defaultState, ...savedState };
                 userNameInput.value = state.userName;
@@ -843,6 +922,15 @@
                 const prizesToDecrease = Math.floor(hoursPassed * 5); // Decrease 5 prizes per hour of inactivity
                 state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Ensure at least 50 prizes remain
                 state.lastActivity = now;
+
+                // Reset card plays daily
+                const today = new Date().toDateString();
+                if (state.lastCardPlayDate !== today) {
+                    state.cardPlaysLeft = 3; // Reset to 3 plays each new day
+                    state.lastCardPlayDate = today;
+                    state.cardPrize = null; // Clear previous card prize
+                    state.cardPrizeEndTime = 0; // Clear previous card prize timer
+                }
                 
                 saveState(); // Save updated state (especially lastActivity and prizesLeft)
             }
@@ -1107,21 +1195,41 @@
                 spinBtn.disabled = false; // Re-enable spin button if it was disabled
 
                 // Card game UI update
-                const today = new Date().toDateString();
-                const hasPlayedCardGameToday = state.lastCardPlayDate === today;
+                cardPlaysCounter.textContent = `Te quedan ${state.cardPlaysLeft} tiro${state.cardPlaysLeft !== 1 ? 's' : ''} de cartas.`;
 
+                const hasPlayedCardGameToday = state.lastCardPlayDate === new Date().toDateString() && state.cardPlaysLeft === 0;
+                
                 if (hasPlayedCardGameToday) {
                     cardsContainer.classList.add('disabled'); // Disable cards after playing
                     cardGameInfo.style.display = 'block';
-                    cardGameInfo.textContent = 'Ya jugaste hoy. Vuelve mañana para otra oportunidad. Los premios de este juego no son acumulables.';
-                } else {
+                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables.'; // Updated text
+                    shareCardGameBtn.style.display = 'none'; // Hide share button if no plays left today
+                    playAgainCardBtn.style.display = 'block'; // Show play again button to reset for next day
+                } else if (state.cardPlaysLeft > 0) {
                     cardsContainer.classList.remove('disabled');
                     cardGameInfo.style.display = 'block'; // Always show info about non-cumulative prizes
-                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables. Puedes jugar una vez al día.';
+                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables.'; // Updated text
+                    shareCardGameBtn.style.display = 'none'; // Hide share button if plays are left
+                    playAgainCardBtn.style.display = 'none'; // Hide play again button
+                } else { // No plays left and not yet reset for today
+                    cardsContainer.classList.add('disabled');
+                    cardGameInfo.style.display = 'block';
+                    cardGameInfo.textContent = 'No te quedan tiros de cartas. ¡Compartí para ganar más!';
+                    shareCardGameBtn.style.display = 'block'; // Show share button to get more plays
+                    playAgainCardBtn.style.display = 'none'; // Hide play again button
                 }
 
                 // Show/hide claim card prize button
                 claimCardPrizeBtn.style.display = currentCardPrize ? 'block' : 'none';
+
+                // Card game prize timer display
+                if (state.cardPrize && state.cardPrize.needsReservation && state.cardPrizeEndTime > Date.now()) {
+                    cardPrizeTimerDisplay.style.display = 'block';
+                    startCardPrizeTimer();
+                } else {
+                    cardPrizeTimerDisplay.style.display = 'none';
+                    if (cardPrizeTimerInterval) clearInterval(cardPrizeTimerInterval);
+                }
             }
 
             /**
@@ -1150,6 +1258,45 @@
             // --- CARD GAME FUNCTIONS ---
 
             /**
+             * Starts or updates the countdown timer for card prize reservation.
+             * Clears existing timer if any.
+             */
+            function startCardPrizeTimer() {
+                if (cardPrizeTimerInterval) clearInterval(cardPrizeTimerInterval); // Clear any previous timer
+                cardPrizeTimerDisplay.style.display = 'block'; // Show the timer display
+
+                cardPrizeTimerInterval = setInterval(() => {
+                    const timeLeft = state.cardPrizeEndTime - Date.now();
+                    if (timeLeft <= 0) {
+                        clearInterval(cardPrizeTimerInterval);
+                        cardPrizeTimerDisplay.textContent = 'Tu premio de carta expiró y fue liberado.';
+                        state.cardPrize = null; // Clear the prize
+                        currentCardPrize = null; // Also clear local variable
+                        saveState();
+                        updateUI();
+                        return;
+                    }
+                    const minutes = Math.floor(timeLeft / 60000);
+                    const seconds = Math.floor((timeLeft % 60000) / 1000);
+                    cardPrizeTimerDisplay.innerHTML = `⏳ Tenés ${minutes}m ${seconds}s para reservar, o el premio se libera.<br><strong>¡RESERVÁ AHORA Y NO PIERDAS TU DESCUENTO!</strong>`;
+                }, 1000); // Update every second
+            }
+
+            /**
+             * Resets the card game state for a new day or new session.
+             */
+            function resetCardGame() {
+                state.cardPlaysLeft = 3; // Reset plays for the new day
+                state.lastCardPlayDate = new Date().toDateString(); // Update last play date
+                state.cardPrize = null; // Clear any previous prize
+                state.cardPrizeEndTime = 0; // Clear prize timer
+                currentCardPrize = null; // Clear local prize variable
+                saveState();
+                initializeCardGame(); // Re-initialize cards
+                updateUI(); // Update UI
+            }
+
+            /**
              * Initializes the card game by creating and shuffling cards.
              */
             function initializeCardGame() {
@@ -1160,7 +1307,8 @@
                 // Create cards based on cardPrizes
                 const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5); // Shuffle prizes
                 
-                for (let i = 0; i < 6; i++) { // Changed to 6 cards
+                // Create 9 cards
+                for (let i = 0; i < 9; i++) { 
                     const card = document.createElement('div');
                     card.classList.add('card');
                     card.dataset.index = i; // Store original index if needed, or just for identification
@@ -1171,8 +1319,9 @@
 
                     const cardFront = document.createElement('div');
                     cardFront.classList.add('card-face', 'card-front');
-                    cardFront.textContent = shuffledPrizes[i].text; // Assign a shuffled prize to each card
-                    cardFront.dataset.prize = JSON.stringify(shuffledPrizes[i]); // Store prize data
+                    // Assign a shuffled prize to each card, cycling through prizes if fewer than 9 unique ones
+                    cardFront.textContent = shuffledPrizes[i % shuffledPrizes.length].text;
+                    cardFront.dataset.prize = JSON.stringify(shuffledPrizes[i % shuffledPrizes.length]); // Store prize data
 
                     card.appendChild(cardBack);
                     card.appendChild(cardFront);
@@ -1191,9 +1340,16 @@
              * @param {Event} event - The click event.
              */
             function handleCardClick(event) {
-                const today = new Date().toDateString();
-                if (state.lastCardPlayDate === today) {
-                    showMessageModal("¡Ya jugaste hoy!", "Ya usaste tu oportunidad diaria en el juego de cartas. Vuelve mañana para un nuevo intento.");
+                if (userNameInput.value.trim() === '') {
+                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar en el juego de cartas.");
+                    userNameInput.focus();
+                    userNameInput.classList.add('required');
+                    return;
+                }
+                userNameInput.classList.remove('required'); // Remove highlight if valid
+
+                if (state.cardPlaysLeft <= 0) {
+                    showMessageModal("¡No te quedan tiros!", "Compartí con amigos para ganar más tiros de cartas.");
                     return;
                 }
 
@@ -1214,7 +1370,7 @@
 
                 clickedCard.classList.add('flipped');
                 cardGameActive = false; // Disable further clicks
-                state.lastCardPlayDate = today; // Mark game as played for today
+                state.cardPlaysLeft--; // Decrement plays left
                 saveState();
 
                 // Disable all other cards
@@ -1228,6 +1384,9 @@
                 setTimeout(() => {
                     const prizeData = JSON.parse(clickedCard.querySelector('.card-front').dataset.prize);
                     currentCardPrize = prizeData; // Store the won prize
+                    state.cardPrize = prizeData; // Store in state as well
+                    state.cardPrizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes for reservation
+                    saveState();
                     displayCardPrize(prizeData);
                     // Play card win sound
                     if (cardWinSound) {
@@ -1235,7 +1394,8 @@
                         cardWinSound.play().catch(e => console.error("Error playing card win sound:", e));
                     }
                     fireConfetti(); // Celebrate win
-                    updateUI(); // Update UI to show claim button
+                    updateUI(); // Update UI to show claim button and remaining plays
+                    startCardPrizeTimer(); // Start the timer for the card prize
                 }, 600); // Wait for flip animation
             }
 
@@ -1285,7 +1445,7 @@
                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
                 // Simulate a share after a delay and grant an extra spin
                 setTimeout(() => {
-                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra.");
+                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en la ruleta.");
                     state.spinsLeft++;
                     saveState();
                     updateUI();
@@ -1311,11 +1471,34 @@
 
             // New event listener for claiming card prize
             claimCardPrizeBtn.addEventListener('click', () => {
-                if (currentCardPrize) {
-                    const message = `¡Hola! Soy ${state.userName}. Gané "${currentCardPrize.description}" en el juego de cartas y quiero reclamar mi descuento.`;
+                if (state.cardPrize) {
+                    const message = `¡Hola! Soy ${state.userName}. Gané "${state.cardPrize.description}" en el juego de cartas y quiero reclamar mi descuento.`;
                     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                 }
             });
+
+            // Event listener for sharing card game
+            shareCardGameBtn.addEventListener('click', () => {
+                if (userNameInput.value.trim() === '') {
+                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
+                    userNameInput.focus();
+                    userNameInput.classList.add('required');
+                    return;
+                }
+                const message = `¡Mira este increíble juego de cartas de Le Bardol! Gana descuentos y sorpresas. ¡Juega aquí: ${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                // Simulate a share after a delay and grant an extra play
+                setTimeout(() => {
+                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en el juego de cartas.");
+                    state.cardPlaysLeft++;
+                    saveState();
+                    updateUI();
+                }, 3000); // Wait 3 seconds before granting play
+            });
+
+            // Event listener for "Play Again" button in card game
+            playAgainCardBtn.addEventListener('click', resetCardGame);
+
 
             // --- INITIALIZATION ---
             loadState(); // Load game state on page load
@@ -1323,6 +1506,11 @@
             resizeCanvas(); // Initial canvas resize
             initializeCardGame(); // Initialize the card game
             window.addEventListener('resize', resizeCanvas); // Resize canvas on window resize
+
+            // If there's an active card prize with a timer, restart it on load
+            if (state.cardPrize && state.cardPrizeEndTime > Date.now()) {
+                startCardPrizeTimer();
+            }
         });
     </script>
 </body>
