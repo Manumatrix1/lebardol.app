@@ -660,12 +660,11 @@
                 <button class="btn btn-spin" id="spinBtn" style="display: none;">👉 GIRAR LA RULETA AHORA</button>
                 <button class="btn btn-reserve" id="reserveBtn" style="display: none;"></button>
                 <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;"></button>
-                <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar</button>
-                <button class="btn btn-share" id="shareBtn">
-                    <i class="fab fa-whatsapp"></i>
-                    <span class="share-title">💥 ¡Compartí para girar!</span>
-                    <span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>
+                <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar Ruleta</button>
+                <button class="btn btn-claim-prize" id="claimRoulettePrizesBtn" style="display: none; margin-top: 15px;">
+                    <i class="fab fa-whatsapp"></i> RECLAMAR MIS PREMIOS DE RULETA
                 </button>
+                <!-- El botón de compartir para la ruleta se ha eliminado para una limitación estricta de 3 tiros -->
                 <div id="upsellSection" style="display: none;">
                     <h3>¡Potenciá tu premio!</h3>
                     <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
@@ -691,7 +690,7 @@
             <p class="card-prize-timer" id="cardPrizeTimerDisplay"></p>
 
             <button class="btn btn-claim-prize" id="claimCardPrizeBtn" style="display: none; margin-top: 15px;">
-                <i class="fab fa-whatsapp"></i> RECLAMAR MIS PREMIOS
+                <i class="fab fa-whatsapp"></i> RECLAMAR MIS PREMIOS DE CARTAS
             </button>
             <button class="btn btn-card-game-share" id="shareCardGameBtn" style="display: none; margin-top: 15px;">
                 <i class="fab fa-whatsapp"></i>
@@ -767,8 +766,8 @@
     </div>
 
     <!-- Ventana Modal para Mensajes (Custom Alert) -->
-    <div id="messageModal" class="message-modal-overlay">
-        <div class="message-modal-content">
+    <div id="messageModal" class="modal-overlay">
+        <div class="modal-content">
             <h3 id="messageModalTitle"></h3>
             <p id="messageModalText"></p>
             <button id="closeMessageModal">Entendido</button>
@@ -798,18 +797,19 @@
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spinBtn');
             const reserveBtn = document.getElementById('reserveBtn');
-            const claimPrizeBtn = document.getElementById('claimPrizeBtn');
-            const playAgainBtn = document.getElementById('playAgainBtn');
+            const claimPrizeBtn = document.getElementById('claimPrizeBtn'); // For single roulette prize claim
+            const playAgainBtn = document.getElementById('playAgainBtn'); // For resetting roulette game
             const resultMessage = document.getElementById('resultMessage');
             const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
             const prizeCounterDisplay = document.getElementById('prizeCounter');
             const upsellSection = document.getElementById('upsellSection');
             const upsellBtn = document.getElementById('upsellBtn');
-            const shareBtn = document.getElementById('shareBtn');
+            // const shareBtn = document.getElementById('shareBtn'); // Eliminado para la ruleta de 3 tiros
             const userNameInput = document.getElementById('userName');
             const policiesLink = document.getElementById('policiesLink');
             const policiesModal = document.getElementById('policiesModal');
             const closePoliciesModal = document.getElementById('closePoliciesModal');
+            const claimRoulettePrizesBtn = document.getElementById('claimRoulettePrizesBtn'); // Nuevo botón para reclamar premios de ruleta
 
             // Custom Message Modal elements
             const messageModal = document.getElementById('messageModal');
@@ -857,7 +857,6 @@
             const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn'); // New button element
             const cardPlaysCounter = document.getElementById('cardPlaysCounter'); // New element for card plays left
             const shareCardGameBtn = document.getElementById('shareCardGameBtn'); // New share button for card game
-            // const playAgainCardBtn = document.getElementById('playAgainCardBtn'); // Eliminado para el límite estricto de 3 tiros
             const cardPrizeTimerDisplay = document.getElementById('cardPrizeTimerDisplay'); // Timer for card game prize reservation
 
             const cardPrizes = [
@@ -903,16 +902,18 @@
             function loadState() {
                 const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
                 const defaultState = {
-                    spinsLeft: 0,
-                    prize: null,
-                    prizeEndTime: 0,
+                    spinsLeft: 3, // Inicia con 3 tiros para la ruleta
+                    wonRoulettePrizes: [], // Nuevo: array para premios de ruleta
+                    prize: null, // Último premio individual de ruleta
+                    prizeEndTime: 0, // Temporizador para premio individual de ruleta
                     prizesLeft: 999,
                     lastActivity: Date.now(),
                     userName: '',
-                    cardPlaysLeft: 0, // Inicia en 0, el usuario debe compartir para obtener los 3 tiros
+                    cardPlaysLeft: 0, // Inicia en 0, el usuario debe compartir para obtener los 3 tiros de cartas
                     wonCardPrizes: [], // Array para almacenar los premios ganados en la sesión de 3 cartas
                     cardSessionEndTime: 0, // Tiempo de finalización para la reserva de premios de cartas
-                    hasPlayedAllCardPlays: false // Nuevo flag para indicar si ya usó los 3 tiros
+                    hasPlayedAllCardPlays: false, // Flag para indicar si ya usó los 3 tiros de cartas
+                    hasPlayedAllRouletteSpins: false // Nuevo: Flag para indicar si ya usó los 3 tiros de ruleta
                 };
                 state = { ...defaultState, ...savedState };
                 userNameInput.value = state.userName;
@@ -923,13 +924,18 @@
                 state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Asegura que queden al menos 50 premios
                 state.lastActivity = now;
 
-                // Si el usuario ya usó sus 3 tiros, no se reinician.
-                // Si es la primera vez que carga la app o si el flag no existe, se inicializa a 0.
+                // Asegurar que los flags existan si no están en el estado guardado
                 if (state.hasPlayedAllCardPlays === undefined) {
                     state.hasPlayedAllCardPlays = false;
                 }
+                if (state.hasPlayedAllRouletteSpins === undefined) {
+                    state.hasPlayedAllRouletteSpins = false;
+                }
                 if (state.cardPlaysLeft === undefined) {
                     state.cardPlaysLeft = 0;
+                }
+                if (!Array.isArray(state.wonRoulettePrizes)) { // Asegurar que sea un array
+                    state.wonRoulettePrizes = [];
                 }
                 
                 saveState(); // Guarda el estado actualizado
@@ -1017,8 +1023,13 @@
                 }
                 userNameInput.classList.remove('required'); // Remove highlight if valid
 
+                if (state.hasPlayedAllRouletteSpins) {
+                    showMessageModal("¡Juego de Ruleta Completado!", "Ya has usado tus 3 tiros en la ruleta. ¡Gracias por participar!");
+                    return;
+                }
+
                 if (state.spinsLeft <= 0) {
-                    showMessageModal("¡No tenés tiros!", "Compartí con 5 amigos para ganar uno.");
+                    showMessageModal("¡No te quedan tiros!", "Ya has usado tus 3 tiros en la ruleta.");
                     return;
                 }
 
@@ -1029,6 +1040,7 @@
                 
                 // Play spin sound
                 if (spinSound) {
+                    spinSound.load(); // Explicitly load the audio
                     spinSound.currentTime = 0; // Rewind to start
                     spinSound.play().catch(e => console.error("Error playing spin sound:", e));
                 }
@@ -1038,6 +1050,12 @@
                 const randomWinnableIndex = Math.floor(Math.random() * winnableSegments.length);
                 const actualWinningSegment = winnableSegments[randomWinnableIndex];
                 state.prize = actualWinningSegment; // This is the actual prize won
+                
+                state.wonRoulettePrizes.push(state.prize); // Añadir el premio al array de premios ganados de ruleta
+                // Asegurarse de que solo se guarden los últimos 3 premios
+                if (state.wonRoulettePrizes.length > 3) {
+                    state.wonRoulettePrizes.shift(); 
+                }
 
                 // Find the original index of the actual winning segment in the full segments array
                 // This ensures the wheel visually lands on the correct segment.
@@ -1112,6 +1130,7 @@
                 
                 // Play win sound
                 if (winSound) {
+                    winSound.load(); // Explicitly load the audio
                     winSound.currentTime = 0; // Rewind to start
                     winSound.play().catch(e => console.error("Error playing win sound:", e));
                 }
@@ -1120,16 +1139,23 @@
                 const userName = state.userName.split(' ')[0] || 'crack'; // Get first name or default to 'crack'
 
                 // Customize result message based on prize type
-                if (prize.type === 'freebie' && prize.needsSeña) {
+                if (state.spinsLeft === 0) { // All spins used, show summary of all prizes
+                    const prizesList = state.wonRoulettePrizes.map(p => p.description).join(', ');
+                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! Has ganado: <strong style="color: #e91e63;">${prizesList}</strong>`;
+                    state.hasPlayedAllRouletteSpins = true; // Marcar que ya usó todos los tiros
+                } else if (prize.type === 'freebie' && prize.needsSeña) {
                     resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br><small>Podés tener esta zona gratis al contratar otra zona de depilación definitiva.</small><br><strong style="color: #d32f2f; font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>`;
                 } else {
                     resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong>`;
                 }
                 
-                // Start prize timer if a deposit is needed
-                if (prize.needsSeña) {
+                // Start prize timer if a deposit is needed for the *current* prize (only if not all spins used yet)
+                if (prize.needsSeña && state.spinsLeft > 0) {
                     state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes from now
                     startPrizeTimer();
+                } else if (state.spinsLeft === 0) { // If all spins used, clear individual prize timer
+                    state.prizeEndTime = 0;
+                    if (prizeTimerInterval) clearInterval(prizeTimerInterval);
                 }
                 
                 saveState(); // Save the new state with the won prize
@@ -1173,26 +1199,30 @@
             function updateUI() {
                 prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
                 
-                const hasPrize = !!state.prize; // Check if a prize has been won
-                resultMessage.style.display = hasPrize ? 'block' : 'none';
-                prizeTimerDisplay.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
-                upsellSection.style.display = hasPrize ? 'block' : 'none';
-                playAgainBtn.style.display = hasPrize ? 'block' : 'none';
-                
-                // Show spin button if no prize won and spins are left, otherwise show share button
-                spinBtn.style.display = !hasPrize && state.spinsLeft > 0 ? 'block' : 'none';
-                shareBtn.style.display = !hasPrize && state.spinsLeft <= 0 ? 'block' : 'none';
-                
-                // Show reserve or claim button based on prize type
-                reserveBtn.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
-                reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
-                
-                claimPrizeBtn.style.display = hasPrize && !state.prize.needsSeña ? 'block' : 'none';
-                claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
+                const hasPrize = !!state.prize; // Check if a prize has been won (current spin)
+                const allRouletteSpinsUsed = state.hasPlayedAllRouletteSpins;
 
-                // Update spin button text with remaining spins
+                resultMessage.style.display = (hasPrize || allRouletteSpinsUsed) ? 'block' : 'none';
+                prizeTimerDisplay.style.display = hasPrize && state.prize.needsSeña && !allRouletteSpinsUsed ? 'block' : 'none';
+                upsellSection.style.display = hasPrize && !allRouletteSpinsUsed ? 'block' : 'none';
+                
+                // Roulette button logic
+                spinBtn.style.display = state.spinsLeft > 0 && !allRouletteSpinsUsed ? 'block' : 'none';
                 spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
                 spinBtn.disabled = false; // Re-enable spin button if it was disabled
+
+                reserveBtn.style.display = hasPrize && state.prize.needsSeña && !allRouletteSpinsUsed ? 'block' : 'none';
+                reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
+                
+                claimPrizeBtn.style.display = hasPrize && !state.prize.needsSeña && !allRouletteSpinsUsed ? 'block' : 'none';
+                claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
+
+                // New claim button for all roulette prizes
+                claimRoulettePrizesBtn.style.display = allRouletteSpinsUsed && state.wonRoulettePrizes.length > 0 ? 'block' : 'none';
+                
+                // Play again button for roulette (resets the 3 spins)
+                playAgainBtn.style.display = allRouletteSpinsUsed && state.wonRoulettePrizes.length === 0 ? 'block' : 'none';
+
 
                 // --- Card game UI update ---
                 const allCardsFlippedInSession = state.wonCardPrizes.length === 3; // Todas las 3 cartas volteadas
@@ -1213,22 +1243,18 @@
                 // Controlar la visibilidad de los botones del juego de cartas
                 if (hasPlayedAllCardPlaysEver) { // Si ya jugó sus 3 tiros totales
                     claimCardPrizeBtn.style.display = 'none'; // Ya no hay más premios que reclamar
-                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
                     shareCardGameBtn.style.display = 'none'; // Ya no se pueden obtener más tiros
                     cardGameInfo.textContent = 'Ya has jugado tus 3 tiros. ¡Gracias por participar!';
                 } else if (allCardsFlippedInSession) { // Si acaba de voltear las 3 cartas de la sesión actual
                     claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar
-                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
                     shareCardGameBtn.style.display = 'none'; // Ocultar compartir si ya usó los 3 tiros
                     cardGameInfo.textContent = '¡Has usado todos tus tiros! Reclama tus premios.';
                 } else if (state.cardPlaysLeft === 0 && state.wonCardPrizes.length === 0) { // Estado inicial o después de reclamar si no hay tiros
                     claimCardPrizeBtn.style.display = 'none';
-                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
                     shareCardGameBtn.style.display = 'block'; // Mostrar compartir para obtener los 3 tiros iniciales
                     cardGameInfo.textContent = '¡Comparte para obtener 3 tiros y descubrir tu descuento!';
                 } else { // Todavía tiene tiros disponibles o está en medio de una sesión
                     claimCardPrizeBtn.style.display = 'none';
-                    // playAgainCardBtn.style.display = 'none'; // Este botón se eliminó
                     shareCardGameBtn.style.display = 'none';
                     cardGameInfo.textContent = 'Los premios de este juego no son acumulables.';
                 }
@@ -1257,13 +1283,18 @@
             }
 
             /**
-             * Resets the game state to allow for a new spin (clears current prize).
+             * Resets the roulette game for a new 3-spin session.
              */
-            function resetForNewSpin() {
-                state.prize = null; // Clear the won prize
-                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Stop any running timer
-                saveState(); // Save the cleared state
-                updateUI(); // Update UI to reflect reset state
+            function resetRouletteGame() {
+                state.spinsLeft = 3;
+                state.wonRoulettePrizes = [];
+                state.prize = null;
+                state.prizeEndTime = 0;
+                state.hasPlayedAllRouletteSpins = false;
+                if (prizeTimerInterval) clearInterval(prizeTimerInterval);
+                saveState();
+                updateUI();
+                showMessageModal("¡Listo para jugar de nuevo!", "La ruleta se ha reseteado. Tienes 3 nuevos tiros.");
             }
 
             /**
@@ -1390,6 +1421,7 @@
 
                 // Reproducir sonido de voltear carta
                 if (cardFlipSound) {
+                    cardFlipSound.load(); // Explicitly load the audio
                     cardFlipSound.currentTime = 0;
                     cardFlipSound.play().catch(e => console.error("Error playing card flip sound:", e));
                 }
@@ -1432,7 +1464,7 @@
 
             // --- EVENT LISTENERS ---
             spinBtn.addEventListener('click', spin);
-            playAgainBtn.addEventListener('click', resetForNewSpin);
+            playAgainBtn.addEventListener('click', resetRouletteGame); // Ahora llama a resetRouletteGame
             userNameInput.addEventListener('input', () => {
                 saveState(); // Guardar nombre de usuario al cambiar input
                 // Añadir/quitar clase 'filled' para feedback visual
@@ -1446,7 +1478,7 @@
             reserveBtn.addEventListener('click', () => window.open(mercadopagoLinkUrl, '_blank'));
 
             claimPrizeBtn.addEventListener('click', () => {
-                // Este botón de reclamar es para premios de ruleta
+                // Este botón de reclamar es para premios de ruleta individuales (antes de usar los 3 tiros)
                 const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
             });
@@ -1456,23 +1488,7 @@
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
             });
 
-            shareBtn.addEventListener('click', () => {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
-                    return;
-                }
-                const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simular un compartir después de un retraso y otorgar un tiro extra
-                setTimeout(() => {
-                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en la ruleta.");
-                    state.spinsLeft++;
-                    saveState();
-                    updateUI();
-                }, 3000); // Esperar 3 segundos antes de otorgar el tiro
-            });
+            // El botón de compartir para la ruleta se ha eliminado para una limitación estricta de 3 tiros
 
             // Listeners para el modal de políticas
             policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
@@ -1505,6 +1521,27 @@
                     showMessageModal("Sin premios", "No hay premios de cartas para reclamar en este momento.");
                 }
             });
+
+            // Nuevo event listener para reclamar TODOS los premios de RULETA
+            claimRoulettePrizesBtn.addEventListener('click', () => {
+                if (state.wonRoulettePrizes && state.wonRoulettePrizes.length > 0) {
+                    const prizesList = state.wonRoulettePrizes.map(p => `"${p.description}"`).join(', ');
+                    const message = `¡Hola! Soy ${state.userName}. Gané los siguientes premios en la ruleta: ${prizesList}. Quiero reclamar mis descuentos.`;
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                    
+                    // Después de reclamar, limpiar los premios y el temporizador
+                    state.wonRoulettePrizes = [];
+                    state.prize = null; // Clear individual prize
+                    state.prizeEndTime = 0; // Clear individual prize timer
+                    if (prizeTimerInterval) clearInterval(prizeTimerInterval);
+                    saveState();
+                    updateUI();
+                    showMessageModal("¡Premios Reclamados!", "Tus premios de ruleta han sido enviados a WhatsApp. ¡Disfrútalos!");
+                } else {
+                    showMessageModal("Sin premios", "No hay premios de ruleta para reclamar en este momento.");
+                }
+            });
+
 
             // Event listener para compartir el juego de cartas (para obtener los 3 tiros iniciales)
             shareCardGameBtn.addEventListener('click', () => {
@@ -1543,6 +1580,13 @@
             // Si hay un temporizador de sesión de cartas activo, reiniciarlo al cargar
             if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
                 startCardSessionTimer();
+            }
+            // Si hay premios de ruleta ganados y ya se usaron todos los tiros, actualizar el mensaje de resultado
+            if (state.hasPlayedAllRouletteSpins && state.wonRoulettePrizes.length > 0) {
+                const userName = state.userName.split(' ')[0] || 'crack';
+                const prizesList = state.wonRoulettePrizes.map(p => p.description).join(', ');
+                resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! Has ganado: <strong style="color: #e91e63;">${prizesList}</strong>`;
+                resultMessage.style.display = 'block';
             }
         });
     </script>
