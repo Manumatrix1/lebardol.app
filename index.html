@@ -103,7 +103,16 @@
             border-radius: 50%;
             box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
             overflow: visible;
+            cursor: pointer; /* Make the roulette itself clickable */
+            transition: transform 0.3s ease;
         }
+        .roulette-canvas-container:hover:not(.spinning) {
+            transform: scale(1.02); /* Slight scale effect on hover */
+        }
+        .roulette-canvas-container.spinning {
+            cursor: default; /* Change cursor when spinning */
+        }
+
 
         canvas {
             position: absolute;
@@ -171,7 +180,7 @@
             color: white;
         }
 
-        .btn-share {
+        .btn-share { /* Reintroducido para el botón de compartir de la ruleta */
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
             flex-direction: column;
@@ -696,7 +705,7 @@
                 <input type="text" id="userName" class="user-name-input" placeholder="Ej: Maria Lopez" required>
             </div>
 
-            <div class="roulette-canvas-container">
+            <div class="roulette-canvas-container" id="rouletteCanvasContainer">
                 <div class="wheel-indicator"></div>
                 <canvas id="rouletteCanvas"></canvas>
             </div>
@@ -709,10 +718,11 @@
                 <button class="btn btn-reserve" id="reserveBtn" style="display: none;"></button>
                 <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;"></button>
                 <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar Ruleta</button>
-                <button class="btn btn-share" id="shareBtn">
+                <!-- Botón de Compartir para obtener tiros de ruleta -->
+                <button class="btn btn-share" id="shareBtn" style="display: none;">
                     <i class="fab fa-whatsapp"></i>
-                    <span class="share-title">💥 ¡Compartí para girar!</span>
-                    <span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>
+                    <span class="share-title"></span>
+                    <span class="share-subtitle"></span>
                 </button>
                 <div id="upsellSection" style="display: none;">
                     <h3>¡Potenciá tu premio!</h3>
@@ -827,6 +837,7 @@
             <h3 id="messageModalTitle"></h3>
             <p id="messageModalText"></p>
             <button id="closeMessageModal">Entendido</button>
+            <!-- A custom button will be inserted here by JavaScript if buttonConfig is provided -->
         </div>
     </div>
 
@@ -871,7 +882,7 @@
             const policiesLink = document.getElementById('policiesLink');
             const policiesModal = document.getElementById('policiesModal');
             const closePoliciesModal = document.getElementById('closePoliciesModal');
-            // const rouletteShareCountDisplay = document.getElementById('rouletteShareCount'); // REMOVED: No longer needed
+            const rouletteCanvasContainer = document.getElementById('rouletteCanvasContainer'); // New element reference
 
             // Custom Message Modal elements
             const messageModal = document.getElementById('messageModal');
@@ -943,10 +954,44 @@
              * Displays a custom message modal.
              * @param {string} title - The title for the modal.
              * @param {string} message - The message content for the modal.
+             * @param {object} [buttonConfig] - Optional configuration for a button in the modal.
+             * @param {string} buttonConfig.text - The text for the button.
+             * @param {function} buttonConfig.callback - The function to call when the button is clicked.
+             * @param {string} [buttonConfig.class] - Optional CSS class for the button.
              */
-            function showMessageModal(title, message) {
+            function showMessageModal(title, message, buttonConfig = null) {
                 messageModalTitle.textContent = title;
                 messageModalText.textContent = message;
+
+                // Clear previous custom button if any
+                let existingCustomButton = messageModal.querySelector('#messageModalCustomButton');
+                if (existingCustomButton) {
+                    existingCustomButton.remove();
+                }
+
+                // Add custom button if config is provided
+                if (buttonConfig) {
+                    const customButton = document.createElement('button');
+                    customButton.id = 'messageModalCustomButton';
+                    customButton.innerHTML = buttonConfig.text; // Use innerHTML to allow icons
+                    if (buttonConfig.class) {
+                        customButton.classList.add(...buttonConfig.class.split(' ')); // Add multiple classes
+                    } else {
+                        customButton.classList.add('btn'); // Default style
+                    }
+                    customButton.addEventListener('click', () => {
+                        if (buttonConfig.callback) {
+                            buttonConfig.callback();
+                        }
+                        hideMessageModal(); // Hide modal after button click
+                    });
+                    // Corrected selector: changed '.message-modal-content' to '.modal-content'
+                    messageModal.querySelector('.modal-content').appendChild(customButton);
+                    closeMessageModal.style.display = 'none'; // Hide default "Entendido" button
+                } else {
+                    closeMessageModal.style.display = 'block'; // Show default "Entendido" button
+                }
+
                 messageModal.classList.add('visible');
             }
 
@@ -1086,6 +1131,7 @@
                 state.prizesLeft--; // Decrement available prizes
                 spinBtn.disabled = true;
                 spinBtn.textContent = 'GIRANDO...';
+                rouletteCanvasContainer.classList.add('spinning'); // Add spinning class
                 
                 // Play spin sound
                 if (spinSound) {
@@ -1179,14 +1225,15 @@
                 }
 
                 const prize = state.prize;
-                const userName = state.userName.split(' ')[0] || 'crack'; // Get first name or default to 'crack'
+                // Convert userName to uppercase here
+                const userName = (state.userName.split(' ')[0] || 'crack').toUpperCase(); // Get first name or default to 'crack' and convert to uppercase
 
-                // Customize result message based on prize type
-                if (prize.type === 'freebie' && prize.needsSeña) {
-                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br><small>Podés tener esta zona gratis al contratar otra zona de depilación definitiva.</small><br><strong style="color: #d32f2f; font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>`;
-                } else {
-                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong>`;
-                }
+                // Always display the message about winning and needing to purchase another zone
+                resultMessage.innerHTML = `
+                    ¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br>
+                    <small>Podés tener esta zona gratis al contratar otra zona de depilación definitiva.</small><br>
+                    <strong style="color: #d32f2f; font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>
+                `;
                 
                 // Start prize timer if a deposit is needed
                 if (prize.needsSeña) {
@@ -1196,6 +1243,7 @@
                 
                 saveState(); // Save the new state with the won prize
                 updateUI(); // Update button visibility and messages
+                rouletteCanvasContainer.classList.remove('spinning'); // Remove spinning class
             }
 
             /**
@@ -1230,6 +1278,22 @@
             }
 
             /**
+             * Handles the action when the user needs to share to get a spin.
+             */
+            function handleShareForSpin() {
+                const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+
+                // Simulate sharing and grant a spin after a delay
+                setTimeout(() => {
+                    state.spinsLeft++;
+                    saveState();
+                    updateUI(); // This will update the button states and spin count
+                    showMessageModal("¡Tiro Obtenido!", "¡Ganaste un tiro libre para la ruleta! ¡Ahora puedes girar!"); // Confirmation message
+                }, 3000); // Wait 3 seconds before granting the spin
+            }
+
+            /**
              * Updates the visibility and content of various UI elements based on the current game state.
              */
             function updateUI() {
@@ -1243,21 +1307,33 @@
                 playAgainBtn.style.display = hasPrize ? 'block' : 'none'; // Play again button for roulette
 
                 // Roulette button logic:
-                // Show spin button if no prize won and spins are left, otherwise show share button
-                spinBtn.style.display = !hasPrize && state.spinsLeft > 0 ? 'block' : 'none';
-                shareBtn.style.display = !hasPrize && state.spinsLeft <= 0 ? 'block' : 'none';
-                
-                // Show reserve or claim button based on prize type
-                reserveBtn.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
-                reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
-                
-                // Always show claim prize button if there's a prize
-                claimPrizeBtn.style.display = hasPrize ? 'block' : 'none';
-                claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
+                if (hasPrize) { // If a prize has been won
+                    spinBtn.style.display = 'none'; // Hide spin button after winning
+                    shareBtn.style.display = 'block'; // Show share button after winning for MORE spins
+                    shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">¡Compartí para más tiros!</span><span class="share-subtitle">Ganá otra oportunidad para girar.</span>`;
+                    shareBtn.disabled = false;
 
-                // Update spin button text with remaining spins
-                spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
-                spinBtn.disabled = false; // Re-enable spin button if it was disabled
+                    reserveBtn.style.display = state.prize.needsSeña ? 'block' : 'none';
+                    reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
+                    claimPrizeBtn.style.display = 'block';
+                    claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
+                } else { // No prize won yet for current session
+                    reserveBtn.style.display = 'none';
+                    claimPrizeBtn.style.display = 'none';
+                    playAgainBtn.style.display = 'none';
+
+                    if (state.spinsLeft > 0) {
+                        spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
+                        spinBtn.style.display = 'block'; // Show spin button
+                        shareBtn.style.display = 'none'; // Hide share button
+                        spinBtn.disabled = false; // Habilitar si no está girando
+                    } else {
+                        spinBtn.style.display = 'none'; // Hide spin button
+                        shareBtn.style.display = 'block'; // Show share button (for initial share to get a spin)
+                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">💥 ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
+                        shareBtn.disabled = false; // Siempre habilitado para compartir
+                    }
+                }
 
                 // --- Card game UI update ---
                 const allCardsFlippedInSession = state.wonCardPrizes.length === 3; // Todas las 3 cartas volteadas
@@ -1493,7 +1569,43 @@
             }
 
             // --- EVENT LISTENERS ---
-            spinBtn.addEventListener('click', spin);
+            // Event listener para el contenedor de la ruleta
+            rouletteCanvasContainer.addEventListener('click', () => {
+                if (userNameInput.value.trim() === '') {
+                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar.");
+                    userNameInput.focus();
+                    userNameInput.classList.add('required');
+                    return;
+                }
+                userNameInput.classList.remove('required');
+
+                if (state.prize) { // Si ya hay un premio ganado, no se puede girar de nuevo directamente desde la ruleta
+                    showMessageModal("¡Premio Obtenido!", "Ya tienes un premio de la ruleta. Usa los botones de abajo para reclamarlo o jugar de nuevo.");
+                    return;
+                }
+
+                if (state.spinsLeft > 0) {
+                    spin();
+                } else {
+                    // Show the modal to prompt sharing
+                    showMessageModal(
+                        "¡Necesitas un tiro!",
+                        "Compartí con 5 amigos para girar y ganar un tiro gratis.",
+                        {
+                            text: '<i class="fab fa-whatsapp"></i> Compartir y Obtener Tiro',
+                            callback: () => {
+                                handleShareForSpin(); // This will handle the WhatsApp share and grant spin
+                            },
+                            class: 'btn btn-share' // Use existing share button style
+                        }
+                    );
+                }
+            });
+
+
+            spinBtn.addEventListener('click', spin); // El listener de spin siempre es 'spin'
+            shareBtn.addEventListener('click', handleShareForSpin); // El listener de share siempre es 'handleShareForSpin'
+
             playAgainBtn.addEventListener('click', resetForNewSpin); // Ahora llama a resetForNewSpin
             userNameInput.addEventListener('input', () => {
                 saveState(); // Guardar nombre de usuario al cambiar input
@@ -1517,29 +1629,6 @@
                 const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
             });
-
-            // Event listener para compartir la ruleta (para obtener tiros)
-            shareBtn.addEventListener('click', async () => { // Made async to await Firestore operations
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
-                    return;
-                }
-                const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simular un compartir después de un retraso y otorgar un tiro extra
-                setTimeout(async () => { // Made async to await Firestore operations
-                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en la ruleta.");
-                    state.spinsLeft++;
-                    saveState();
-                    updateUI();
-
-                    // Increment share count in Firestore (PRIVATE)
-                    // REMOVED: No longer incrementing share count from this file
-                }, 3000); // Esperar 3 segundos antes de otorgar el tiro
-            });
-
 
             // Listeners para el modal de políticas
             policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
@@ -1613,7 +1702,6 @@
                         .then((userCredential) => {
                             userId = userCredential.user.uid;
                             console.log("Signed in with custom token:", userId);
-                            // setupShareCountListener(); // REMOVED: No longer needed in this file
                         })
                         .catch((error) => {
                             console.error("Error signing in with custom token:", error);
@@ -1621,7 +1709,6 @@
                                 .then((userCredential) => {
                                     userId = userCredential.user.uid;
                                     console.log("Signed in anonymously:", userId);
-                                    // setupShareCountListener(); // REMOVED: No longer needed in this file
                                 })
                                 .catch((anonError) => {
                                     console.error("Error signing in anonymously:", anonError);
@@ -1632,7 +1719,6 @@
                         .then((userCredential) => {
                             userId = userCredential.user.uid;
                             console.log("Signed in anonymously:", userId);
-                            // setupShareCountListener(); // REMOVED: No longer needed in this file
                         })
                         .catch((error) => {
                             console.error("Error signing in anonymously:", error);
@@ -1640,29 +1726,7 @@
                 }
             } else {
                 console.warn("Firebase config not found. Share count functionality will not work.");
-                // rouletteShareCountDisplay.textContent = "Contador no disponible (Firebase no configurado)."; // REMOVED: No longer needed
             }
-
-            // function setupShareCountListener() { // REMOVED: No longer needed
-            //     if (db && userId) { 
-            //         const shareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
-            //         onSnapshot(shareCountRef, (docSnap) => {
-            //             if (docSnap.exists()) {
-            //                 const data = docSnap.data();
-            //                 rouletteShareCountDisplay.textContent = `Veces compartida: ${data.count || 0}`;
-            //             } else {
-            //                 console.log("No share count data found for this user, initializing to 0.");
-            //                 rouletteShareCountDisplay.textContent = `Veces compartida: 0`;
-            //                 setDoc(shareCountRef, { count: 0 }, { merge: true }).catch(e => console.error("Error initializing share count:", e));
-            //             }
-            //         }, (error) => {
-            //             console.error("Error listening to private share count:", error);
-            //             rouletteShareCountDisplay.textContent = "Error al cargar el contador.";
-            //         });
-            //     } else {
-            //         console.warn("Cannot set up share count listener: Firestore or userId is not ready.");
-            //     }
-            // }
 
             // --- INITIALIZATION ---
             loadState(); // Cargar estado del juego al cargar la página
