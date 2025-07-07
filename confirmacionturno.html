@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Turno Le Bardol</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        // Configuración de Tailwind CSS
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        // Fuente principal delicada, con serifas elegantes
+                        body: ['"Playfair Display"', 'Georgia', 'serif'], 
+                        // Fuente de respaldo para elementos que necesiten más legibilidad o un estilo diferente
+                        sans: ['Inter', 'sans-serif'], 
+                    },
+                    colors: {
+                        // Paleta de colores inspirada en Le Bardol y estética
+                        'lb-purple': '#6a0572', 
+                        'lb-pink': '#e63946',
+                        'lb-light-pink': '#f9e6e6',
+                        'lb-darker-pink': '#d81b60', /* Nuevo rosa más oscuro */
+                        'lb-green': '#4caf50',
+                        'lb-red': '#f44336',
+                        'lb-blue': '#2196F3',
+                        'lb-text-dark': '#333333',
+                        'lb-text-light': '#666666',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Playfair Display', Georgia, serif; /* Fuente principal para el cuerpo */
+            background: radial-gradient(circle at top left, #fff0f5 0%, #f9f0ff 100%); /* Gradiente suave de rosa claro a blanco */
+            color: #333333; /* Color de texto oscuro para legibilidad */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(106, 5, 114, 0.15); /* Sombra con tono púrpura */
+            text-align: center;
+            border: 1px solid #f0e0f0; /* Borde sutil */
+        }
+        .logo-container {
+            margin-bottom: 25px;
+        }
+        .logo-container img {
+            max-width: 200px; /* Tamaño adecuado para el logo */
+            height: auto;
+            border-radius: 10px; /* Bordes ligeramente redondeados para el logo */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Sombra suave para el logo */
+        }
+        .greeting-header { /* Nuevo estilo para el saludo */
+            font-size: 3rem; /* Tamaño de fuente grande */
+            font-weight: 700;
+            color: #6a0572; /* Púrpura para el saludo */
+            margin-bottom: 15px;
+            line-height: 1.2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+        .reminder-header { /* Nuevo estilo para el recordatorio */
+            font-size: 1.8rem; /* Tamaño de fuente para el recordatorio, un poco más sutil */
+            font-weight: 400; /* Más delgado para un efecto de "recuerdo" */
+            color: #6a0572; /* Color de texto más oscuro para el recordatorio */
+            margin-bottom: 10px;
+            line-height: 1.2;
+            text-shadow: none; /* Eliminar sombra de texto para mejor contraste */
+            background-color: #f9e6e6; /* Fondo rosa claro */
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: inline-block; /* Para que el padding y background se apliquen correctamente */
+            border: 1px solid #e63946; /* Borde sutil para el recuadro */
+        }
+        .header {
+            font-size: 2.5rem; /* Tamaño de fuente más grande para el encabezado */
+            font-weight: 700; /* Negrita para el encabezado */
+            color: #d81b60; /* Rosa más oscuro para Le Bardol Estética Center */
+            margin-bottom: 25px;
+            line-height: 1.2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Sombra de texto sutil */
+        }
+        .header .subtitle-small { /* Estilo para "Estética Center" más pequeño */
+            font-size: 0.7em; /* Más pequeño que el texto principal del header */
+            font-weight: 400; /* Más delgado */
+            display: block; /* Para que aparezca en una nueva línea */
+            margin-top: 5px;
+            color: #e63946; /* Un tono de rosa para el subtítulo */
+        }
+        .turn-details p {
+            font-size: 1.2rem; /* Tamaño de fuente ligeramente más grande para los detalles */
+            margin-bottom: 12px;
+            color: #333333;
+            line-height: 1.4;
+        }
+        .turn-details strong {
+            color: #e63946; /* Rosa para énfasis */
+            font-weight: 700;
+        }
+        .button-group {
+            margin-top: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px; /* Mayor espacio entre botones */
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px; /* Mayor padding para botones más grandes */
+            border-radius: 12px; /* Bordes más redondeados */
+            font-size: 1.2rem; /* Tamaño de fuente más grande para botones */
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+            display: flex; /* Para centrar el ícono y texto */
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Espacio entre ícono y texto */
+        }
+        .btn i {
+            font-size: 1.4rem; /* Tamaño de ícono */
+        }
+        .btn-confirm {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); /* Verde para confirmar */
+            color: white;
+        }
+        .btn-confirm:hover {
+            transform: translateY(-4px); /* Efecto de elevación al pasar el mouse */
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+        }
+        .btn-cancel {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); /* Rojo para cancelar */
+            color: white;
+        }
+        .btn-cancel:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.3);
+        }
+        .btn-game {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); /* Azul para el juego */
+            color: white;
+            margin-top: 25px; /* Más espacio superior */
+        }
+        .btn-game:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
+        }
+        .footer-text {
+            margin-top: 35px;
+            font-size: 1rem; /* Tamaño de fuente ligeramente más grande para el pie de página */
+            color: #666666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="LOGO-01 como objeto inteligente-1 - copia.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/200x80/f9e6e6/6a0572?text=Le+Bardol';">
+        </div>
+        <h1 class="greeting-header">Hola, ¿cómo estás?</h1>
+        <h2 class="reminder-header">Recordatorio de Turno</h2>
+        <h1 class="header">Le Bardol <span class="subtitle-small">Estética Center</span></h1>
+        <div class="turn-details">
+            <p>Cliente: <strong id="clientNameDisplay"></strong></p>
+            <p>Tratamiento: <strong id="treatmentDisplay"></strong></p>
+            <p>Fecha: <strong id="dateDisplay"></strong></p>
+            <p>Hora: <strong id="timeDisplay"></strong></p>
+        </div>
+
+        <div class="button-group">
+            <a href="#" id="confirmTurnBtn" class="btn btn-confirm">
+                <i class="fas fa-check-circle"></i> Confirmar Turno
+            </a>
+            <a href="#" id="cancelTurnBtn" class="btn btn-cancel">
+                <i class="fas fa-times-circle"></i> No Puedo Asistir
+            </a>
+            <a href="#" id="playGameBtn" class="btn btn-game">
+                <i class="fas fa-gift"></i> ✨ ¡Juga y Gana en Le Bardol!
+            </a>
+        </div>
+
+        <p class="footer-text">
+            Gracias por elegir Le Bardol. ¡Te esperamos!
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const clientNameDisplay = document.getElementById('clientNameDisplay');
+            const treatmentDisplay = document.getElementById('treatmentDisplay');
+            const dateDisplay = document.getElementById('dateDisplay');
+            const timeDisplay = document.getElementById('timeDisplay');
+            const confirmTurnBtn = document.getElementById('confirmTurnBtn');
+            const cancelTurnBtn = document.getElementById('cancelTurnBtn');
+            const playGameBtn = document.getElementById('playGameBtn');
+
+            // Número de WhatsApp de Le Bardol para recibir confirmaciones/cancelaciones
+            const whatsappNumber = '5493415216025'; 
+
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientName = urlParams.get('clientName');
+            const date = urlParams.get('date');
+            const time = urlParams.get('time');
+            const treatment = urlParams.get('treatment');
+            const turnId = urlParams.get('turnId');
+            const rouletteLink = urlParams.get('rouletteLink');
+
+            // Display turn details
+            if (clientName) clientNameDisplay.textContent = decodeURIComponent(clientName);
+            if (treatment) treatmentDisplay.textContent = decodeURIComponent(treatment);
+            if (date) {
+                const formattedDate = new Date(decodeURIComponent(date)).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                dateDisplay.textContent = formattedDate;
+            }
+            if (time) timeDisplay.textContent = decodeURIComponent(time);
+
+            // Set WhatsApp links for confirmation/cancellation
+            const confirmMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. Confirmo mi turno para ${decodeURIComponent(treatment)} el ${new Date(decodeURIComponent(date)).toLocaleDateString()} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
+            confirmTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(confirmMessage)}`;
+
+            const cancelMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. No podré asistir a mi turno para ${decodeURIComponent(treatment)} el ${new Date(decodeURIComponent(date)).toLocaleDateString()} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
+            cancelTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(cancelMessage)}`;
+
+            // Set link to the game
+            if (rouletteLink) {
+                playGameBtn.href = decodeURIComponent(rouletteLink);
+            } else {
+                // Fallback if rouletteLink is not provided (should ideally always be provided)
+                playGameBtn.href = 'index.html'; 
+            }
+        });
+    </script>
+</body>
+</html>
