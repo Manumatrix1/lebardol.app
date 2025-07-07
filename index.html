@@ -628,6 +628,67 @@
             padding-top: 15px;
             border-top: 1px solid #eee;
         }
+
+        /* Styles for social links */
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #4a2c5e;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-link i {
+            font-size: 30px;
+            margin-bottom: 5px;
+            color: #8a2be2; /* Default icon color */
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #6a1b9a;
+            transform: translateY(-3px);
+        }
+
+        .social-link:hover .fa-instagram {
+            color: #E1306C; /* Instagram color */
+        }
+
+        .social-link:hover .fa-map-marker-alt {
+            color: #4285F4; /* Google Maps color */
+        }
+
+        .social-link:hover .fa-link {
+            color: #00C853; /* A generic green for Linktree */
+        }
+
+        /* Style for share counter */
+        .share-counter-section {
+            margin-top: 30px;
+            padding: 15px;
+            background: #e0f7fa;
+            border: 2px solid #00bcd4;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00796b;
+        }
     </style>
 </head>
 <body>
@@ -706,6 +767,27 @@
             Le Bardol Centro de Estética - 3415 21 60 25.<br>
             Nos reservamos el derecho de modificar esta promoción en cualquier momento.
         </p>
+
+        <!-- Sección de enlaces de redes sociales y mapa -->
+        <div class="social-links">
+            <a href="https://maps.app.goo.gl/CusFUGvj4zFvv9EG8" target="_blank" class="social-link" aria-label="Ver ubicación en Google Maps">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Ubicación</span>
+            </a>
+            <a href="https://www.instagram.com/lebardol.esteticacenter/" target="_blank" class="social-link" aria-label="Visitar Instagram de Le Bardol">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+            <a href="https://linktr.ee/lebardol.estetica" target="_blank" class="social-link" aria-label="Visitar Linktree de Le Bardol">
+                <i class="fas fa-link"></i>
+                <span>Linktree</span>
+            </a>
+        </div>
+
+        <!-- Sección de contador de compartidos -->
+        <div class="share-counter-section">
+            <p id="rouletteShareCount">Cargando contador de compartidos...</p>
+        </div>
     </div>
 
     <!-- Botón flotante de WhatsApp -->
@@ -783,7 +865,17 @@
     <!-- Audio para ganar carta -->
     <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
 
-    <script>
+    <script type="module">
+        // Firebase SDK imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let app;
+        let db;
+        let auth;
+        let userId; // To store the user ID
+
         document.addEventListener('DOMContentLoaded', () => {
             // --- CAMPAIGN CONFIGURATION ---
             const señaAmount = 8000;
@@ -809,7 +901,7 @@
             const policiesLink = document.getElementById('policiesLink');
             const policiesModal = document.getElementById('policiesModal');
             const closePoliciesModal = document.getElementById('closePoliciesModal');
-            // const claimRoulettePrizesBtn = document.getElementById('claimRoulettePrizesBtn'); // Eliminado
+            const rouletteShareCountDisplay = document.getElementById('rouletteShareCount'); // New element for share count
 
             // Custom Message Modal elements
             const messageModal = document.getElementById('messageModal');
@@ -831,721 +923,4 @@
                 { text: '70% OFF', type: 'discount', value: 70, needsSeña: false, description: '70% OFF' },
                 { text: 'Zona Mediana GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Mediana GRATIS' },
                 { text: '60% OFF', type: 'discount', value: 60, needsSeña: false, description: '60% OFF' },
-                { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' }, 
-            ];
-            // Shuffle the segments array to make them appear out of order
-            segments.sort(() => Math.random() - 0.5);
-
-            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4'];
-            // Ensure segmentColors array has enough colors for all segments after removal
-            while (segmentColors.length < segments.length) {
-                segmentColors.push(segmentColors[segmentColors.length % 8]); // Cycle through existing colors
-            }
-            const numSegments = segments.length;
-            const arc = (2 * Math.PI) / numSegments;
-
-            // --- ROULETTE STATE ---
-            let state = {};
-            let currentRotation = 0;
-            let animationFrameId;
-            let prizeTimerInterval;
-
-            // --- CARD GAME ELEMENTS AND STATE ---
-            const cardsContainer = document.getElementById('cardsContainer');
-            const cardResultMessage = document.getElementById('cardResultMessage');
-            const cardGameInfo = document.getElementById('cardGameInfo'); // New info element
-            const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn'); // New button element
-            const cardPlaysCounter = document.getElementById('cardPlaysCounter'); // New element for card plays left
-            const shareCardGameBtn = document.getElementById('shareCardGameBtn'); // New share button for card game
-            const cardPrizeTimerDisplay = document.getElementById('cardPrizeTimerDisplay'); // Timer for card game prize reservation
-
-            const cardPrizes = [
-                { text: 'Pilling 20% OFF', description: 'Pilling 20% OFF', needsReservation: true },
-                { text: 'Oleación Ayurveda 20% OFF', description: 'Oleación Ayurveda 20% OFF', needsReservation: true },
-                { text: 'Radiofrecuencia Facial 30% OFF', description: 'Radiofrecuencia Facial 30% OFF', needsReservation: true },
-                { text: 'Masajes 15% OFF', description: 'Masajes 15% OFF', needsReservation: true },
-                { text: 'Manicuría 25% OFF', description: 'Manicuría 25% OFF', needsReservation: true },
-                { text: 'Cosmetología 20% OFF', description: 'Cosmetología 20% OFF', needsReservation: true },
-                { text: '$8000 de Regalo', description: '$8000 de Regalo para cualquier servicio', needsReservation: true },
-                { text: 'Boucher $6000 de Regalo', description: 'Boucher $6000 de Regalo', needsReservation: true },
-                { text: 'Boucher $5000 de Regalo', description: 'Boucher $5000 de Regalo', needsReservation: true }
-            ];
-            let cards = []; // Array to hold card DOM elements
-            let cardGameActive = false; // To prevent multiple card flips during animation
-            let currentCardPrize = null; // To store the last prize won from the card game for display
-            let cardSessionTimerInterval; // Timer for card game session prize reservation
-
-            // --- FUNCTIONS ---
-
-            /**
-             * Displays a custom message modal.
-             * @param {string} title - The title for the modal.
-             * @param {string} message - The message content for the modal.
-             */
-            function showMessageModal(title, message) {
-                messageModalTitle.textContent = title;
-                messageModalText.textContent = message;
-                messageModal.classList.add('visible');
-            }
-
-            /**
-             * Hides the custom message modal.
-             */
-            function hideMessageModal() {
-                messageModal.classList.remove('visible');
-            }
-
-            /**
-             * Loads the game state from localStorage. Initializes with default values if no state is found.
-             * Also updates the prize counter based on elapsed time since last activity.
-             */
-            function loadState() {
-                const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
-                const defaultState = {
-                    spinsLeft: 0, // Inicia con 0 tiros, se ganan al compartir
-                    prize: null, // Último premio individual de ruleta
-                    prizeEndTime: 0, // Temporizador para premio individual de ruleta
-                    prizesLeft: 999,
-                    lastActivity: Date.now(),
-                    userName: '',
-                    cardPlaysLeft: 0, // Inicia en 0, el usuario debe compartir para obtener los 3 tiros de cartas
-                    wonCardPrizes: [], // Array para almacenar los premios ganados en la sesión de 3 cartas
-                    cardSessionEndTime: 0, // Tiempo de finalización para la reserva de premios de cartas
-                    hasPlayedAllCardPlays: false // Flag para indicar si ya usó los 3 tiros de cartas
-                };
-                state = { ...defaultState, ...savedState };
-                userNameInput.value = state.userName;
-                
-                const now = Date.now();
-                const hoursPassed = (now - state.lastActivity) / (1000 * 60 * 60);
-                const prizesToDecrease = Math.floor(hoursPassed * 5); // Disminuye 5 premios por hora de inactividad
-                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Asegura que queden al menos 50 premios
-                state.lastActivity = now;
-
-                // Asegurar que los flags existan si no están en el estado guardado
-                if (state.hasPlayedAllCardPlays === undefined) {
-                    state.hasPlayedAllCardPlays = false;
-                }
-                if (state.cardPlaysLeft === undefined) {
-                    state.cardPlaysLeft = 0;
-                }
-                
-                saveState(); // Guarda el estado actualizado
-            }
-
-            /**
-             * Saves the current game state to localStorage.
-             */
-            function saveState() {
-                state.userName = userNameInput.value.trim();
-                localStorage.setItem('bardolRouletteState', JSON.stringify(state));
-            }
-            
-            /**
-             * Draws the roulette wheel on the canvas.
-             * @param {number} rotation - The current rotation angle of the wheel in radians.
-             */
-            function drawRoulette(rotation = 0) {
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
-                const radius = Math.min(centerX, centerY) * 0.95;
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate(rotation);
-
-                for (let i = 0; i < numSegments; i++) {
-                    const angle = i * arc;
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    ctx.arc(0, 0, radius, angle, angle + arc);
-                    ctx.closePath();
-                    ctx.fillStyle = segmentColors[i % segmentColors.length];
-                    ctx.fill();
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 5;
-                    ctx.stroke();
-
-                    ctx.save();
-                    ctx.rotate(angle + arc / 2);
-                    ctx.fillStyle = '#ffffff';
-                    const fontSize = radius * 0.10;
-                    ctx.font = `bold ${fontSize}px sans-serif`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                    ctx.shadowBlur = 3;
-                    
-                    const text = segments[i].text;
-                    const lines = text.split('\n'); // Split by newline character
-
-                    if (lines.length > 1) {
-                        // Draw multi-line text
-                        for (let j = 0; j < lines.length; j++) {
-                            ctx.fillText(lines[j], radius * 0.6, (j - (lines.length - 1) / 2) * fontSize * 1.1);
-                        }
-                    } else {
-                        // Draw single-line text, potentially splitting by words if too long
-                        const words = text.split(' ');
-                        if (words.length > 2 && text.indexOf('\n') === -1) { // Only split by words if no explicit newline
-                            const line1 = words.slice(0, 2).join(' ');
-                            const line2 = words.slice(2).join(' ');
-                            ctx.fillText(line1, radius * 0.6, -fontSize / 2);
-                            ctx.fillText(line2, radius * 0.6, fontSize / 2);
-                        } else {
-                            ctx.fillText(text, radius * 0.6, 0);
-                        }
-                    }
-                    ctx.restore();
-                }
-                ctx.restore();
-            }
-
-            /**
-             * Initiates the roulette spin.
-             * Performs validation checks before spinning.
-             */
-            function spin() {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
-                    return;
-                }
-                userNameInput.classList.remove('required'); // Remove highlight if valid
-
-                if (state.spinsLeft <= 0) {
-                    showMessageModal("¡No tenés tiros!", "Compartí con 5 amigos para ganar uno.");
-                    return;
-                }
-
-                state.spinsLeft--;
-                state.prizesLeft--; // Decrement available prizes
-                spinBtn.disabled = true;
-                spinBtn.textContent = 'GIRANDO...';
-                
-                // Play spin sound
-                if (spinSound) {
-                    spinSound.load(); // Explicitly load the audio
-                    spinSound.currentTime = 0; // Rewind to start
-                    spinSound.play().catch(e => console.error("Error playing spin sound:", e));
-                }
-
-                // Filter out 'nowin' segments for actual prize selection
-                const winnableSegments = segments.filter(s => s.type !== 'nowin');
-                const randomWinnableIndex = Math.floor(Math.random() * winnableSegments.length);
-                const actualWinningSegment = winnableSegments[randomWinnableIndex];
-                state.prize = actualWinningSegment; // This is the actual prize won
-
-                // Find the original index of the actual winning segment in the full segments array
-                // This ensures the wheel visually lands on the correct segment.
-                const visualLandingIndex = segments.indexOf(actualWinningSegment);
-
-                // Calculate final rotation for the selected segment
-                // The indicator is at the top (12 o'clock), which is -Math.PI / 2 radians in standard math.
-                // In canvas, 0 is right, Math.PI/2 is down, Math.PI is left, 3*Math.PI/2 is up.
-                // So, the top is 3*Math.PI/2 or -Math.PI/2. Let's use -Math.PI/2 for consistency with rotation direction.
-                const desiredIndicatorAngle = -Math.PI / 2; 
-
-                // Angle of the center of the target segment (relative to 0 radians / 3 o'clock)
-                const targetSegmentCenterAngle = visualLandingIndex * arc + arc / 2;
-
-                // Calculate the rotation needed to bring the center of the target segment to the indicator
-                // We want the wheel to rotate such that the targetSegmentCenterAngle aligns with desiredIndicatorAngle.
-                // The rotation needed is the difference between the desired final position and the segment's current position.
-                let rotationOffset = desiredIndicatorAngle - targetSegmentCenterAngle;
-
-                // Normalize rotationOffset to be within [0, 2*PI) for a positive clockwise spin
-                // This ensures the shortest positive rotation to the target.
-                rotationOffset = (rotationOffset % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-
-                // Add multiple full spins to make it spin a few times before landing
-                const numFullSpins = 5; 
-                let totalRotation = currentRotation + rotationOffset + (numFullSpins * 2 * Math.PI);
-
-                // Ensure the final rotation is always enough to pass the current position and land correctly.
-                // This handles cases where rotationOffset might be very small or negative if currentRotation is large,
-                // ensuring at least one full spin from the *start* of the animation.
-                while (totalRotation <= currentRotation + (2 * Math.PI)) { 
-                    totalRotation += (2 * Math.PI);
-                }
-
-                animateRoulette(totalRotation, 6000); // 6 seconds animation
-            }
-
-            /**
-             * Animates the roulette wheel rotation.
-             * @param {number} finalAngle - The target rotation angle.
-             * @param {number} duration - The duration of the animation in milliseconds.
-             */
-            function animateRoulette(finalAngle, duration) {
-                const startAngle = currentRotation;
-                const startTime = performance.now();
-
-                function animate(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    // Easing function for a smoother stop (ease-out effect)
-                    const easedProgress = 1 - Math.pow(1 - progress, 4); 
-                    currentRotation = startAngle + (finalAngle - startAngle) * easedProgress;
-                    drawRoulette(currentRotation);
-
-                    if (progress < 1) {
-                        animationFrameId = requestAnimationFrame(animate);
-                    } else {
-                        // Ensure the wheel stops exactly at the final angle
-                        currentRotation = finalAngle % (2 * Math.PI);
-                        handleSpinEnd();
-                    }
-                }
-                animationFrameId = requestAnimationFrame(animate);
-            }
-
-            /**
-             * Handles actions after the roulette spin animation ends.
-             * Displays prize, starts timer if needed, and updates UI.
-             */
-            function handleSpinEnd() {
-                fireConfetti(); // Celebrate the win!
-                
-                // Play win sound
-                if (winSound) {
-                    winSound.load(); // Explicitly load the audio
-                    winSound.currentTime = 0; // Rewind to start
-                    winSound.play().catch(e => console.error("Error playing win sound:", e));
-                }
-
-                const prize = state.prize;
-                const userName = state.userName.split(' ')[0] || 'crack'; // Get first name or default to 'crack'
-
-                // Customize result message based on prize type
-                if (prize.type === 'freebie' && prize.needsSeña) {
-                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br><small>Podés tener esta zona gratis al contratar otra zona de depilación definitiva.</small><br><strong style="color: #d32f2f; font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>`;
-                } else {
-                    resultMessage.innerHTML = `¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong>`;
-                }
-                
-                // Start prize timer if a deposit is needed
-                if (prize.needsSeña) {
-                    state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes from now
-                    startPrizeTimer();
-                }
-                
-                saveState(); // Save the new state with the won prize
-                updateUI(); // Update button visibility and messages
-            }
-
-            /**
-             * Starts or updates the countdown timer for prize reservation.
-             * Clears existing timer if any.
-             */
-            function startPrizeTimer() {
-                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Clear any previous timer
-                prizeTimerDisplay.style.display = 'block'; // Show the timer display
-
-                prizeTimerInterval = setInterval(() => {
-                    const timeLeft = state.prizeEndTime - Date.now();
-                    if (timeLeft <= 0) {
-                        clearInterval(prizeTimerInterval);
-                        prizeTimerDisplay.textContent = 'Tu premio expiró y fue liberado.';
-                        state.prize = null; // Clear the prize
-                        saveState();
-                        updateUI();
-                        return;
-                    }
-                    const minutes = Math.floor(timeLeft / 60000);
-                    const seconds = Math.floor((timeLeft % 60000) / 1000);
-                    prizeTimerDisplay.textContent = `⏳ Tenés ${minutes}m ${seconds}s para reservar, o el premio se libera.`;
-                }, 1000); // Update every second
-            }
-
-            /**
-             * Triggers a confetti animation.
-             */
-            function fireConfetti() {
-                confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
-            }
-
-            /**
-             * Updates the visibility and content of various UI elements based on the current game state.
-             */
-            function updateUI() {
-                prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
-                
-                const hasPrize = !!state.prize; // Check if a prize has been won (current spin)
-
-                resultMessage.style.display = hasPrize ? 'block' : 'none';
-                prizeTimerDisplay.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
-                upsellSection.style.display = hasPrize ? 'block' : 'none';
-                playAgainBtn.style.display = hasPrize ? 'block' : 'none'; // Play again button for roulette
-
-                // Roulette button logic:
-                // Show spin button if no prize won and spins are left, otherwise show share button
-                spinBtn.style.display = !hasPrize && state.spinsLeft > 0 ? 'block' : 'none';
-                shareBtn.style.display = !hasPrize && state.spinsLeft <= 0 ? 'block' : 'none';
-                
-                // Show reserve or claim button based on prize type
-                reserveBtn.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
-                reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
-                
-                claimPrizeBtn.style.display = hasPrize && !state.prize.needsSeña ? 'block' : 'none';
-                claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
-
-                // Update spin button text with remaining spins
-                spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
-                spinBtn.disabled = false; // Re-enable spin button if it was disabled
-
-                // The claimRoulettePrizesBtn is removed as per the new logic for roulette
-
-                // --- Card game UI update ---
-                const allCardsFlippedInSession = state.wonCardPrizes.length === 3; // Todas las 3 cartas volteadas
-                const canPlayCardGame = state.cardPlaysLeft > 0;
-                const hasPlayedAllCardPlaysEver = state.hasPlayedAllCardPlays; // Si ya usó los 3 tiros alguna vez
-
-                cardPlaysCounter.textContent = `Te quedan ${state.cardPlaysLeft} tiro${state.cardPlaysLeft !== 1 ? 's' : ''} de cartas.`;
-
-                // Controlar la clickabilidad del contenedor de cartas
-                if (canPlayCardGame && !hasPlayedAllCardPlaysEver) {
-                    cardsContainer.classList.remove('disabled');
-                    cardGameActive = true; // Habilitar clics en las cartas
-                } else {
-                    cardsContainer.classList.add('disabled');
-                    cardGameActive = false; // Deshabilitar clics en las cartas
-                }
-
-                // Controlar la visibilidad de los botones del juego de cartas
-                if (hasPlayedAllCardPlaysEver) { // Si ya jugó sus 3 tiros totales
-                    claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar (si hay premios)
-                    shareCardGameBtn.style.display = 'none'; // Ya no se pueden obtener más tiros
-                    cardGameInfo.textContent = 'Ya has jugado tus 3 tiros. ¡Gracias por participar!';
-                } else if (allCardsFlippedInSession) { // Si acaba de voltear las 3 cartas de la sesión actual
-                    claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar
-                    shareCardGameBtn.style.display = 'none'; // Ocultar compartir si ya usó los 3 tiros
-                    cardGameInfo.textContent = '¡Has usado todos tus tiros! Reclama tus premios.';
-                } else if (state.cardPlaysLeft === 0 && state.wonCardPrizes.length === 0) { // Estado inicial o después de reclamar si no hay tiros
-                    claimCardPrizeBtn.style.display = 'none';
-                    shareCardGameBtn.style.display = 'block'; // Mostrar compartir para obtener los 3 tiros iniciales
-                    cardGameInfo.textContent = '¡Comparte para obtener 3 tiros y descubrir tu descuento!';
-                } else { // Todavía tiene tiros disponibles o está en medio de una sesión
-                    claimCardPrizeBtn.style.display = 'none';
-                    shareCardGameBtn.style.display = 'none';
-                    cardGameInfo.textContent = 'Los premios de este juego no son acumulables.';
-                }
-
-                // Mostrar el último premio ganado o un resumen para el juego de cartas
-                if (state.wonCardPrizes.length > 0) {
-                    if (state.wonCardPrizes.length < 3) { // Mientras se están jugando las cartas
-                        cardResultMessage.innerHTML = `¡FELICITACIONES! GANASTE <strong style="color: #00bcd4;">${state.wonCardPrizes[state.wonCardPrizes.length - 1].description.toUpperCase()}</strong>`;
-                    } else { // Todas las 3 cartas volteadas
-                        const prizesList = state.wonCardPrizes.map(p => p.description).join(', ');
-                        cardResultMessage.innerHTML = `¡Has ganado: <strong style="color: #00bcd4;">${prizesList}</strong>!`;
-                    }
-                    cardResultMessage.style.display = 'block';
-                } else {
-                    cardResultMessage.style.display = 'none';
-                }
-
-                // Mostrar el temporizador de premios de cartas
-                if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
-                    cardPrizeTimerDisplay.style.display = 'block';
-                    startCardSessionTimer(); // Asegurar que el temporizador esté corriendo
-                } else {
-                    cardPrizeTimerDisplay.style.display = 'none';
-                    if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval);
-                }
-            }
-
-            /**
-             * Resets the roulette game (clears current prize).
-             */
-            function resetForNewSpin() {
-                state.prize = null; // Clear the won prize
-                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Stop any running timer
-                saveState(); // Save the cleared state
-                updateUI(); // Update UI to reflect reset state
-            }
-
-            /**
-             * Resizes the canvas to fit its container, maintaining aspect ratio.
-             * Redraws the roulette after resizing.
-             */
-            function resizeCanvas() {
-                const container = document.querySelector('.roulette-canvas-container');
-                if (!container) return; // Exit if container is not found
-                const containerWidth = container.clientWidth;
-                canvas.width = containerWidth;
-                canvas.height = containerWidth;
-                drawRoulette(currentRotation); // Redraw roulette to fit new size
-            }
-
-            // --- CARD GAME FUNCTIONS ---
-
-            /**
-             * Starts or updates the countdown timer for the entire card game session.
-             * Clears existing timer if any.
-             */
-            function startCardSessionTimer() {
-                if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval); // Clear any previous timer
-                cardPrizeTimerDisplay.style.display = 'block'; // Show the timer display
-
-                cardSessionTimerInterval = setInterval(() => {
-                    const timeLeft = state.cardSessionEndTime - Date.now();
-                    if (timeLeft <= 0) {
-                        clearInterval(cardSessionTimerInterval);
-                        cardPrizeTimerDisplay.textContent = '¡El tiempo para tus premios de carta ha expirado!';
-                        state.wonCardPrizes = []; // Clear all won prizes
-                        state.cardSessionEndTime = 0; // Clear session timer
-                        currentCardPrize = null; // Also clear local variable
-                        saveState();
-                        updateUI();
-                        return;
-                    }
-                    const minutes = Math.floor(timeLeft / 60000);
-                    const seconds = Math.floor((timeLeft % 60000) / 1000);
-                    cardPrizeTimerDisplay.innerHTML = `⏳ Tenés ${minutes}m ${seconds}s para reservar tus premios.<br><strong>¡RESERVÁ AHORA Y NO PIERDAS TU DESCUENTO!</strong>`;
-                }, 1000); // Update every second
-            }
-
-            /**
-             * Resets the card game state for a new session (after claiming prizes or timer expires).
-             * This function is now only called internally after claiming prizes or expiration.
-             */
-            function resetCardGameSession() {
-                state.cardPlaysLeft = 0; // Se asume que ya se usaron los 3 tiros o el timer expiró
-                state.wonCardPrizes = []; // Limpiar los premios ganados
-                state.cardSessionEndTime = 0; // Limpiar el temporizador
-                currentCardPrize = null; // Limpiar la variable local
-                state.hasPlayedAllCardPlays = true; // Marcar que ya jugó sus 3 tiros totales
-                saveState();
-                initializeCardGame(); // Reinicializar las cartas (voltearlas a su estado original)
-                updateUI(); // Actualizar la UI
-            }
-
-            /**
-             * Initializes the card game by creating and shuffling cards.
-             */
-            function initializeCardGame() {
-                cardsContainer.innerHTML = ''; // Limpiar cartas existentes
-                cards = []; // Resetear el array de cartas
-                currentCardPrize = null; // Resetear el premio actual para mostrar
-
-                const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5); // Barajar premios
-                
-                // Crear 9 cartas
-                for (let i = 0; i < 9; i++) { 
-                    const card = document.createElement('div');
-                    card.classList.add('card');
-                    card.dataset.index = i;
-
-                    const cardBack = document.createElement('div');
-                    cardBack.classList.add('card-face', 'card-back');
-                    cardBack.innerHTML = `<i class="fas fa-question icon"></i><span class="text">ELIGE UNO</span>`;
-
-                    const cardFront = document.createElement('div');
-                    cardFront.classList.add('card-face', 'card-front');
-                    cardFront.textContent = shuffledPrizes[i].text;
-                    cardFront.dataset.prize = JSON.stringify(shuffledPrizes[i]);
-
-                    card.appendChild(cardBack);
-                    card.appendChild(cardFront);
-                    cardsContainer.appendChild(card);
-                    cards.push(card);
-
-                    card.addEventListener('click', handleCardClick);
-                }
-                // cardGameActive se controla por updateUI basado en state.cardPlaysLeft
-                cardResultMessage.style.display = 'none';
-                // updateUI se llama después de esto en DOMContentLoaded
-            }
-
-            /**
-             * Handles a click on a card.
-             * @param {Event} event - The click event.
-             */
-            function handleCardClick(event) {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar en el juego de cartas.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
-                    return;
-                }
-                userNameInput.classList.remove('required'); // Remove highlight if valid
-
-                if (state.cardPlaysLeft <= 0) {
-                    showMessageModal("¡No te quedan tiros!", "Ya has usado tus 3 tiros en el juego de cartas.");
-                    return;
-                }
-
-                if (!cardGameActive) { // Este flag previene clics rápidos durante la animación
-                    return; 
-                }
-
-                const clickedCard = event.currentTarget;
-                if (clickedCard.classList.contains('flipped') || clickedCard.classList.contains('disabled')) {
-                    return; // No hacer nada si ya está volteada o deshabilitada
-                }
-
-                cardGameActive = false; // Deshabilitar temporalmente el juego para evitar clics rápidos durante la animación
-
-                // Reproducir sonido de voltear carta
-                if (cardFlipSound) {
-                    cardFlipSound.load(); // Explicitly load the audio
-                    cardFlipSound.currentTime = 0;
-                    cardFlipSound.play().catch(e => console.error("Error playing card flip sound:", e));
-                }
-
-                clickedCard.classList.add('flipped');
-                
-                state.cardPlaysLeft--; // Disminuir tiros restantes
-                
-                const prizeData = JSON.parse(clickedCard.querySelector('.card-front').dataset.prize);
-                state.wonCardPrizes.push(prizeData); // Añadir premio a la lista de premios ganados
-                currentCardPrize = prizeData; // Establecer para mostrar inmediatamente el último premio ganado
-
-                // Iniciar el temporizador de sesión si es la primera carta volteada en la sesión actual
-                if (state.wonCardPrizes.length === 1) {
-                    state.cardSessionEndTime = Date.now() + 30 * 60 * 1000; // 30 minutos para la reserva
-                    startCardSessionTimer();
-                }
-                
-                saveState();
-
-                // Deshabilitar solo la carta clickeada permanentemente
-                clickedCard.classList.add('disabled');
-                clickedCard.removeEventListener('click', handleCardClick);
-
-                setTimeout(() => {
-                    // Volver a habilitar el juego si aún quedan tiros y no se han volteado las 3 cartas
-                    if (state.cardPlaysLeft > 0 && state.wonCardPrizes.length < 3) {
-                        cardGameActive = true;
-                    } else if (state.wonCardPrizes.length === 3) {
-                        // Si ya se voltearon las 3 cartas, marcar que ya jugó todos sus tiros
-                        state.hasPlayedAllCardPlays = true;
-                        saveState();
-                    }
-                    
-                    fireConfetti(); // Celebrar el premio
-                    updateUI(); // Actualizar la UI para mostrar el botón de reclamar y los tiros restantes
-                    
-                }, 600); // Esperar la animación de volteo
-            }
-
-            // --- EVENT LISTENERS ---
-            spinBtn.addEventListener('click', spin);
-            playAgainBtn.addEventListener('click', resetForNewSpin); // Ahora llama a resetForNewSpin
-            userNameInput.addEventListener('input', () => {
-                saveState(); // Guardar nombre de usuario al cambiar input
-                // Añadir/quitar clase 'filled' para feedback visual
-                if (userNameInput.value.trim() !== '') {
-                    userNameInput.classList.add('filled');
-                } else {
-                    userNameInput.classList.remove('filled');
-                }
-            });
-
-            reserveBtn.addEventListener('click', () => window.open(mercadopagoLinkUrl, '_blank'));
-
-            claimPrizeBtn.addEventListener('click', () => {
-                // Este botón de reclamar es para premios de ruleta individuales
-                const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-            });
-
-            upsellBtn.addEventListener('click', () => {
-                const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-            });
-
-            // Event listener para compartir la ruleta (para obtener tiros)
-            shareBtn.addEventListener('click', () => {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
-                    return;
-                }
-                const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simular un compartir después de un retraso y otorgar un tiro extra
-                setTimeout(() => {
-                    showMessageModal("¡Gracias por compartir!", "Ganaste un tiro extra en la ruleta.");
-                    state.spinsLeft++;
-                    saveState();
-                    updateUI();
-                }, 3000); // Esperar 3 segundos antes de otorgar el tiro
-            });
-
-
-            // Listeners para el modal de políticas
-            policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
-            closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
-            policiesModal.addEventListener('click', (e) => {
-                if (e.target === policiesModal) {
-                    policiesModal.classList.remove('visible');
-                }
-            });
-
-            // Listener para el modal de mensajes (alerta personalizada)
-            closeMessageModal.addEventListener('click', hideMessageModal);
-            messageModal.addEventListener('click', (e) => {
-                if (e.target === messageModal) {
-                    hideMessageModal();
-                }
-            });
-
-            // Event listener para reclamar TODOS los premios de cartas
-            document.getElementById('claimCardPrizeBtn').addEventListener('click', () => {
-                if (state.wonCardPrizes && state.wonCardPrizes.length > 0) {
-                    const prizesList = state.wonCardPrizes.map(p => `"${p.description}"`).join(', ');
-                    const message = `¡Hola! Soy ${state.userName}. Gané los siguientes descuentos en el juego de cartas: ${prizesList}. Quiero reclamar mis premios.`;
-                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-                    
-                    // Después de reclamar, limpiar los premios y el temporizador de la sesión
-                    resetCardGameSession(); // Reiniciar la sesión de cartas
-                    showMessageModal("¡Premios Reclamados!", "Tus premios han sido enviados a WhatsApp. ¡Disfrútalos!");
-                } else {
-                    showMessageModal("Sin premios", "No hay premios de cartas para reclamar en este momento.");
-                }
-            });
-
-            // Event listener para compartir el juego de cartas (para obtener los 3 tiros iniciales)
-            shareCardGameBtn.addEventListener('click', () => {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
-                    return;
-                }
-                if (state.hasPlayedAllCardPlays) {
-                    showMessageModal("¡Juego completado!", "Ya has usado tus 3 tiros en el juego de cartas. ¡Gracias por participar!");
-                    return;
-                }
-                const message = `¡Mira este increíble juego de cartas de Le Bardol! Gana descuentos y sorpresas. ¡Juega aquí: ${window.location.href}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simular un compartir después de un retraso y otorgar 3 tiros para hoy
-                setTimeout(() => {
-                    showMessageModal("¡Gracias por compartir!", "¡Has ganado 3 tiros para el juego de cartas!");
-                    state.cardPlaysLeft = 3; // Otorgar 3 tiros
-                    state.lastCardPlayDate = new Date().toDateString(); // Marcar hoy como el día en que se otorgaron los tiros
-                    saveState();
-                    initializeCardGame(); // Reiniciar cartas y habilitarlas
-                    updateUI();
-                }, 3000); // Esperar 3 segundos antes de otorgar los tiros
-            });
-
-            // --- INICIALIZACIÓN ---
-            loadState(); // Cargar estado del juego al cargar la página
-            updateUI(); // Actualizar la UI según el estado cargado
-            resizeCanvas(); // Redimensionar el canvas inicial
-            initializeCardGame(); // Inicializar el juego de cartas (configura las cartas, pero no las habilita hasta que se otorguen tiros)
-            window.addEventListener('resize', resizeCanvas); // Redimensionar el canvas al cambiar el tamaño de la ventana
-
-            // Si hay un temporizador de sesión de cartas activo, reiniciarlo al cargar
-            if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
-                startCardSessionTimer();
-            }
-        });
-    </script>
-</body>
-</html>
+                { text: 'Cavado GRATIS', type: 'freebie', needsSe
