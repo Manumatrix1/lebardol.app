@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control Le Bardol</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuración de Tailwind CSS
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .button-primary {
+            background: linear-gradient(135deg, #8a2be2, #6a1b9a); /* Purple for Le Bardol */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(138, 43, 226, 0.2);
+        }
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(138, 43, 226, 0.3);
+        }
+        .button-secondary {
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2); /* Light blue for secondary */
+            color: #00796b;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 188, 212, 0.1);
+        }
+        .button-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 188, 212, 0.15);
+        }
+        .section-header {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        .section-header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #8a2be2, #6a1b9a); /* Purple for Le Bardol */
+            border-radius: 2px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #8a2be2; /* Purple for Le Bardol */
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+        }
+        /* Removed QR code specific styles as they are no longer needed */
+
+        .hidden {
+            display: none;
+        }
+        
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .app-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8a2be2, #6a1b9a); /* Purple for Le Bardol */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 15px rgba(138, 43, 226, 0.3);
+            overflow: hidden;
+            border: 4px solid white;
+        }
+        .app-logo::before {
+            content: "LB"; /* Le Bardol initials */
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
+        }
+        .app-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #8a2be2, #6a1b9a); /* Purple for Le Bardol */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .app-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .ticket-count { /* Renamed to 'entry-count' conceptually for turns/campaigns */
+            background-color: #8a2be2; /* Purple for Le Bardol */
+            color: white;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+        }
+        @keyframes slideIn {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+        .notification-success {
+            background-color: #10b981;
+            color: white;
+        }
+        .notification-error {
+            background-color: #ef4444;
+            color: white;
+        }
+        .notification-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .notification-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+        /* Estilos para la tabla de entradas/turnos registrados */
+        .entries-table-container { /* Renamed from tickets-table-container */
+            margin-top: 1.5rem;
+            background-color: #f9fafb;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow-x: auto; /* Para tablas responsivas */
+        }
+        .entries-table { /* Renamed from tickets-table */
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .entries-table th, .entries-table td { /* Renamed from tickets-table th/td */
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .entries-table th { /* Renamed from tickets-table th */
+            background-color: #e0f7fa; /* Light blue for Le Bardol */
+            color: #00796b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .entries-table tbody tr:last-child td { /* Renamed from tickets-table tbody tr */
+            border-bottom: none;
+        }
+        .entries-table tbody tr:hover { /* Renamed from tickets-table tbody tr */
+            background-color: #f3f4f6;
+        }
+        .status-cell {
+            font-weight: 600;
+        }
+        .status-cell.valid { /* Keep for potential future 'valid' statuses for turns */
+            color: #065f46; /* green-700 */
+        }
+        .status-cell.used { /* Keep for potential future 'used' statuses for turns */
+            color: #991b1b; /* red-700 */
+        }
+        .summary-cards {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .summary-card {
+            background-color: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            text-align: center;
+            min-width: 150px;
+        }
+        .summary-card .count {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .summary-card .label {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .summary-card.valid .count {
+            color: #10b981; /* green-500 */
+        }
+        .summary-card.used .count {
+            color: #ef4444; /* red-500 */
+        }
+        /* Styles for the new Turn Management section */
+        .turn-management-section {
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: #f9fafb;
+            margin-top: 2rem;
+        }
+        .turn-management-section .section-header {
+            background: linear-gradient(90deg, #f59e0b, #d97706); /* Orange for Turn Management */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .turn-management-section .section-header::after {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+        /* Styles for the Campaign Statistics section */
+        .campaign-stats-section {
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: #f9fafb;
+            margin-top: 2rem;
+        }
+        .campaign-stats-section .section-header {
+            background: linear-gradient(90deg, #10b981, #059669); /* Green for Campaign Stats */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .campaign-stats-section .section-header::after {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+        .campaign-stats-section p {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="font-inter antialiased">
+    <div class="container">
+        <div class="app-header">
+            <div class="app-logo"></div>
+            <h1 class="app-title">LE BARDOL</h1>
+            <p class="app-subtitle">Sistema de Gestión de Turnos y Campañas</p>
+            <p id="user-id-display" class="text-sm text-gray-500 mt-2">ID de Usuario: Cargando...</p>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-center flex-wrap gap-4 mb-8">
+            <button id="show-turn-management-btn" class="button-primary">
+                Gestión de Turnos
+            </button>
+            <button id="show-registered-entries-btn" class="button-secondary">
+                Ver Registros
+                <span id="total-entries-count" class="entry-count">0</span>
+            </button>
+            <button id="show-campaign-stats-btn" class="button-secondary">
+                Estadísticas de Campañas
+            </button>
+            <button id="show-roulette-link-btn" class="button-secondary">
+                Ir a Ruleta y Cartas
+            </button>
+        </div>
+
+        <!-- Turn Management Section -->
+        <div id="turn-management-section" class="turn-management-section">
+            <h2 class="section-header">Registrar Nuevo Turno</h2>
+            <div class="mb-4">
+                <label for="turn-client-name" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Cliente:</label>
+                <input type="text" id="turn-client-name" class="input-field" placeholder="Ej: Ana Gómez">
+            </div>
+            <div class="mb-4">
+                <label for="turn-date" class="block text-gray-700 text-sm font-bold mb-2">Fecha del Turno:</label>
+                <input type="date" id="turn-date" class="input-field">
+            </div>
+            <div class="mb-4">
+                <label for="turn-time" class="block text-gray-700 text-sm font-bold mb-2">Hora del Turno:</label>
+                <input type="time" id="turn-time" class="input-field">
+            </div>
+            <button id="save-turn-btn" class="button-primary w-full">Guardar Turno</button>
+        </div>
+
+        <!-- Registered Entries Section (for Turns and other Le Bardol data) -->
+        <div id="registered-entries-section" class="entries-table-container hidden">
+            <h2 class="section-header">Registros de Turnos y Campañas</h2>
+            <div class="mb-4">
+                <label for="entry-search-input" class="block text-gray-700 text-sm font-bold mb-2">Buscar por Nombre o ID:</label>
+                <input type="text" id="entry-search-input" class="input-field" placeholder="Ej: Ana Gómez o LeBardol-Turn-... ">
+            </div>
+            <div class="summary-cards">
+                <div class="summary-card valid">
+                    <div id="total-turns-count" class="count">0</div>
+                    <div class="label">Total Turnos</div>
+                </div>
+                <!-- Add more summary cards for other Le Bardol data if needed -->
+            </div>
+            <div class="entries-table-container mt-6">
+                <table class="entries-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente/Campaña</th>
+                            <th>ID de Registro</th>
+                            <th>Tipo</th>
+                            <th>Detalles</th>
+                            <th>Fecha/Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entries-table-body">
+                        <!-- Entries (Turns, etc.) will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Campaign Statistics Section -->
+        <div id="campaign-stats-section" class="campaign-stats-section hidden">
+            <h2 class="section-header">Estadísticas de Campañas Le Bardol</h2>
+            <p id="roulette-share-count-display">Cargando contador de compartidos de ruleta...</p>
+            <!-- Add more statistics here as needed -->
+        </div>
+
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        console.log("JavaScript is running!"); // Debug: Script loaded
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log("DOM fully loaded and parsed. Initializing script...");
+
+            // --- Firebase Initialization ---
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+            let app;
+            let db;
+            let auth;
+            let userId = 'cargando...'; // Default value until authenticated
+
+            const userIdDisplay = document.getElementById('user-id-display');
+            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Authenticate user
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                    console.log("Signed in with custom token.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously.");
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("User authenticated:", userId);
+                        if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                        setupFirestoreListeners();
+                    } else {
+                        console.log("No user is signed in.");
+                        userId = 'no-autenticado';
+                        if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase or authenticating:", error);
+                displayMessage("Error al iniciar la aplicación. Por favor, recarga.", "error");
+            }
+
+            // In-memory cache for turns and other Le Bardol data
+            let turnsDB = {}; 
+            let rouletteShareCount = 0; // Local cache for share count
+
+            // --- Firestore Listener Setup ---
+            function setupFirestoreListeners() {
+                if (!db || !userId || userId === 'cargando...') {
+                    console.warn("Firestore o userId no están listos para configurar los listeners.");
+                    return;
+                }
+
+                // Get the element inside the function where it's used
+                const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
+                if (!rouletteShareCountDisplay) {
+                    console.error("Element with ID 'roulette-share-count-display' not found. Cannot update share count display.");
+                    return; // Exit if the element is not found
+                }
+
+                // Listener para turnos (privado)
+                const turnsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/turns`);
+                onSnapshot(turnsCollectionRef, (snapshot) => {
+                    console.log("Firestore turns snapshot received.");
+                    turnsDB = {}; // Clear existing turns
+                    snapshot.forEach(doc => {
+                        turnsDB[doc.id] = { id: doc.id, ...doc.data() };
+                    });
+                    updateEntryCounts(); 
+                    renderRegisteredEntries(); 
+                }, (error) => {
+                    console.error("Error listening to turns collection:", error);
+                    displayMessage("Error al cargar los turnos.", "error");
+                });
+
+                // Listener para el contador de compartidos de la ruleta (privado)
+                const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
+                onSnapshot(rouletteShareCountRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        rouletteShareCount = data.count || 0;
+                        rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: ${rouletteShareCount}`;
+                    } else {
+                        console.log("No share count data found for this user, initializing to 0.");
+                        rouletteShareCount = 0;
+                        rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: 0`;
+                        // Optionally initialize the document if it doesn't exist for this user
+                        setDoc(rouletteShareCountRef, { count: 0 }, { merge: true }).catch(e => console.error("Error initializing share count:", e));
+                    }
+                }, (error) => {
+                    console.error("Error listening to private roulette share count:", error);
+                    rouletteShareCountDisplay.textContent = "Error al cargar el contador de ruleta.";
+                });
+            }
+
+            // --- UI Management ---
+            const sections = {
+                'turn-management-section': document.getElementById('turn-management-section'),
+                'registered-entries-section': document.getElementById('registered-entries-section'),
+                'campaign-stats-section': document.getElementById('campaign-stats-section')
+            };
+
+            function showSection(sectionId) {
+                for (const id in sections) {
+                    if (id === sectionId) {
+                        sections[id].classList.remove('hidden');
+                    } else {
+                        sections[id].classList.add('hidden');
+                    }
+                }
+            }
+
+            // Initial view
+            showSection('turn-management-section');
+
+            // --- Event Listeners for Navigation ---
+            document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
+            document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
+            document.getElementById('show-campaign-stats-btn').addEventListener('click', () => showSection('campaign-stats-section'));
+            document.getElementById('show-roulette-link-btn').addEventListener('click', () => {
+                window.open('index.html', '_blank'); // Open index.html in a new tab
+            });
+
+            // --- Turn Management ---
+            const turnClientNameInput = document.getElementById('turn-client-name');
+            const turnDateInput = document.getElementById('turn-date');
+            const turnTimeInput = document.getElementById('turn-time');
+            const saveTurnBtn = document.getElementById('save-turn-btn');
+
+            saveTurnBtn.addEventListener('click', async () => {
+                const clientName = turnClientNameInput.value.trim();
+                const turnDate = turnDateInput.value;
+                const turnTime = turnTimeInput.value;
+
+                if (!clientName || !turnDate || !turnTime) {
+                    displayMessage("Por favor, completa todos los campos del turno.", "warning");
+                    return;
+                }
+
+                try {
+                    const turnId = `LeBardol-Turn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    const turnData = {
+                        clientName: clientName,
+                        date: turnDate,
+                        time: turnTime,
+                        createdAt: new Date().toISOString(),
+                        id: turnId,
+                        type: 'turn' // Explicitly mark as turn
+                    };
+
+                    await setDoc(doc(db, `artifacts/${appId}/users/${userId}/turns`, turnId), turnData);
+                    displayMessage("Turno guardado exitosamente.", "success");
+
+                    turnClientNameInput.value = '';
+                    turnDateInput.value = '';
+                    turnTimeInput.value = '';
+                } catch (e) {
+                    console.error("Error saving turn:", e);
+                    displayMessage("Error al guardar el turno. Intenta de nuevo.", "error");
+                }
+            });
+
+            // --- Registered Entries Display (for Turns) ---
+            const entrySearchInput = document.getElementById('entry-search-input');
+            const entriesTableBody = document.getElementById('entries-table-body');
+            const totalTurnsCountDisplay = document.getElementById('total-turns-count');
+            const totalEntriesCountSpan = document.getElementById('total-entries-count'); // For navigation button count
+
+            function updateEntryCounts() {
+                let totalTurns = Object.keys(turnsDB).length;
+                totalTurnsCountDisplay.textContent = totalTurns;
+                totalEntriesCountSpan.textContent = totalTurns; // For now, total entries are just turns
+            }
+
+            function renderRegisteredEntries() {
+                entriesTableBody.innerHTML = ''; // Clear existing rows
+                const searchTerm = entrySearchInput.value.toLowerCase();
+
+                const allEntries = [];
+                for (const id in turnsDB) {
+                    allEntries.push({ ...turnsDB[id], type: 'turn' });
+                }
+
+                allEntries.forEach(entry => {
+                    const clientName = entry.clientName;
+                    const entryId = entry.id;
+                    const type = entry.type === 'turn' ? 'Turno' : 'Desconocido';
+                    const details = entry.type === 'turn' ? `${new Date(entry.date).toLocaleDateString()} ${entry.time}` : 'N/A';
+
+                    // Filter based on search term
+                    if (searchTerm && !(clientName && clientName.toLowerCase().includes(searchTerm)) && !(entryId && entryId.toLowerCase().includes(searchTerm))) {
+                        return; // Skip if no match
+                    }
+
+                    const row = entriesTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${clientName || 'N/A'}</td>
+                        <td>${entryId}</td>
+                        <td>${type}</td>
+                        <td>${details}</td>
+                        <td>${new Date(entry.createdAt).toLocaleString()}</td>
+                    `;
+                });
+            }
+
+            entrySearchInput.addEventListener('input', renderRegisteredEntries);
+
+            // --- Notification System ---
+            function displayMessage(message, type = "info") {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.classList.add('floating-notification');
+
+                if (type === "success") {
+                    notification.classList.add('notification-success');
+                } else if (type === "error") {
+                    notification.classList.add('notification-error');
+                } else if (type === "warning") {
+                    notification.classList.add('notification-warning');
+                } else {
+                    notification.classList.add('notification-info');
+                }
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000); // Remove after 3 seconds
+            }
+
+            // Initial render of registered entries (will be updated by Firestore listener)
+            renderRegisteredEntries();
+            updateEntryCounts();
+        });
+    </script>
+</body>
+</html>
