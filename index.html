@@ -8,10 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <!-- Open Graph Meta Tags para vista previa de WhatsApp/Redes Sociales -->
-    <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
+    <meta property="og:title" content="¡Girá y Ganá en Le Bardol! �">
     <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
-    <meta property="og:image" content="jugaygana.png"> <!-- Asegúrate que esta imagen esté en la misma carpeta o con una URL completa -->
-    <meta property="og:url" content="https://your-app-url.com"> <!-- Reemplaza con la URL real de tu aplicación -->
+    <meta property="og:image" content="https://i.imgur.com/11RstI1.png"> <!-- URL de la imagen deseada -->
+    <!-- La URL de tu aplicación se establecerá dinámicamente en el script para la etiqueta og:url -->
+    <meta property="og:url" id="og-url-meta" content=""> 
     <meta property="og:type" content="website">
     <!-- Fin Open Graph Meta Tags -->
 
@@ -858,21 +859,75 @@
     <script type="module">
         // Firebase SDK imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // Importa onAuthStateChanged aquí
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // Se reintrodujeron las importaciones de Firestore para el contador de compartidos
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        console.log("JavaScript is running!"); // Debug: Script loaded
 
-        let app;
-        let db;
-        let auth;
-        let userId; // To store the user ID
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log("DOM fully loaded and parsed. Initializing script...");
 
-        document.addEventListener('DOMContentLoaded', () => {
+            // --- Firebase Initialization ---
+            // Las variables __app_id y __firebase_config son proporcionadas por el entorno Canvas.
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+            let app;
+            let db; // Instancia de Firestore
+            let auth;
+            let userId = 'cargando...'; // Valor por defecto hasta que se autentique
+
+            try {
+                // Solo inicializa Firebase si la configuración está disponible
+                if (Object.keys(firebaseConfig).length > 0) {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app); // Inicializa Firestore
+                    auth = getAuth(app);
+
+                    // Autenticar al usuario
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                        console.log("Signed in with custom token.");
+                    } else {
+                        await signInAnonymously(auth);
+                        console.log("Signed in anonymously.");
+                    }
+
+                    // Listener para el estado de autenticación (solo para depuración, no hay lógica de UI dependiente aquí)
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            console.log("User authenticated:", userId);
+                        } else {
+                            console.log("No user is signed in.");
+                            userId = 'no-autenticado';
+                        }
+                    });
+                } else {
+                    console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");
+                }
+
+            } catch (error) {
+                console.error("Error initializing Firebase or authenticating:", error);
+                // Usar showMessageModal para mensajes al usuario
+                showMessageModal("Error al iniciar la aplicación.", "Por favor, recarga la página.");
+            }
+
             // --- CAMPAIGN CONFIGURATION ---
             const señaAmount = 8000;
             const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
             const whatsappNumber = '5493415216025';
             // URL base de la aplicación para los enlaces de referido. Asegúrate de que esta URL sea la real de tu sitio.
-            const appBaseUrl = window.location.origin + window.location.pathname; 
+            // CAMBIO AQUÍ: Usar la URL estática proporcionada por el usuario
+            const appBaseUrl = 'https://lebardol-app.netlify.app/'; 
+
+            // Actualizar la meta etiqueta og:url dinámicamente
+            const ogUrlMeta = document.getElementById('og-url-meta');
+            if (ogUrlMeta) {
+                ogUrlMeta.setAttribute('content', appBaseUrl);
+            }
 
             // --- DOM ELEMENTS ---
             const canvas = document.getElementById('rouletteCanvas');
@@ -1299,6 +1354,23 @@
             }
 
             /**
+             * Increments the roulette share count in Firestore.
+             */
+            async function incrementRouletteShareCount() {
+                if (!db || !userId || userId === 'cargando...') {
+                    console.warn("Firestore o userId no están listos para incrementar el contador de compartidos.");
+                    return;
+                }
+                try {
+                    const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
+                    await setDoc(rouletteShareCountRef, { count: increment(1) }, { merge: true });
+                    console.log("Roulette share count incremented in Firestore.");
+                } catch (e) {
+                    console.error("Error incrementing roulette share count:", e);
+                }
+            }
+
+            /**
              * Handles the action when the user needs to share to get a spin.
              */
             function handleShareForSpin() {
@@ -1311,24 +1383,27 @@
                 userNameInput.classList.remove('required'); // Remove highlight if valid
                 const userName = state.userName.split(' ')[0]; // Get only the first name for brevity
                 
-                // Mensaje de WhatsApp personalizado
+                // Mensaje de WhatsApp personalizado con el link de la ruleta
                 const whatsappMessage = `
-Soy ${userName}, ¡jugué y gané por eso te invito!
-🔥 ¡La Ruleta Mágica de Le Bardol está ON FIRE!
-🎯 Cada giro = una zona GRATIS de depilación 😱
-🎰 ¡Jugás todas las veces que quieras y siempre ganás!
-✨ Sin sorteos raros, ni letra chica. ¡Tu premio es real!
+Hola, soy *${userName.toUpperCase()}*.
+Jugué y gané en la Ruleta Mágica de Le Bardol.
 
-💆‍♀️ Además podés ganar beneficios en otros servicios de estética
-💚 Referí amigas = más descuentos + más premios
-🃏 ¡Y hay juegos de cartas con regalos sorpresa!
+LE BARDOL – Estética Center Rosario
 
-📍 Riobamba 1271 – Rosario
-💫 Tu acción crea tu premio. ¡Vení a jugar y brillá!
-${window.location.href}
+Ganá tratamientos estéticos y sesiones de depilación definitiva totalmente gratis.
+Cada giro te da una zona gratis de depilación definitiva.
+
+Ganás siempre, sin sorteos ni letra chica.
+Referí amigas y sumá más premios y descuentos.
+
+También hay sorpresas en juegos de cartas.
+Jugá ahora: ${appBaseUrl}
                 `.trim(); // .trim() para eliminar saltos de línea iniciales/finales
 
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+
+                // Incrementar el contador de compartidos en Firestore
+                incrementRouletteShareCount();
 
                 // Simulate sharing and grant a spin after a delay
                 setTimeout(() => {
@@ -1385,7 +1460,7 @@ ${window.location.href}
                     } else {
                         spinBtn.style.display = 'none'; // Hide spin button
                         shareBtn.style.display = 'block'; // Show share button (for initial share to get a spin)
-                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">� ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
+                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">💥 ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
                         shareBtn.disabled = false; // Siempre habilitado para compartir
                     }
                 }
@@ -1736,8 +1811,22 @@ ${window.location.href}
                     showMessageModal("¡Juego completado!", "Ya has usado tus 3 tiros en el juego de cartas. ¡Gracias por participar!");
                     return;
                 }
-                const userName = state.userName.split(' ')[0]; // Get only the first name for brevity
-                const message = `¡Hola! Soy ${userName}. ¡Mirá este increíble juego de cartas de Le Bardol! Gana descuentos y sorpresas. ¡Juega aquí: ${window.location.href}`;
+                // Mensaje de WhatsApp personalizado con el link de la ruleta
+                const message = `
+Hola, soy *${state.userName.split(' ')[0].toUpperCase()}*.
+Jugué y gané en la Ruleta Mágica de Le Bardol.
+
+LE BARDOL – Estética Center Rosario
+
+Ganá tratamientos estéticos y sesiones de depilación definitiva totalmente gratis.
+Cada giro te da una zona gratis de depilación definitiva.
+
+Ganás siempre, sin sorteos ni letra chica.
+Referí amigas y sumá más premios y descuentos.
+
+También hay sorpresas en juegos de cartas.
+Jugá ahora: ${appBaseUrl}
+                `.trim();
                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
                 // Simular un compartir después de un retraso y otorgar 3 tiros para hoy
                 setTimeout(() => {
@@ -1749,47 +1838,6 @@ ${window.location.href}
                     updateUI();
                 }, 3000); // Esperar 3 segundos antes de otorgar los tiros
             });
-
-            // --- FIREBASE INITIALIZATION AND SHARE COUNT LISTENER (MODIFIED) ---
-            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-            if (Object.keys(firebaseConfig).length > 0) {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Sign in anonymously or with custom token
-                if (typeof __initial_auth_token !== 'undefined') {
-                    signInWithCustomToken(auth, __initial_auth_token)
-                        .then((userCredential) => {
-                            userId = userCredential.user.uid;
-                            console.log("Signed in with custom token:", userId);
-                        })
-                        .catch((error) => {
-                            console.error("Error signing in with custom token:", error);
-                            signInAnonymously(auth)
-                                .then((userCredential) => {
-                                    userId = userCredential.user.uid;
-                                    console.log("Signed in anonymously:", userId);
-                                })
-                                .catch((anonError) => {
-                                    console.error("Error signing in anonymously:", anonError);
-                                });
-                        });
-                } else {
-                    signInAnonymously(auth)
-                        .then((userCredential) => {
-                            userId = userCredential.user.uid;
-                            console.log("Signed in anonymously:", userId);
-                        })
-                        .catch((error) => {
-                            console.error("Error signing in anonymously:", error);
-                        });
-                }
-            } else {
-                console.warn("Firebase config not found. Share count functionality will not work.");
-            }
 
             // --- INITIALIZATION ---
             loadState(); // Cargar estado del juego al cargar la página
