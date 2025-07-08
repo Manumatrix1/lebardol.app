@@ -6,6 +6,15 @@
     <title>Girá y Ganá en Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <!-- Open Graph Meta Tags para vista previa de WhatsApp/Redes Sociales -->
+    <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
+    <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
+    <meta property="og:image" content="jugaygana.png"> <!-- Asegúrate que esta imagen esté en la misma carpeta o con una URL completa -->
+    <meta property="og:url" content="https://your-app-url.com"> <!-- Reemplaza con la URL real de tu aplicación -->
+    <meta property="og:type" content="website">
+    <!-- Fin Open Graph Meta Tags -->
+
     <style>
         /* Estilos generales y reseteo */
         * {
@@ -837,11 +846,11 @@
             <h3 id="messageModalTitle"></h3>
             <p id="messageModalText"></p>
             <button id="closeMessageModal">Entendido</button>
-            <!-- A custom button will be inserted here by JavaScript if buttonConfig is provided -->
-        </div>
+            </div>
     </div>
 
     <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
+    <!-- NOTA: Para usar "aplausos.mp3", debes alojarlo en un servidor web y reemplazar esta URL. -->
     <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-win-2010.mp3" preload="auto"></audio>
     <audio id="cardFlipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-1033.mp3" preload="auto"></audio>
     <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
@@ -1036,6 +1045,10 @@
                 if (state.cardPlaysLeft === undefined) {
                     state.cardPlaysLeft = 0;
                 }
+                // Ensure wonCardPrizes is always an array
+                if (state.wonCardPrizes === undefined || !Array.isArray(state.wonCardPrizes)) {
+                    state.wonCardPrizes = [];
+                }
                 
                 saveState(); // Guarda el estado actualizado
             }
@@ -1135,9 +1148,13 @@
                 
                 // Play spin sound
                 if (spinSound) {
-                    spinSound.load(); // Explicitly load the audio
-                    spinSound.currentTime = 0; // Rewind to start
-                    spinSound.play().catch(e => console.error("Error playing spin sound:", e));
+                    try {
+                        spinSound.load(); // Explicitly load the audio
+                        spinSound.currentTime = 0; // Rewind to start
+                        spinSound.play().catch(e => console.error("Error al reproducir sonido de giro:", e));
+                    } catch (e) {
+                        console.error("No se pudo iniciar la reproducción del sonido de giro:", e);
+                    }
                 }
 
                 // Filter out 'nowin' segments for actual prize selection
@@ -1148,7 +1165,7 @@
 
                 // Find the original index of the actual winning segment in the full segments array
                 // This ensures the wheel visually lands on the correct segment.
-                const visualLandingIndex = segments.indexOf(actualWinningSegment);
+                const visualLandingIndex = segments.indexOf(state.prize); // Use state.prize here
 
                 // Calculate final rotation for the selected segment
                 // The indicator is at the top (12 o'clock), which is -Math.PI / 2 radians in standard math.
@@ -1219,9 +1236,13 @@
                 
                 // Play win sound
                 if (winSound) {
-                    winSound.load(); // Explicitly load the audio
-                    winSound.currentTime = 0; // Rewind to start
-                    winSound.play().catch(e => console.error("Error playing win sound:", e));
+                    try {
+                        winSound.load(); // Explicitly load the audio
+                        winSound.currentTime = 0; // Rewind to start
+                        winSound.play().catch(e => console.error("Error al reproducir sonido de victoria:", e));
+                    } catch (e) {
+                        console.error("No se pudo iniciar la reproducción del sonido de victoria:", e);
+                    }
                 }
 
                 const prize = state.prize;
@@ -1281,8 +1302,33 @@
              * Handles the action when the user needs to share to get a spin.
              */
             function handleShareForSpin() {
-                const message = `¡Ganá depilaciones GRATIS en Le Bardol! Entrá a la ruleta y probá tu suerte. ¡Yo ya giré! ${window.location.href}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                if (userNameInput.value.trim() === '') {
+                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
+                    userNameInput.focus();
+                    userNameInput.classList.add('required');
+                    return;
+                }
+                userNameInput.classList.remove('required'); // Remove highlight if valid
+                const userName = state.userName.split(' ')[0]; // Get only the first name for brevity
+                
+                // Mensaje de WhatsApp personalizado
+                const whatsappMessage = `
+Soy ${userName}, ¡jugué y gané por eso te invito!
+🔥 ¡La Ruleta Mágica de Le Bardol está ON FIRE!
+🎯 Cada giro = una zona GRATIS de depilación 😱
+🎰 ¡Jugás todas las veces que quieras y siempre ganás!
+✨ Sin sorteos raros, ni letra chica. ¡Tu premio es real!
+
+💆‍♀️ Además podés ganar beneficios en otros servicios de estética
+💚 Referí amigas = más descuentos + más premios
+🃏 ¡Y hay juegos de cartas con regalos sorpresa!
+
+📍 Riobamba 1271 – Rosario
+💫 Tu acción crea tu premio. ¡Vení a jugar y brillá!
+${window.location.href}
+                `.trim(); // .trim() para eliminar saltos de línea iniciales/finales
+
+                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
 
                 // Simulate sharing and grant a spin after a delay
                 setTimeout(() => {
@@ -1302,7 +1348,16 @@
                 const hasPrize = !!state.prize; // Check if a prize has been won (current spin)
 
                 resultMessage.style.display = hasPrize ? 'block' : 'none';
-                prizeTimerDisplay.style.display = hasPrize && state.prize.needsSeña ? 'block' : 'none';
+                
+                // Logic for roulette prize timer display
+                if (hasPrize && state.prize.needsSeña && state.prizeEndTime > Date.now()) {
+                    prizeTimerDisplay.style.display = 'block';
+                    startPrizeTimer(); // Ensure timer is running if a prize is active and needs seña
+                } else {
+                    prizeTimerDisplay.style.display = 'none';
+                    if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Clear timer if no active prize or prize expired
+                }
+
                 upsellSection.style.display = hasPrize ? 'block' : 'none';
                 playAgainBtn.style.display = hasPrize ? 'block' : 'none'; // Play again button for roulette
 
@@ -1330,13 +1385,15 @@
                     } else {
                         spinBtn.style.display = 'none'; // Hide spin button
                         shareBtn.style.display = 'block'; // Show share button (for initial share to get a spin)
-                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">💥 ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
+                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">� ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
                         shareBtn.disabled = false; // Siempre habilitado para compartir
                     }
                 }
 
                 // --- Card game UI update ---
-                const allCardsFlippedInSession = state.wonCardPrizes.length === 3; // Todas las 3 cartas volteadas
+                // Defensive check for state.wonCardPrizes
+                const wonCardPrizesLength = state.wonCardPrizes ? state.wonCardPrizes.length : 0;
+                const allCardsFlippedInSession = wonCardPrizesLength === 3; // Todas las 3 cartas volteadas
                 const canPlayCardGame = state.cardPlaysLeft > 0;
                 const hasPlayedAllCardPlaysEver = state.hasPlayedAllCardPlays; // Si ya usó los 3 tiros alguna vez
 
@@ -1360,7 +1417,7 @@
                     claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar
                     shareCardGameBtn.style.display = 'none'; // Ocultar compartir si ya usó los 3 tiros
                     cardGameInfo.textContent = '¡Has usado todos tus tiros! Reclama tus premios.';
-                } else if (state.cardPlaysLeft === 0 && state.wonCardPrizes.length === 0) { // Estado inicial o después de reclamar si no hay tiros
+                } else if (state.cardPlaysLeft === 0 && wonCardPrizesLength === 0) { // Estado inicial o después de reclamar si no hay tiros
                     claimCardPrizeBtn.style.display = 'none';
                     shareCardGameBtn.style.display = 'block'; // Mostrar compartir para obtener los 3 tiros iniciales
                     cardGameInfo.textContent = '¡Comparte para obtener 3 tiros y descubrir tu descuento!';
@@ -1371,9 +1428,9 @@
                 }
 
                 // Mostrar el último premio ganado o un resumen para el juego de cartas
-                if (state.wonCardPrizes.length > 0) {
-                    if (state.wonCardPrizes.length < 3) { // Mientras se están jugando las cartas
-                        cardResultMessage.innerHTML = `¡FELICITACIONES! GANASTE <strong style="color: #00bcd4;">${state.wonCardPrizes[state.wonCardPrizes.length - 1].description.toUpperCase()}</strong>`;
+                if (wonCardPrizesLength > 0) {
+                    if (wonCardPrizesLength < 3) { // Mientras se están jugando las cartas
+                        cardResultMessage.innerHTML = `¡FELICITACIONES! GANASTE <strong style="color: #00bcd4;">${state.wonCardPrizes[wonCardPrizesLength - 1].description.toUpperCase()}</strong>`;
                     } else { // Todas las 3 cartas volteadas
                         const prizesList = state.wonCardPrizes.map(p => p.description).join(', ');
                         cardResultMessage.innerHTML = `¡Has ganado: <strong style="color: #00bcd4;">${prizesList}</strong>!`;
@@ -1384,7 +1441,7 @@
                 }
 
                 // Mostrar el temporizador de premios de cartas
-                if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
+                if (wonCardPrizesLength > 0 && state.cardSessionEndTime > Date.now()) {
                     cardPrizeTimerDisplay.style.display = 'block';
                     startCardSessionTimer(); // Asegurar que el temporizador esté corriendo
                 } else {
@@ -1399,6 +1456,7 @@
             function resetForNewSpin() {
                 state.prize = null; // Clear the won prize
                 if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Stop any running timer
+                state.prizeEndTime = 0; // Reset prize end time
                 saveState(); // Save the cleared state
                 updateUI(); // Update UI to reflect reset state
             }
@@ -1527,9 +1585,13 @@
 
                 // Reproducir sonido de voltear carta
                 if (cardFlipSound) {
-                    cardFlipSound.load(); // Explicitly load the audio
-                    cardFlipSound.currentTime = 0;
-                    cardFlipSound.play().catch(e => console.error("Error playing card flip sound:", e));
+                    try {
+                        cardFlipSound.load(); // Explicitly load the audio
+                        cardFlipSound.currentTime = 0;
+                        cardFlipSound.play().catch(e => console.error("Error al reproducir sonido de volteo de carta:", e));
+                    } catch (e) {
+                        console.error("No se pudo iniciar la reproducción del sonido de volteo de carta:", e);
+                    }
                 }
 
                 clickedCard.classList.add('flipped');
@@ -1674,7 +1736,8 @@
                     showMessageModal("¡Juego completado!", "Ya has usado tus 3 tiros en el juego de cartas. ¡Gracias por participar!");
                     return;
                 }
-                const message = `¡Mira este increíble juego de cartas de Le Bardol! Gana descuentos y sorpresas. ¡Juega aquí: ${window.location.href}`;
+                const userName = state.userName.split(' ')[0]; // Get only the first name for brevity
+                const message = `¡Hola! Soy ${userName}. ¡Mirá este increíble juego de cartas de Le Bardol! Gana descuentos y sorpresas. ¡Juega aquí: ${window.location.href}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
                 // Simular un compartir después de un retraso y otorgar 3 tiros para hoy
                 setTimeout(() => {
@@ -1743,3 +1806,4 @@
     </script>
 </body>
 </html>
+�
