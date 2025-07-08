@@ -10,7 +10,7 @@
     <!-- Open Graph Meta Tags para vista previa de WhatsApp/Redes Sociales -->
     <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
     <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
-    <meta property="og:image" content="https://i.imgur.com/app8HJF.png"> <!-- ¡Esta es la URL directa de tu imagen de Imgur! -->
+    <meta property="og:image" content="jugaygana.png"> <!-- Asegúrate que esta imagen esté en la misma carpeta o con una URL completa -->
     <meta property="og:url" content="https://your-app-url.com"> <!-- Reemplaza con la URL real de tu aplicación -->
     <meta property="og:type" content="website">
     <!-- Fin Open Graph Meta Tags -->
@@ -858,62 +858,15 @@
     <script type="module">
         // Firebase SDK imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // Importa onAuthStateChanged aquí
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // Se reintrodujeron las importaciones de Firestore para el contador de compartidos
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        console.log("JavaScript is running!"); // Debug: Script loaded
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log("DOM fully loaded and parsed. Initializing script...");
+        let app;
+        let db;
+        let auth;
+        let userId; // To store the user ID
 
-            // --- Firebase Initialization ---
-            // Las variables __app_id y __firebase_config son proporcionadas por el entorno Canvas.
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-
-            let app;
-            let db; // Instancia de Firestore
-            let auth;
-            let userId = 'cargando...'; // Valor por defecto hasta que se autentique
-
-            try {
-                // Solo inicializa Firebase si la configuración está disponible
-                if (Object.keys(firebaseConfig).length > 0) {
-                    app = initializeApp(firebaseConfig);
-                    db = getFirestore(app); // Inicializa Firestore
-                    auth = getAuth(app);
-
-                    // Autenticar al usuario
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                        console.log("Signed in with custom token.");
-                    } else {
-                        await signInAnonymously(auth);
-                        console.log("Signed in anonymously.");
-                    }
-
-                    // Listener para el estado de autenticación (solo para depuración, no hay lógica de UI dependiente aquí)
-                    onAuthStateChanged(auth, (user) => {
-                        if (user) {
-                            userId = user.uid;
-                            console.log("User authenticated:", userId);
-                        } else {
-                            console.log("No user is signed in.");
-                            userId = 'no-autenticado';
-                        }
-                    });
-                } else {
-                    console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");
-                }
-
-            } catch (error) {
-                console.error("Error initializing Firebase or authenticating:", error);
-                // Usar showMessageModal para mensajes al usuario
-                showMessageModal("Error al iniciar la aplicación.", "Por favor, recarga la página.");
-            }
-
+        document.addEventListener('DOMContentLoaded', () => {
             // --- CAMPAIGN CONFIGURATION ---
             const señaAmount = 8000;
             const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
@@ -1346,23 +1299,6 @@
             }
 
             /**
-             * Increments the roulette share count in Firestore.
-             */
-            async function incrementRouletteShareCount() {
-                if (!db || !userId || userId === 'cargando...') {
-                    console.warn("Firestore o userId no están listos para incrementar el contador de compartidos.");
-                    return;
-                }
-                try {
-                    const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
-                    await setDoc(rouletteShareCountRef, { count: increment(1) }, { merge: true });
-                    console.log("Roulette share count incremented in Firestore.");
-                } catch (e) {
-                    console.error("Error incrementing roulette share count:", e);
-                }
-            }
-
-            /**
              * Handles the action when the user needs to share to get a spin.
              */
             function handleShareForSpin() {
@@ -1393,9 +1329,6 @@ ${window.location.href}
                 `.trim(); // .trim() para eliminar saltos de línea iniciales/finales
 
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-
-                // Incrementar el contador de compartidos en Firestore
-                incrementRouletteShareCount();
 
                 // Simulate sharing and grant a spin after a delay
                 setTimeout(() => {
@@ -1452,7 +1385,7 @@ ${window.location.href}
                     } else {
                         spinBtn.style.display = 'none'; // Hide spin button
                         shareBtn.style.display = 'block'; // Show share button (for initial share to get a spin)
-                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">💥 ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
+                        shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">� ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
                         shareBtn.disabled = false; // Siempre habilitado para compartir
                     }
                 }
@@ -1817,6 +1750,47 @@ ${window.location.href}
                 }, 3000); // Esperar 3 segundos antes de otorgar los tiros
             });
 
+            // --- FIREBASE INITIALIZATION AND SHARE COUNT LISTENER (MODIFIED) ---
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+            if (Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Sign in anonymously or with custom token
+                if (typeof __initial_auth_token !== 'undefined') {
+                    signInWithCustomToken(auth, __initial_auth_token)
+                        .then((userCredential) => {
+                            userId = userCredential.user.uid;
+                            console.log("Signed in with custom token:", userId);
+                        })
+                        .catch((error) => {
+                            console.error("Error signing in with custom token:", error);
+                            signInAnonymously(auth)
+                                .then((userCredential) => {
+                                    userId = userCredential.user.uid;
+                                    console.log("Signed in anonymously:", userId);
+                                })
+                                .catch((anonError) => {
+                                    console.error("Error signing in anonymously:", anonError);
+                                });
+                        });
+                } else {
+                    signInAnonymously(auth)
+                        .then((userCredential) => {
+                            userId = userCredential.user.uid;
+                            console.log("Signed in anonymously:", userId);
+                        })
+                        .catch((error) => {
+                            console.error("Error signing in anonymously:", error);
+                        });
+                }
+            } else {
+                console.warn("Firebase config not found. Share count functionality will not work.");
+            }
+
             // --- INITIALIZATION ---
             loadState(); // Cargar estado del juego al cargar la página
             updateUI(); // Actualizar la UI según el estado cargado
@@ -1832,3 +1806,4 @@ ${window.location.href}
     </script>
 </body>
 </html>
+�
