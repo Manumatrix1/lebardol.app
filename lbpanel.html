@@ -442,31 +442,42 @@
             if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
 
             try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
+                console.log("Attempting Firebase initialization...");
+                // Solo inicializa Firebase si la configuración está disponible
+                if (Object.keys(firebaseConfig).length > 0) {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    console.log("Firebase app, db, and auth initialized.");
 
-                // Authenticate user
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                    console.log("Signed in with custom token.");
-                } else {
-                    await signInAnonymously(auth);
-                    console.log("Signed in anonymously.");
-                }
-
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        console.log("User authenticated:", userId);
-                        if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
-                        setupFirestoreListeners();
+                    // Authenticate user
+                    console.log("Attempting Firebase authentication...");
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                        console.log("Signed in with custom token.");
                     } else {
-                        console.log("No user is signed in.");
-                        userId = 'no-autenticado';
-                        if (userIdDisplay) userId.textContent = `ID de Usuario: ${userId}`;
+                        await signInAnonymously(auth);
+                        console.log("Signed in anonymously.");
                     }
-                });
+                    console.log("Firebase authentication successful.");
+
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            console.log("User authenticated:", userId);
+                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                            setupFirestoreListeners();
+                        } else {
+                            console.log("No user is signed in.");
+                            userId = 'no-autenticado';
+                            if (userIdDisplay) userId.textContent = `ID de Usuario: ${userId}`;
+                        }
+                    });
+                } else {
+                    console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");
+                    displayMessage("Configuración de Firebase no encontrada. Algunas funciones no estarán disponibles.", "warning");
+                    return; // Exit if no config
+                }
 
             } catch (error) {
                 console.error("Error initializing Firebase or authenticating:", error);
@@ -479,6 +490,7 @@
 
             // --- Firestore Listener Setup ---
             function setupFirestoreListeners() {
+                console.log("Setting up Firestore listeners...");
                 if (!db || !userId || userId === 'cargando...') {
                     console.warn("Firestore o userId no están listos para configurar los listeners.");
                     return;
@@ -525,6 +537,7 @@
                         rouletteShareCountDisplay.textContent = "Error al cargar el contador de ruleta.";
                     }
                 });
+                console.log("Firestore listeners setup complete.");
             }
 
             // --- UI Management ---
