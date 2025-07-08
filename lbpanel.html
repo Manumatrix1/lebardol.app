@@ -97,12 +97,9 @@
             border-color: #8a2be2; /* Purple for Le Bardol */
             box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
-        /* Removed QR code specific styles as they are no longer needed */
-
         .hidden {
             display: none;
         }
-        
         .app-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -144,7 +141,6 @@
             max-width: 500px;
             margin: 0 auto;
         }
-        
         .ticket-count { /* Renamed to 'entry-count' conceptually for turns/campaigns */
             background-color: #8a2be2; /* Purple for Le Bardol */
             color: white;
@@ -302,6 +298,26 @@
             font-weight: 600;
             color: #374151;
         }
+        .generated-link-container {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #e0f7fa;
+            border: 1px solid #b2ebf2;
+            border-radius: 0.5rem;
+            word-break: break-all;
+            text-align: center;
+        }
+        .generated-link-container a {
+            color: #00796b;
+            text-decoration: underline;
+        }
+        .link-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body class="font-inter antialiased">
@@ -332,7 +348,7 @@
 
         <!-- Turn Management Section -->
         <div id="turn-management-section" class="turn-management-section">
-            <h2 class="section-header">Registrar Nuevo Turno</h2>
+            <h2 class="section-header">Generar Enlace de Turno</h2>
             <div class="mb-4">
                 <label for="turn-client-name" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Cliente:</label>
                 <input type="text" id="turn-client-name" class="input-field" placeholder="Ej: Ana Gómez">
@@ -345,7 +361,20 @@
                 <label for="turn-time" class="block text-gray-700 text-sm font-bold mb-2">Hora del Turno:</label>
                 <input type="time" id="turn-time" class="input-field">
             </div>
-            <button id="save-turn-btn" class="button-primary w-full">Guardar Turno</button>
+            <div class="mb-4">
+                <label for="turn-treatment" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Tratamiento:</label>
+                <input type="text" id="turn-treatment" class="input-field" placeholder="Ej: Depilación Láser Piernas">
+            </div>
+            <button id="generate-turn-link-btn" class="button-primary w-full">Generar Enlace de Turno</button>
+
+            <div id="generated-turn-link-info" class="generated-link-container hidden">
+                <p class="text-gray-700 text-sm mb-2">Enlace para el Cliente:</p>
+                <a id="client-turn-link" href="#" target="_blank" class="text-lg font-bold"></a>
+                <div class="link-actions">
+                    <button id="copy-turn-link-btn" class="button-secondary">Copiar Enlace</button>
+                    <button id="send-turn-whatsapp-btn" class="button-primary">Enviar por WhatsApp</button>
+                </div>
+            </div>
         </div>
 
         <!-- Registered Entries Section (for Turns and other Le Bardol data) -->
@@ -435,7 +464,7 @@
                     } else {
                         console.log("No user is signed in.");
                         userId = 'no-autenticado';
-                        if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                        if (userIdDisplay) userId.textContent = `ID de Usuario: ${userId}`;
                     }
                 });
 
@@ -453,13 +482,6 @@
                 if (!db || !userId || userId === 'cargando...') {
                     console.warn("Firestore o userId no están listos para configurar los listeners.");
                     return;
-                }
-
-                // Get the element inside the function where it's used
-                const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
-                if (!rouletteShareCountDisplay) {
-                    console.error("Element with ID 'roulette-share-count-display' not found. Cannot update share count display.");
-                    return; // Exit if the element is not found
                 }
 
                 // Listener para turnos (privado)
@@ -480,20 +502,28 @@
                 // Listener para el contador de compartidos de la ruleta (privado)
                 const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
                 onSnapshot(rouletteShareCountRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        rouletteShareCount = data.count || 0;
-                        rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: ${rouletteShareCount}`;
+                    const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
+                    if (rouletteShareCountDisplay) {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            rouletteShareCount = data.count || 0;
+                            rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: ${rouletteShareCount}`;
+                        } else {
+                            console.log("No share count data found for this user, initializing to 0.");
+                            rouletteShareCount = 0;
+                            rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: 0`;
+                            // Optionally initialize the document if it doesn't exist for this user
+                            setDoc(rouletteShareCountRef, { count: 0 }, { merge: true }).catch(e => console.error("Error initializing share count:", e));
+                        }
                     } else {
-                        console.log("No share count data found for this user, initializing to 0.");
-                        rouletteShareCount = 0;
-                        rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: 0`;
-                        // Optionally initialize the document if it doesn't exist for this user
-                        setDoc(rouletteShareCountRef, { count: 0 }, { merge: true }).catch(e => console.error("Error initializing share count:", e));
+                        console.warn("Elemento 'roulette-share-count-display' no encontrado.");
                     }
                 }, (error) => {
                     console.error("Error listening to private roulette share count:", error);
-                    rouletteShareCountDisplay.textContent = "Error al cargar el contador de ruleta.";
+                    const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
+                    if (rouletteShareCountDisplay) {
+                        rouletteShareCountDisplay.textContent = "Error al cargar el contador de ruleta.";
+                    }
                 });
             }
 
@@ -506,10 +536,14 @@
 
             function showSection(sectionId) {
                 for (const id in sections) {
-                    if (id === sectionId) {
-                        sections[id].classList.remove('hidden');
+                    if (sections[id]) { // Verificar que el elemento no sea null
+                        if (id === sectionId) {
+                            sections[id].classList.remove('hidden');
+                        } else {
+                            sections[id].classList.add('hidden');
+                        }
                     } else {
-                        sections[id].classList.add('hidden');
+                        console.warn(`Attempted to show/hide missing section: ${id}`);
                     }
                 }
             }
@@ -529,14 +563,20 @@
             const turnClientNameInput = document.getElementById('turn-client-name');
             const turnDateInput = document.getElementById('turn-date');
             const turnTimeInput = document.getElementById('turn-time');
-            const saveTurnBtn = document.getElementById('save-turn-btn');
+            const turnTreatmentInput = document.getElementById('turn-treatment'); // New input for treatment
+            const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
+            const generatedTurnLinkInfo = document.getElementById('generated-turn-link-info');
+            const clientTurnLink = document.getElementById('client-turn-link');
+            const copyTurnLinkBtn = document.getElementById('copy-turn-link-btn');
+            const sendTurnWhatsappBtn = document.getElementById('send-turn-whatsapp-btn');
 
-            saveTurnBtn.addEventListener('click', async () => {
+            generateTurnLinkBtn.addEventListener('click', async () => {
                 const clientName = turnClientNameInput.value.trim();
                 const turnDate = turnDateInput.value;
                 const turnTime = turnTimeInput.value;
+                const turnTreatment = turnTreatmentInput.value.trim();
 
-                if (!clientName || !turnDate || !turnTime) {
+                if (!clientName || !turnDate || !turnTime || !turnTreatment) {
                     displayMessage("Por favor, completa todos los campos del turno.", "warning");
                     return;
                 }
@@ -547,6 +587,7 @@
                         clientName: clientName,
                         date: turnDate,
                         time: turnTime,
+                        treatment: turnTreatment,
                         createdAt: new Date().toISOString(),
                         id: turnId,
                         type: 'turn' // Explicitly mark as turn
@@ -555,14 +596,61 @@
                     await setDoc(doc(db, `artifacts/${appId}/users/${userId}/turns`, turnId), turnData);
                     displayMessage("Turno guardado exitosamente.", "success");
 
+                    // Encode parameters for URL
+                    const encodedClientName = encodeURIComponent(clientName);
+                    const encodedTurnDate = encodeURIComponent(turnDate);
+                    const encodedTurnTime = encodeURIComponent(turnTime);
+                    const encodedTurnTreatment = encodeURIComponent(turnTreatment);
+                    const encodedTurnId = encodeURIComponent(turnId);
+                    const encodedAppBaseUrl = encodeURIComponent(window.location.origin + '/index.html'); // Link to roulette/cards
+
+                    // Construct the client-facing turn confirmation URL
+                    // This assumes client_turn_confirmation.html is in the same directory as generador.html
+                    const clientConfirmationUrl = `${window.location.origin}/client_turn_confirmation.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${encodedAppBaseUrl}`;
+
+                    clientTurnLink.href = clientConfirmationUrl;
+                    clientTurnLink.textContent = clientConfirmationUrl;
+                    generatedTurnLinkInfo.classList.remove('hidden');
+
+                    // Store the generated link for WhatsApp button
+                    sendTurnWhatsappBtn.dataset.turnLink = clientConfirmationUrl;
+
                     turnClientNameInput.value = '';
                     turnDateInput.value = '';
                     turnTimeInput.value = '';
+                    turnTreatmentInput.value = '';
                 } catch (e) {
                     console.error("Error saving turn:", e);
                     displayMessage("Error al guardar el turno. Intenta de nuevo.", "error");
                 }
             });
+
+            copyTurnLinkBtn.addEventListener('click', () => {
+                const linkToCopy = clientTurnLink.textContent;
+                navigator.clipboard.writeText(linkToCopy)
+                    .then(() => displayMessage("Enlace copiado al portapapeles.", "success"))
+                    .catch(err => {
+                        console.error('Error al copiar el enlace:', err);
+                        displayMessage("Error al copiar el enlace.", "error");
+                    });
+            });
+
+            sendTurnWhatsappBtn.addEventListener('click', () => {
+                const turnLink = sendTurnWhatsappBtn.dataset.turnLink;
+                const clientName = turnClientNameInput.value.trim() || 'Estimado cliente'; // Use input value before clearing
+                const turnDate = turnDateInput.value;
+                const turnTime = turnTimeInput.value;
+                const turnTreatment = turnTreatmentInput.value.trim();
+
+                if (!turnLink) {
+                    displayMessage("Primero genera el enlace del turno.", "warning");
+                    return;
+                }
+
+                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+            });
+
 
             // --- Registered Entries Display (for Turns) ---
             const entrySearchInput = document.getElementById('entry-search-input');
@@ -589,10 +677,10 @@
                     const clientName = entry.clientName;
                     const entryId = entry.id;
                     const type = entry.type === 'turn' ? 'Turno' : 'Desconocido';
-                    const details = entry.type === 'turn' ? `${new Date(entry.date).toLocaleDateString()} ${entry.time}` : 'N/A';
+                    const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : 'N/A';
 
                     // Filter based on search term
-                    if (searchTerm && !(clientName && clientName.toLowerCase().includes(searchTerm)) && !(entryId && entryId.toLowerCase().includes(searchTerm))) {
+                    if (searchTerm && !(clientName && clientName.toLowerCase().includes(searchTerm)) && !(entryId && entryId.toLowerCase().includes(searchTerm)) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm))) {
                         return; // Skip if no match
                     }
 
