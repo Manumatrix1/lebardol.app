@@ -161,7 +161,7 @@
         .entries-table tbody tr:last-child td { border-bottom: none; }
         .entries-table tbody tr:hover { background-color: #F1F3F1; }
         .status-cell { font-weight: 600; }
-        .status-cell.valid { color: #4caf50; }
+        .status-cell.valid { color: #A3C1A1; }
         .status-cell.used { color: #f44336; }
         .summary-cards { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
         .summary-card {
@@ -174,7 +174,7 @@
         }
         .summary-card .count { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
         .summary-card .label { font-size: 0.9rem; color: #666666; }
-        .summary-card.valid .count { color: #4caf50; }
+        .summary-card.valid .count { color: #A3C1A1; }
         .summary-card.used .count { color: #f44336; }
         .turn-management-section, .campaign-link-generator-section, .registered-entries-section, .campaign-stats-section {
             padding: 1.5rem;
@@ -322,7 +322,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+        
         console.log("JavaScript is running!");
 
         document.addEventListener('DOMContentLoaded', async () => {

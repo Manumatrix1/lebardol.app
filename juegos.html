@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juega y Gana - Le Bardol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'The Seasons';
+            src: url('TheSeasons.woff2') format('woff2'),
+                 url('TheSeasons.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --bg-light: #F4EDE7;
+            --bg-card: #ffffff;
+            --text-dark: #4E6C50;
+            --text-gray: #A3C1A1;
+            --accent-green: #A3C1A1;
+            --accent-dark-green: #4E6C50;
+            --accent-blue: #3498db;
+            --prize-gold: #FFD700;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        #contact-form-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #roulette-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .roulette-board {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        
+        .roulette-image {
+            width: 100%;
+            height: auto;
+            transition: transform 5s ease-out;
+            cursor: pointer;
+        }
+        
+        .roulette-marker {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid var(--accent-dark-green);
+        }
+        
+        .prize-result {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-dark-green);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-green), #688e68);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--accent-green), #688e68);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="contact-form-container">
+            <h1 class="font-bold text-2xl mb-4 text-center" style="font-family: 'The Seasons', serif; color: var(--accent-dark-green);">¡Juega y Gana!</h1>
+            <p class="mb-6 text-center">Ingresa tus datos para girar la ruleta y ganar un premio.</p>
+            <form id="roulette-form" class="flex flex-col gap-4">
+                <input type="text" id="player-name" class="form-input" placeholder="Tu Nombre" required>
+                <input type="email" id="player-email" class="form-input" placeholder="Tu Correo Electrónico" required>
+                <button type="submit" class="btn">Empezar a Jugar</button>
+            </form>
+        </div>
+
+        <div id="roulette-container" class="flex flex-col items-center hidden">
+            <h1 class="font-bold text-2xl mb-4 text-center" style="font-family: 'The Seasons', serif; color: var(--accent-dark-green);">¡Gira la Ruleta!</h1>
+            <div class="roulette-board" onclick="spinRoulette()">
+                <img id="roulette-img" src="jugaygana.png" alt="Ruleta" class="roulette-image">
+                <div class="roulette-marker"></div>
+            </div>
+            <p id="prize-text" class="prize-result"></p>
+            <a id="cta-link" href="#" class="cta-button hidden">¡Canjear Premio!</a>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // CONFIGURACIÓN DE FIREBASE (igual que en tu panel)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        let app, db, auth, userId = 'cargando...';
+        
+        try {
+            if (Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                await signInAnonymously(auth);
+                onAuthStateChanged(auth, (user) => {
+                    if (user) { userId = user.uid; }
+                });
+            }
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+        }
+
+        const prizes = [
+            "10% OFF en Depilación Láser",
+            "50% OFF en Limpieza Facial",
+            "1 Sesión de Drenaje Linfático",
+            "1 Sesión de Masajes Descontracturantes",
+            "1 Sesión de Presoterapia",
+            "1 Sesión de Electroestimulación"
+        ];
+        
+        let spinning = false;
+        let playerName = '';
+        let playerEmail = '';
+
+        const rouletteForm = document.getElementById('roulette-form');
+        const contactFormContainer = document.getElementById('contact-form-container');
+        const rouletteContainer = document.getElementById('roulette-container');
+        const rouletteImg = document.getElementById('roulette-img');
+        const prizeText = document.getElementById('prize-text');
+        const ctaLink = document.getElementById('cta-link');
+        const audio = new Audio('apalusos.mp3');
+
+        rouletteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            playerName = document.getElementById('player-name').value;
+            playerEmail = document.getElementById('player-email').value;
+
+            if (playerName && playerEmail) {
+                contactFormContainer.classList.add('hidden');
+                rouletteContainer.classList.remove('hidden');
+            }
+        });
+        
+        window.spinRoulette = function() {
+            if (spinning) return;
+            spinning = true;
+        
+            const winningIndex = Math.floor(Math.random() * prizes.length);
+            const totalDegrees = 360 * 5; // 5 giros completos
+            const segmentDegrees = 360 / prizes.length;
+            const finalRotation = totalDegrees - (winningIndex * segmentDegrees) - (segmentDegrees / 2) + Math.random() * (segmentDegrees * 0.8 - (segmentDegrees * 0.2)) + (segmentDegrees * 0.1);
+
+            rouletteImg.style.transform = `rotate(${finalRotation}deg)`;
+        
+            setTimeout(() => {
+                spinning = false;
+                const winningPrize = prizes[winningIndex];
+                prizeText.textContent = `¡Felicidades! Ganaste: ${winningPrize}`;
+                audio.play();
+
+                // Guardar los datos en Firebase
+                saveUserData(winningPrize);
+        
+                ctaLink.classList.remove('hidden');
+                const whatsappMessage = `¡Hola! Acabo de ganar el premio de "${winningPrize}" en la ruleta de Le Bardol. ¡Quisiera canjearlo!`;
+                ctaLink.href = `https://wa.me/5493415216025?text=${encodeURIComponent(whatsappMessage)}`;
+            }, 5000);
+        };
+
+        async function saveUserData(winningPrize) {
+            try {
+                if (db && userId && userId !== 'cargando...') {
+                    const entryId = `Roulette-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    const userData = {
+                        name: playerName,
+                        email: playerEmail,
+                        prize: winningPrize,
+                        type: 'roulette-entry',
+                        createdAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, `artifacts/${appId}/users/${userId}/campaigns`, entryId), userData);
+                    console.log("Datos de la ruleta guardados exitosamente.");
+                } else {
+                    console.warn("No se pudo guardar en Firestore. Firebase no está inicializado o el usuario no está autenticado.");
+                }
+            } catch (e) {
+                console.error("Error al guardar los datos de la ruleta:", e);
+            }
+        }
+    </script>
+</body>
+</html>

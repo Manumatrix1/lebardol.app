@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Bardol Estética Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'The Seasons';
+            src: url('TheSeasons.woff2') format('woff2'),
+                 url('TheSeasons.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        :root {
+            --bg-light: #F4EDE7;
+            --bg-card: #ffffff;
+            --text-dark: #4E6C50;
+            --text-gray: #A3C1A1;
+            --accent-green: #A3C1A1;
+            --accent-dark-green: #4E6C50;
+            --accent-blue: #3498db;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        .logo-container {
+            margin-bottom: 25px;
+        }
+        .logo-container img {
+            max-width: 250px;
+            height: auto;
+        }
+        h1 {
+            font-family: 'The Seasons', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-dark-green);
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        .btn-whatsapp {
+            background: linear-gradient(135deg, var(--accent-green), #688e68);
+        }
+        .btn-game {
+            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
+        </div>
+        <h1>¡Bienvenidos a Le Bardol Estética Center!</h1>
+        <p>Tu lugar para el bienestar y la belleza. Elige una opción para comenzar.</p>
+
+        <div class="button-group">
+            <a href="https://wa.me/5493415216025?text=¡Hola! Quiero agendar un turno." target="_blank" class="btn btn-whatsapp">
+                <i class="fab fa-whatsapp"></i> Reservar Turno
+            </a>
+            <a href="juegos.html" class="btn btn-game">
+                <i class="fas fa-gift"></i> Jugar y Ganar Premios
+            </a>
+        </div>
+    </div>
+</body>
+</html>
