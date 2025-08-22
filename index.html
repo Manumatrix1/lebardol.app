@@ -9,7 +9,7 @@
     <style>
         @font-face {
             font-family: 'The Seasons';
-            src: url('TheSeasons.woff2') format('woff2');
+            src: url('fuentes/TheSeasons-reg.woff') format('woff');
         }
         body {
             font-family: 'The Seasons', 'Montserrat', sans-serif;
@@ -37,7 +37,7 @@
             cursor: pointer;
             border: none;
             box-shadow: 0 4px 6px rgba(163, 193, 161, 0.4);
-            flex: 1 1 48%; /* Permite dos botones por fila con espacio */
+            flex: 1 1 48%;
             text-align: center;
         }
         .button-primary:hover, .button-secondary:hover {
@@ -522,7 +522,9 @@
                     return;
                 }
 
-                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancel
+
+a tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
