@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control Le Bardol</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'The Seasons';
-            src: url('fuentes/TheSeasons-reg.woff') format('woff');
-        }
         body {
-            font-family: 'The Seasons', 'Montserrat', sans-serif;
-            background-color: #F4EDE7;
-            color: #4E6c50;
+            font-family: 'Playfair Display', Georgia, serif;
+            background: radial-gradient(circle at top left, #fff0f5 0%, #f9f0ff 100%);
+            color: #333333;
         }
         .container {
             max-width: 900px;
@@ -22,12 +18,12 @@
             padding: 1.5rem;
             background-color: white;
             border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(106, 5, 114, 0.15);
             position: relative;
             overflow: hidden;
-            border: 1px solid #A3C1A1;
+            border: 1px solid #f0e0f0;
         }
-        .button-primary, .button-secondary {
+        .button-primary {
             background-color: #A3C1A1;
             color: white;
             padding: 0.75rem 1.5rem;
@@ -40,7 +36,25 @@
             flex: 1 1 48%;
             text-align: center;
         }
-        .button-primary:hover, .button-secondary:hover {
+        .button-primary:hover {
+            transform: translateY(-2px);
+            background-color: #4E6c50;
+            box-shadow: 0 7px 14px rgba(78, 108, 80, 0.3);
+        }
+        .button-secondary {
+            background-color: #A3C1A1;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(163, 193, 161, 0.2);
+            flex: 1 1 48%;
+            text-align: center;
+        }
+        .button-secondary:hover {
             transform: translateY(-2px);
             background-color: #4E6c50;
             box-shadow: 0 7px 14px rgba(78, 108, 80, 0.3);
@@ -48,12 +62,11 @@
         .section-header {
             font-size: 1.875rem;
             font-weight: 700;
-            color: #4E6c50;
+            color: #1f2937;
             margin-bottom: 1.5rem;
             text-align: center;
             position: relative;
             padding-bottom: 0.5rem;
-            font-family: 'The Seasons', sans-serif;
         }
         .section-header::after {
             content: "";
@@ -73,7 +86,7 @@
             border-radius: 0.5rem;
             margin-bottom: 1rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Playfair Display', Georgia, serif;
         }
         .input-field:focus {
             outline: none;
@@ -94,27 +107,27 @@
         .app-title {
             font-size: 2.25rem;
             font-weight: 800;
-            color: #4E6c50;
+            background: linear-gradient(90deg, #4E6c50, #A3C1A1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
-            font-family: 'The Seasons', sans-serif;
         }
         .app-subtitle {
-            color: #A3C1A1;
+            color: #6b7280;
             font-size: 1.125rem;
             max-width: 500px;
             margin: 0 auto;
-            font-family: 'Montserrat', sans-serif;
         }
         .entry-count {
-            background-color: #4E6c50;
+            background-color: #A3C1A1;
             color: white;
             border-radius: 9999px;
             padding: 0.25rem 0.75rem;
             font-size: 0.875rem;
             font-weight: 600;
             margin-left: 0.5rem;
-            font-family: 'Montserrat', sans-serif;
         }
         .floating-notification {
             position: fixed;
@@ -127,11 +140,10 @@
             z-index: 1000;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
-            font-family: 'Montserrat', sans-serif;
         }
         @keyframes slideIn { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
-        .notification-success { background-color: #A3C1A1; color: white; }
+        .notification-success { background-color: #4caf50; color: white; }
         .notification-error { background-color: #f44336; color: white; }
         .notification-info { background-color: #2196F3; color: white; }
         .notification-warning { background-color: #ff9800; color: white; }
@@ -144,12 +156,12 @@
             overflow-x: auto;
         }
         .entries-table { width: 100%; border-collapse: collapse; }
-        .entries-table th, .entries-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #A3C1A1; font-family: 'Montserrat', sans-serif; }
+        .entries-table th, .entries-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #A3C1A1; }
         .entries-table th { background-color: #E6EAE6; color: #4E6c50; font-weight: 600; text-transform: uppercase; font-size: 0.875rem; }
         .entries-table tbody tr:last-child td { border-bottom: none; }
         .entries-table tbody tr:hover { background-color: #F1F3F1; }
         .status-cell { font-weight: 600; }
-        .status-cell.valid { color: #A3C1A1; }
+        .status-cell.valid { color: #4caf50; }
         .status-cell.used { color: #f44336; }
         .summary-cards { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
         .summary-card {
@@ -160,9 +172,9 @@
             text-align: center;
             min-width: 150px;
         }
-        .summary-card .count { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'The Seasons', sans-serif; }
-        .summary-card .label { font-size: 0.9rem; color: #666666; font-family: 'Montserrat', sans-serif; }
-        .summary-card.valid .count { color: #A3C1A1; }
+        .summary-card .count { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .summary-card .label { font-size: 0.9rem; color: #666666; }
+        .summary-card.valid .count { color: #4caf50; }
         .summary-card.used .count { color: #f44336; }
         .turn-management-section, .campaign-link-generator-section, .registered-entries-section, .campaign-stats-section {
             padding: 1.5rem;
@@ -203,7 +215,7 @@
             </div>
             <h1 class="app-title">LE BARDOL</h1>
             <p class="app-subtitle">Sistema de Gestión de Turnos y Campañas</p>
-            <p id="user-id-display" class="text-sm text-gray-500 mt-2" style="font-family: 'Montserrat', sans-serif;">ID de Usuario: Cargando...</p>
+            <p id="user-id-display" class="text-sm text-gray-500 mt-2">ID de Usuario: Cargando...</p>
         </div>
 
         <div class="flex flex-wrap justify-center gap-4 mb-8">
@@ -243,7 +255,7 @@
             <button id="generate-turn-link-btn" class="button-primary w-full">Generar Enlace de Turno</button>
 
             <div id="generated-turn-link-info" class="generated-link-container hidden">
-                <p class="text-gray-700 text-sm mb-2" style="font-family: 'Montserrat', sans-serif;">Enlace para el Cliente:</p>
+                <p class="text-gray-700 text-sm mb-2">Enlace para el Cliente:</p>
                 <a id="client-turn-link" href="#" target="_blank" class="text-lg font-bold"></a>
                 <div class="link-actions">
                     <button id="copy-turn-link-btn" class="button-secondary">Copiar Enlace</button>
@@ -255,13 +267,13 @@
         <div id="campaign-link-generator-section" class="campaign-link-generator-section hidden">
             <h2 class="section-header">Generar Enlace de Campaña</h2>
             <div class="mb-4">
-                <p class="text-gray-700 text-sm" style="font-family: 'Montserrat', sans-serif;">Este enlace es ideal para compartir en redes sociales y campañas de difusión. Dirige a los clientes directamente a la ruleta y el juego de cartas.</p>
+                <p class="text-gray-700 text-sm">Este enlace es ideal para compartir en redes sociales y campañas de difusión. Dirige a los clientes directamente a la ruleta y el juego de cartas.</p>
             </div>
             <button id="generate-campaign-link-btn" class="button-primary w-full">
                 <i class="fas fa-link"></i> Generar Enlace de Ruleta
             </button>
             <div id="generated-campaign-link-info" class="generated-link-container hidden">
-                <p class="text-gray-700 text-sm mb-2" style="font-family: 'Montserrat', sans-serif;">Enlace para Campañas:</p>
+                <p class="text-gray-700 text-sm mb-2">Enlace para Campañas:</p>
                 <a id="campaign-link" href="#" target="_blank" class="text-lg font-bold"></a>
                 <div class="link-actions">
                     <button id="copy-campaign-link-btn" class="button-secondary">Copiar Enlace</button>
@@ -522,9 +534,7 @@
                     return;
                 }
 
-                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancel
-
-a tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
