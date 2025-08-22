@@ -320,7 +320,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         console.log("JavaScript is running!");
@@ -352,22 +352,18 @@
                     app = initializeApp(firebaseConfig);
                     db = getFirestore(app);
                     auth = getAuth(app);
-
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-
-                    onAuthStateChanged(auth, (user) => {
-                        if (user) {
-                            userId = user.uid;
-                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
-                            setupFirestoreListeners();
-                        } else {
-                            userId = 'no-autenticado';
-                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
-                        }
+                    
+                    signInAnonymously(auth).then(() => {
+                        onAuthStateChanged(auth, (user) => {
+                            if (user) {
+                                userId = user.uid;
+                                if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                                setupFirestoreListeners();
+                            } else {
+                                userId = 'no-autenticado';
+                                if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                            }
+                        });
                     });
                 } else {
                     console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");

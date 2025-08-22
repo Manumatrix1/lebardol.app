@@ -182,9 +182,10 @@
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                await signInAnonymously(auth);
-                onAuthStateChanged(auth, (user) => {
-                    if (user) { userId = user.uid; }
+                signInAnonymously(auth).then(() => {
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) { userId = user.uid; }
+                    });
                 });
             }
         } catch (error) {
