@@ -322,23 +322,22 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-
+        
         console.log("JavaScript is running!");
 
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("DOM fully loaded and parsed. Initializing script...");
 
-            const appId = "1:772635863658:web:4a049bb6fcf0aed3ed7813";
             const firebaseConfig = {
-              apiKey: "AIzaSyBIDo-_yARvS8TkULGYO2unNGvC2F3UvMI",
-              authDomain: "le-bardol.firebaseapp.com",
-              projectId: "le-bardol",
-              storageBucket: "le-bardol.firebasestorage.app",
-              messagingSenderId: "772635863658",
-              appId: "1:772635863658:web:4a049bb6fcf0aed3ed7813",
-              measurementId: "G-LYD84M1X44"
+                apiKey: "AIzaSyBIDo-_yARvS8TkULGYO2unNGvC2F3UvMI",
+                authDomain: "le-bardol.firebaseapp.com",
+                projectId: "le-bardol",
+                storageBucket: "le-bardol.firebasestorage.app",
+                messagingSenderId: "772635863658",
+                appId: "1:772635863658:web:4a049bb6fcf0aed3ed7813",
+                measurementId: "G-LYD84M1X44"
             };
+            const appId = firebaseConfig.appId;
 
             let app;
             let db;
@@ -353,9 +352,12 @@
                     app = initializeApp(firebaseConfig);
                     db = getFirestore(app);
                     auth = getAuth(app);
-                    const analytics = getAnalytics(app);
 
-                    await signInAnonymously(auth);
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
 
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
@@ -425,6 +427,7 @@
                 });
             }
 
+            // --- UI Management ---
             const sections = {
                 'turn-management-section': document.getElementById('turn-management-section'),
                 'campaign-link-generator-section': document.getElementById('campaign-link-generator-section'),
@@ -446,13 +449,16 @@
                 }
             }
 
+            // Initial view
             showSection('turn-management-section');
 
+            // --- Event Listeners for Navigation ---
             document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
             document.getElementById('show-campaign-link-generator-btn').addEventListener('click', () => showSection('campaign-link-generator-section'));
             document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
             document.getElementById('show-campaign-stats-btn').addEventListener('click', () => showSection('campaign-stats-section'));
 
+            // --- Turn Management ---
             const turnClientNameInput = document.getElementById('turn-client-name');
             const turnDateInput = document.getElementById('turn-date');
             const turnTimeInput = document.getElementById('turn-time');
@@ -540,6 +546,7 @@
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
+            // --- Campaign Link Generator ---
             const generateCampaignLinkBtn = document.getElementById('generate-campaign-link-btn');
             const generatedCampaignLinkInfo = document.getElementById('generated-campaign-link-info');
             const campaignLink = document.getElementById('campaign-link');
@@ -574,13 +581,11 @@
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
+            // --- Registered Entries Display (for Turns) ---
             const entrySearchInput = document.getElementById('entry-search-input');
             const entriesTableBody = document.getElementById('entries-table-body');
             const totalTurnsCountDisplay = document.getElementById('total-turns-count');
             const totalEntriesCountSpan = document.getElementById('total-entries-count');
-
-            let turnsDB = {};
-            let rouletteShareCount = 0;
 
             function updateEntryCounts() {
                 let totalTurns = Object.keys(turnsDB).length;
@@ -620,6 +625,7 @@
 
             entrySearchInput.addEventListener('input', renderRegisteredEntries);
 
+            // --- Notification System ---
             function displayMessage(message, type = "info") {
                 const notification = document.createElement('div');
                 notification.textContent = message;
