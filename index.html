@@ -323,7 +323,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        
+
         console.log("JavaScript is running!");
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -354,7 +354,7 @@
                     db = getFirestore(app);
                     auth = getAuth(app);
                     const analytics = getAnalytics(app);
-                    
+
                     await signInAnonymously(auth);
 
                     onAuthStateChanged(auth, (user) => {
