@@ -322,6 +322,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<<<<<<< HEAD
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
         console.log("JavaScript is running!");
@@ -339,6 +340,16 @@
               appId: "1:772635863658:web:4a049bb6fcf0aed3ed7813",
               measurementId: "G-LYD84M1X44"
             };
+=======
+        
+        console.log("JavaScript is running!");
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log("DOM fully loaded and parsed. Initializing script...");
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+>>>>>>> cf34a9fdfafe3e1f1961f715fd7e02a561ba02f6
 
             let app;
             let db;
@@ -353,7 +364,10 @@
                     app = initializeApp(firebaseConfig);
                     db = getFirestore(app);
                     auth = getAuth(app);
+<<<<<<< HEAD
                     const analytics = getAnalytics(app);
+=======
+>>>>>>> cf34a9fdfafe3e1f1961f715fd7e02a561ba02f6
 
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
@@ -627,4 +641,36 @@
 
             entrySearchInput.addEventListener('input', renderRegisteredEntries);
 
+<<<<<<< HEAD
             //
+=======
+            // --- Notification System ---
+            function displayMessage(message, type = "info") {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.classList.add('floating-notification');
+
+                if (type === "success") {
+                    notification.classList.add('notification-success');
+                } else if (type === "error") {
+                    notification.classList.add('notification-error');
+                } else if (type === "warning") {
+                    notification.classList.add('notification-warning');
+                } else {
+                    notification.classList.add('notification-info');
+                }
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            renderRegisteredEntries();
+            updateEntryCounts();
+        });
+    </script>
+</body>
+</html>
+>>>>>>> cf34a9fdfafe3e1f1961f715fd7e02a561ba02f6
