@@ -349,6 +349,11 @@
             text-decoration: none;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
+        
+        .hidden {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -502,7 +507,7 @@
 
             const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4'];
             while (segmentColors.length < segments.length) {
-                segmentColors.push(segmentColors[segmentColors.length % 8]);
+                segmentColors.push(segmentColors[segments.length % 8]);
             }
             
             const numSegments = segments.length;
@@ -718,4 +723,4 @@
         });
     </script>
 </body>
-</html>
+</html>git
