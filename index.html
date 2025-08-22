@@ -496,9 +496,11 @@
                     const encodedTurnTime = encodeURIComponent(turnTime);
                     const encodedTurnTreatment = encodeURIComponent(turnTreatment);
                     const encodedTurnId = encodeURIComponent(turnId);
-                    const encodedAppBaseUrl = encodeURIComponent(window.location.origin + '/juegos.html');
+                    
+                    const currentPagePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+                    const fullPath = window.location.origin + currentPagePath;
 
-                    const clientConfirmationUrl = `${window.location.origin}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${encodedAppBaseUrl}`;
+                    const clientConfirmationUrl = `${fullPath}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${fullPath}/juegos.html`;
 
                     clientTurnLink.href = clientConfirmationUrl;
                     clientTurnLink.textContent = clientConfirmationUrl;
@@ -550,7 +552,10 @@
             const sendCampaignWhatsappBtn = document.getElementById('send-campaign-whatsapp-btn');
 
             generateCampaignLinkBtn.addEventListener('click', () => {
-                const finalUrl = `${window.location.origin}/juegos.html`;
+                const currentPagePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+                const fullPath = window.location.origin + currentPagePath;
+                const finalUrl = `${fullPath}/juegos.html`;
+
                 campaignLink.textContent = finalUrl;
                 campaignLink.href = finalUrl;
                 generatedCampaignLinkInfo.classList.remove('hidden');
