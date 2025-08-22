@@ -4,66 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control Le Bardol</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-light: #F4EDE7;
-            --bg-card: #ffffff;
-            --text-dark: #4E6C50;
-            --text-gray: #A3C1A1;
-            --accent-green: #A3C1A1;
-            --accent-dark-green: #4E6C50;
-            --accent-blue: #3498db;
-            --accent-red: #e74c3c;
-            --highlight-pink: #fde2e4;
-        }
-
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Playfair Display', Georgia, serif;
+            background: radial-gradient(circle at top left, #fff0f5 0%, #f9f0ff 100%);
+            color: #333333;
         }
-
         .container {
             max-width: 900px;
             margin: 2rem auto;
             padding: 1.5rem;
-            background-color: var(--bg-card);
+            background-color: white;
             border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(106, 5, 114, 0.15);
             position: relative;
             overflow: hidden;
+            border: 1px solid #f0e0f0;
         }
-
-        .app-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .app-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: var(--accent-dark-green);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
-        }
-
-        .app-subtitle {
-            color: var(--text-gray);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.125rem;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
         .button-primary {
-            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
+            background-color: #A3C1A1;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -71,16 +32,17 @@
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
-            box-shadow: 0 4px 6px rgba(78, 108, 80, 0.2);
+            box-shadow: 0 4px 6px rgba(163, 193, 161, 0.4);
+            flex: 1 1 48%;
+            text-align: center;
         }
-
         .button-primary:hover {
             transform: translateY(-2px);
+            background-color: #4E6c50;
             box-shadow: 0 7px 14px rgba(78, 108, 80, 0.3);
         }
-        
         .button-secondary {
-            background: linear-gradient(135deg, var(--accent-green), #688e68);
+            background-color: #A3C1A1;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -88,25 +50,24 @@
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(163, 193, 161, 0.2);
+            flex: 1 1 48%;
+            text-align: center;
         }
-
         .button-secondary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+            background-color: #4E6c50;
+            box-shadow: 0 7px 14px rgba(78, 108, 80, 0.3);
         }
-
         .section-header {
-            font-family: 'Playfair Display', serif;
             font-size: 1.875rem;
             font-weight: 700;
-            color: var(--accent-dark-green);
+            color: #1f2937;
             margin-bottom: 1.5rem;
             text-align: center;
             position: relative;
             padding-bottom: 0.5rem;
         }
-
         .section-header::after {
             content: "";
             position: absolute;
@@ -115,10 +76,9 @@
             transform: translateX(-50%);
             width: 100px;
             height: 4px;
-            background: var(--accent-dark-green);
+            background-color: #A3C1A1;
             border-radius: 2px;
         }
-
         .input-field {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -126,112 +86,155 @@
             border-radius: 0.5rem;
             margin-bottom: 1rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Playfair Display', Georgia, serif;
         }
-
         .input-field:focus {
             outline: none;
-            border-color: var(--accent-dark-green);
-            box-shadow: 0 0 0 3px rgba(78, 108, 80, 0.2);
+            border-color: #A3C1A1;
+            box-shadow: 0 0 0 3px rgba(163, 193, 161, 0.2);
         }
-
-        .hidden {
-            display: none;
+        .hidden { display: none; }
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
         }
-
+        .app-logo img {
+            max-width: 250px;
+            height: auto;
+            margin: 0 auto 1rem;
+        }
+        .app-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #4E6c50, #A3C1A1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .app-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .entry-count {
+            background-color: #A3C1A1;
+            color: white;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+        }
+        @keyframes slideIn { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        .notification-success { background-color: #4caf50; color: white; }
+        .notification-error { background-color: #f44336; color: white; }
+        .notification-info { background-color: #2196F3; color: white; }
+        .notification-warning { background-color: #ff9800; color: white; }
         .entries-table-container {
             margin-top: 1.5rem;
-            background-color: var(--bg-light);
+            background-color: #F4EDE7;
             border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #A3C1A1;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             overflow-x: auto;
         }
-
-        .entries-table {
-            width: 100%;
-            border-collapse: collapse;
+        .entries-table { width: 100%; border-collapse: collapse; }
+        .entries-table th, .entries-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #A3C1A1; }
+        .entries-table th { background-color: #E6EAE6; color: #4E6c50; font-weight: 600; text-transform: uppercase; font-size: 0.875rem; }
+        .entries-table tbody tr:last-child td { border-bottom: none; }
+        .entries-table tbody tr:hover { background-color: #F1F3F1; }
+        .status-cell { font-weight: 600; }
+        .status-cell.valid { color: #A3C1A1; }
+        .status-cell.used { color: #f44336; }
+        .summary-cards { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .summary-card {
+            background-color: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            text-align: center;
+            min-width: 150px;
         }
-
-        .entries-table th, .entries-table td {
+        .summary-card .count { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .summary-card .label { font-size: 0.9rem; color: #666666; }
+        .summary-card.valid .count { color: #A3C1A1; }
+        .summary-card.used .count { color: #f44336; }
+        .turn-management-section, .campaign-link-generator-section, .registered-entries-section, .campaign-stats-section {
+            padding: 1.5rem;
+            border: 1px solid #A3C1A1;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: #F4EDE7;
+            margin-top: 2rem;
+        }
+        .turn-management-section .section-header, .campaign-link-generator-section .section-header, .campaign-stats-section .section-header {
+            color: #4E6c50;
+            background: none;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        .turn-management-section .section-header::after, .campaign-link-generator-section .section-header::after, .campaign-stats-section .section-header::after {
+            background-color: #A3C1A1;
+        }
+        .campaign-stats-section p { text-align: center; font-size: 1.25rem; font-weight: 600; color: #4E6c50; }
+        .generated-link-container {
+            margin-top: 1.5rem;
             padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+            background-color: #E6EAE6;
+            border: 1px solid #A3C1A1;
+            border-radius: 0.5rem;
+            word-break: break-all;
+            text-align: center;
         }
-
-        .entries-table th {
-            background-color: var(--accent-green);
-            color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-        }
-
-        .entries-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .entries-table tbody tr:hover {
-            background-color: #f3f4f6;
-        }
-
-        .notification-success {
-            background-color: #10b981;
-            color: white;
-        }
-
-        .notification-error {
-            background-color: #ef4444;
-            color: white;
-        }
-        
-        .copy-link-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        #copy-welcome-link-btn {
-            background: linear-gradient(135deg, var(--accent-green), #688e68);
-        }
+        .generated-link-container a { color: #4E6c50; text-decoration: underline; }
+        .link-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
     </style>
 </head>
-<body class="font-inter antialiased">
+<body class="font-body antialiased">
     <div class="container">
         <div class="app-header">
+            <div class="app-logo">
+                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center">
+            </div>
             <h1 class="app-title">LE BARDOL</h1>
-            <p class="app-subtitle">Panel de Control y Gestión</p>
+            <p class="app-subtitle">Sistema de Gestión de Turnos y Campañas</p>
+            <p id="user-id-display" class="text-sm text-gray-500 mt-2">ID de Usuario: Cargando...</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <button id="show-copy-link-btn" class="button-secondary">
-                Enlace de Bienvenida
-            </button>
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
             <button id="show-turn-management-btn" class="button-primary">
                 Gestión de Turnos
             </button>
-            <button id="show-registered-entries-btn" class="button-primary">
+            <button id="show-campaign-link-generator-btn" class="button-secondary">
+                Generar Link de Campaña
+            </button>
+            <button id="show-registered-entries-btn" class="button-secondary">
                 Ver Registros
+                <span id="total-entries-count" class="entry-count">0</span>
             </button>
             <button id="show-campaign-stats-btn" class="button-secondary">
                 Estadísticas de Campañas
             </button>
         </div>
-        
-        <div id="copy-welcome-link-section">
-            <h2 class="section-header">Enlace de Bienvenida para Clientes</h2>
-            <div class="copy-link-section">
-                <button id="copy-welcome-link-btn" class="button-secondary">
-                    <i class="fas fa-copy"></i> Copiar Enlace de Bienvenida
-                </button>
-                <div id="copy-message" class="hidden text-sm text-green-700 mt-2">
-                    Enlace copiado.
-                </div>
-            </div>
-        </div>
 
-        <div id="turn-management-section" class="hidden">
+        <div id="turn-management-section" class="turn-management-section">
             <h2 class="section-header">Generar Enlace de Turno</h2>
             <div class="mb-4">
                 <label for="turn-client-name" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Cliente:</label>
@@ -250,13 +253,46 @@
                 <input type="text" id="turn-treatment" class="input-field" placeholder="Ej: Depilación Láser Piernas">
             </div>
             <button id="generate-turn-link-btn" class="button-primary w-full">Generar Enlace de Turno</button>
+
+            <div id="generated-turn-link-info" class="generated-link-container hidden">
+                <p class="text-gray-700 text-sm mb-2">Enlace para el Cliente:</p>
+                <a id="client-turn-link" href="#" target="_blank" class="text-lg font-bold"></a>
+                <div class="link-actions">
+                    <button id="copy-turn-link-btn" class="button-secondary">Copiar Enlace</button>
+                    <button id="send-turn-whatsapp-btn" class="button-primary">Enviar por WhatsApp</button>
+                </div>
+            </div>
         </div>
 
-        <div id="registered-entries-section" class="entries-table-container hidden">
+        <div id="campaign-link-generator-section" class="campaign-link-generator-section hidden">
+            <h2 class="section-header">Generar Enlace de Campaña</h2>
+            <div class="mb-4">
+                <p class="text-gray-700 text-sm">Este enlace es ideal para compartir en redes sociales y campañas de difusión. Dirige a los clientes directamente a la ruleta y el juego de cartas.</p>
+            </div>
+            <button id="generate-campaign-link-btn" class="button-primary w-full">
+                <i class="fas fa-link"></i> Generar Enlace de Ruleta
+            </button>
+            <div id="generated-campaign-link-info" class="generated-link-container hidden">
+                <p class="text-gray-700 text-sm mb-2">Enlace para Campañas:</p>
+                <a id="campaign-link" href="#" target="_blank" class="text-lg font-bold"></a>
+                <div class="link-actions">
+                    <button id="copy-campaign-link-btn" class="button-secondary">Copiar Enlace</button>
+                    <button id="send-campaign-whatsapp-btn" class="button-primary">Enviar por WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="registered-entries-section" class="registered-entries-section hidden">
             <h2 class="section-header">Registros de Turnos y Campañas</h2>
             <div class="mb-4">
                 <label for="entry-search-input" class="block text-gray-700 text-sm font-bold mb-2">Buscar por Nombre o ID:</label>
                 <input type="text" id="entry-search-input" class="input-field" placeholder="Ej: Ana Gómez o LeBardol-Turn-... ">
+            </div>
+            <div class="summary-cards">
+                <div class="summary-card valid">
+                    <div id="total-turns-count" class="count">0</div>
+                    <div class="label">Total Turnos</div>
+                </div>
             </div>
             <div class="entries-table-container mt-6">
                 <table class="entries-table">
@@ -270,231 +306,343 @@
                         </tr>
                     </thead>
                     <tbody id="entries-table-body">
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
-        
-        <div id="campaign-stats-section" class="hidden">
-             <h2 class="section-header">Estadísticas de Campañas Le Bardol</h2>
-             <p id="roulette-share-count-display">Cargando contador de compartidos de ruleta...</p>
+
+        <div id="campaign-stats-section" class="campaign-stats-section hidden">
+            <h2 class="section-header">Estadísticas de Campañas Le Bardol</h2>
+            <p id="roulette-share-count-display">Cargando contador de compartidos de ruleta...</p>
         </div>
 
-        <script type="module">
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-            import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-            import { getFirestore, doc, setDoc, onSnapshot, collection, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-            
-            document.addEventListener('DOMContentLoaded', async () => {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    </div>
 
-                let app;
-                let db;
-                let auth;
-                let userId = 'cargando...';
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        console.log("JavaScript is running!");
 
-                try {
-                    // Firebase initialization block
-                    if (Object.keys(firebaseConfig).length > 0) {
-                        app = initializeApp(firebaseConfig);
-                        db = getFirestore(app);
-                        auth = getAuth(app);
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log("DOM fully loaded and parsed. Initializing script...");
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+            let app;
+            let db;
+            let auth;
+            let userId = 'cargando...';
+
+            const userIdDisplay = document.getElementById('user-id-display');
+            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+
+            try {
+                if (Object.keys(firebaseConfig).length > 0) {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
                         await signInAnonymously(auth);
-
-                        onAuthStateChanged(auth, (user) => {
-                            if (user) {
-                                userId = user.uid;
-                                setupFirestoreListeners();
-                            } else {
-                                userId = 'no-autenticado';
-                            }
-                        });
                     }
-                } catch (error) {
-                    console.error("Error initializing Firebase or authenticating:", error);
-                }
 
-                let turnsDB = {};
-                let campaignsDB = {};
-
-                function setupFirestoreListeners() {
-                    if (!db || !userId || userId === 'cargando...') return;
-
-                    const turnsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/turns`);
-                    const campaignsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/campaigns`);
-
-                    onSnapshot(turnsCollectionRef, (snapshot) => {
-                        turnsDB = {};
-                        snapshot.forEach(doc => {
-                            turnsDB[doc.id] = { id: doc.id, ...doc.data() };
-                        });
-                        renderRegisteredEntries();
-                    }, (error) => {
-                        console.error("Error listening to turns collection:", error);
-                    });
-                    
-                    onSnapshot(campaignsCollectionRef, (snapshot) => {
-                        campaignsDB = {};
-                        snapshot.forEach(doc => {
-                            campaignsDB[doc.id] = { id: doc.id, ...doc.data() };
-                        });
-                        renderRegisteredEntries();
-                    }, (error) => {
-                        console.error("Error listening to campaigns collection:", error);
-                    });
-                    
-                    // Listener para el contador de compartidos de la ruleta (privado)
-                    const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
-                    onSnapshot(rouletteShareCountRef, (docSnap) => {
-                        const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
-                        if (rouletteShareCountDisplay) {
-                            if (docSnap.exists()) {
-                                const data = docSnap.data();
-                                rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: ${data.count || 0}`;
-                            } else {
-                                rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: 0`;
-                            }
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
+                            setupFirestoreListeners();
+                        } else {
+                            userId = 'no-autenticado';
+                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
                         }
-                    }, (error) => {
-                        console.error("Error listening to private roulette share count:", error);
                     });
+                } else {
+                    console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");
+                    displayMessage("Configuración de Firebase no encontrada. Algunas funciones no estarán disponibles.", "warning");
+                    return;
                 }
 
-                const sections = {
-                    'copy-welcome-link-section': document.getElementById('copy-welcome-link-section'),
-                    'turn-management-section': document.getElementById('turn-management-section'),
-                    'registered-entries-section': document.getElementById('registered-entries-section'),
-                    'campaign-stats-section': document.getElementById('campaign-stats-section')
-                };
-                
-                function showSection(sectionId) {
-                    for (const id in sections) {
-                        if (sections[id]) {
-                            sections[id].classList.add('hidden');
-                        }
-                    }
-                    if (sections[sectionId]) {
-                        sections[sectionId].classList.remove('hidden');
-                    }
+            } catch (error) {
+                console.error("Error initializing Firebase or authenticating:", error);
+                displayMessage("Error al iniciar la aplicación. Por favor, recarga.", "error");
+            }
+
+            let turnsDB = {};
+            let rouletteShareCount = 0;
+
+            function setupFirestoreListeners() {
+                if (!db || !userId || userId === 'cargando...') {
+                    console.warn("Firestore o userId no están listos para configurar los listeners.");
+                    return;
                 }
 
-                showSection('copy-welcome-link-section');
-                document.getElementById('show-copy-link-btn').addEventListener('click', () => showSection('copy-welcome-link-section'));
-                document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
-                document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
-                document.getElementById('show-campaign-stats-btn').addEventListener('click', () => showSection('campaign-stats-section'));
-
-                const turnClientNameInput = document.getElementById('turn-client-name');
-                const turnDateInput = document.getElementById('turn-date');
-                const turnTimeInput = document.getElementById('turn-time');
-                const turnTreatmentInput = document.getElementById('turn-treatment');
-                const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
-                const copyWelcomeLinkBtn = document.getElementById('copy-welcome-link-btn');
-                const copyMessage = document.getElementById('copy-message');
-
-                copyWelcomeLinkBtn.addEventListener('click', () => {
-                    const welcomeUrl = `${window.location.origin}/bienvenidos.html`;
-                    navigator.clipboard.writeText(welcomeUrl).then(() => {
-                        copyMessage.classList.remove('hidden');
-                        setTimeout(() => {
-                            copyMessage.classList.add('hidden');
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Error al copiar el enlace: ', err);
-                        alert('Error al copiar el enlace. Por favor, cópialo manualmente: ' + welcomeUrl);
+                const turnsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/turns`);
+                onSnapshot(turnsCollectionRef, (snapshot) => {
+                    turnsDB = {};
+                    snapshot.forEach(doc => {
+                        turnsDB[doc.id] = { id: doc.id, ...doc.data() };
                     });
+                    updateEntryCounts();
+                    renderRegisteredEntries();
+                }, (error) => {
+                    console.error("Error listening to turns collection:", error);
+                    displayMessage("Error al cargar los turnos.", "error");
                 });
 
-                generateTurnLinkBtn.addEventListener('click', async () => {
-                    const clientName = turnClientNameInput.value.trim();
-                    const turnDate = turnDateInput.value;
-                    const turnTime = turnTimeInput.value;
-                    const turnTreatment = turnTreatmentInput.value.trim();
+                const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
+                onSnapshot(rouletteShareCountRef, (docSnap) => {
+                    const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
+                    if (rouletteShareCountDisplay) {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            rouletteShareCount = data.count || 0;
+                            rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: ${rouletteShareCount}`;
+                        } else {
+                            rouletteShareCount = 0;
+                            rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: 0`;
+                            setDoc(rouletteShareCountRef, { count: 0 }, { merge: true }).catch(e => console.error("Error initializing share count:", e));
+                        }
+                    } else {
+                        console.warn("Elemento 'roulette-share-count-display' no encontrado.");
+                    }
+                }, (error) => {
+                    console.error("Error listening to private roulette share count:", error);
+                    const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
+                    if (rouletteShareCountDisplay) {
+                        rouletteShareCountDisplay.textContent = "Error al cargar el contador de ruleta.";
+                    }
+                });
+            }
 
-                    if (!clientName || !turnDate || !turnTime || !turnTreatment) {
-                        alert("Por favor, completa todos los campos del turno.");
+            // --- UI Management ---
+            const sections = {
+                'turn-management-section': document.getElementById('turn-management-section'),
+                'campaign-link-generator-section': document.getElementById('campaign-link-generator-section'),
+                'registered-entries-section': document.getElementById('registered-entries-section'),
+                'campaign-stats-section': document.getElementById('campaign-stats-section')
+            };
+
+            function showSection(sectionId) {
+                for (const id in sections) {
+                    if (sections[id]) {
+                        if (id === sectionId) {
+                            sections[id].classList.remove('hidden');
+                        } else {
+                            sections[id].classList.add('hidden');
+                        }
+                    } else {
+                        console.warn(`Attempted to show/hide missing section: ${id}`);
+                    }
+                }
+            }
+
+            // Initial view
+            showSection('turn-management-section');
+
+            // --- Event Listeners for Navigation ---
+            document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
+            document.getElementById('show-campaign-link-generator-btn').addEventListener('click', () => showSection('campaign-link-generator-section'));
+            document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
+            document.getElementById('show-campaign-stats-btn').addEventListener('click', () => showSection('campaign-stats-section'));
+
+            // --- Turn Management ---
+            const turnClientNameInput = document.getElementById('turn-client-name');
+            const turnDateInput = document.getElementById('turn-date');
+            const turnTimeInput = document.getElementById('turn-time');
+            const turnTreatmentInput = document.getElementById('turn-treatment');
+            const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
+            const generatedTurnLinkInfo = document.getElementById('generated-turn-link-info');
+            const clientTurnLink = document.getElementById('client-turn-link');
+            const copyTurnLinkBtn = document.getElementById('copy-turn-link-btn');
+            const sendTurnWhatsappBtn = document.getElementById('send-turn-whatsapp-btn');
+
+            generateTurnLinkBtn.addEventListener('click', async () => {
+                const clientName = turnClientNameInput.value.trim();
+                const turnDate = turnDateInput.value;
+                const turnTime = turnTimeInput.value;
+                const turnTreatment = turnTreatmentInput.value.trim();
+
+                if (!clientName || !turnDate || !turnTime || !turnTreatment) {
+                    displayMessage("Por favor, completa todos los campos del turno.", "warning");
+                    return;
+                }
+
+                try {
+                    const turnId = `LeBardol-Turn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    const turnData = {
+                        clientName: clientName,
+                        date: turnDate,
+                        time: turnTime,
+                        treatment: turnTreatment,
+                        createdAt: new Date().toISOString(),
+                        id: turnId,
+                        type: 'turn'
+                    };
+
+                    await setDoc(doc(db, `artifacts/${appId}/users/${userId}/turns`, turnId), turnData);
+                    displayMessage("Turno guardado exitosamente.", "success");
+
+                    const encodedClientName = encodeURIComponent(clientName);
+                    const encodedTurnDate = encodeURIComponent(turnDate);
+                    const encodedTurnTime = encodeURIComponent(turnTime);
+                    const encodedTurnTreatment = encodeURIComponent(turnTreatment);
+                    const encodedTurnId = encodeURIComponent(turnId);
+                    const encodedAppBaseUrl = encodeURIComponent(window.location.origin + '/juegos.html');
+
+                    const clientConfirmationUrl = `${window.location.origin}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${encodedAppBaseUrl}`;
+
+                    clientTurnLink.href = clientConfirmationUrl;
+                    clientTurnLink.textContent = clientConfirmationUrl;
+                    generatedTurnLinkInfo.classList.remove('hidden');
+
+                    sendTurnWhatsappBtn.dataset.turnLink = clientConfirmationUrl;
+
+                    turnClientNameInput.value = '';
+                    turnDateInput.value = '';
+                    turnTimeInput.value = '';
+                    turnTreatmentInput.value = '';
+                } catch (e) {
+                    console.error("Error saving turn:", e);
+                    displayMessage("Error al guardar el turno. Intenta de nuevo.", "error");
+                }
+            });
+
+            copyTurnLinkBtn.addEventListener('click', () => {
+                const linkToCopy = clientTurnLink.textContent;
+                navigator.clipboard.writeText(linkToCopy)
+                    .then(() => displayMessage("Enlace copiado al portapapeles.", "success"))
+                    .catch(err => {
+                        console.error('Error al copiar el enlace:', err);
+                        displayMessage("Error al copiar el enlace.", "error");
+                    });
+            });
+
+            sendTurnWhatsappBtn.addEventListener('click', () => {
+                const turnLink = sendTurnWhatsappBtn.dataset.turnLink;
+                const clientName = turnClientNameInput.value.trim() || 'Estimado cliente';
+                const turnDate = turnDateInput.value;
+                const turnTime = turnTimeInput.value;
+                const turnTreatment = turnTreatmentInput.value.trim();
+
+                if (!turnLink) {
+                    displayMessage("Primero genera el enlace del turno.", "warning");
+                    return;
+                }
+
+                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+            });
+
+            // --- Campaign Link Generator ---
+            const generateCampaignLinkBtn = document.getElementById('generate-campaign-link-btn');
+            const generatedCampaignLinkInfo = document.getElementById('generated-campaign-link-info');
+            const campaignLink = document.getElementById('campaign-link');
+            const copyCampaignLinkBtn = document.getElementById('copy-campaign-link-btn');
+            const sendCampaignWhatsappBtn = document.getElementById('send-campaign-whatsapp-btn');
+
+            generateCampaignLinkBtn.addEventListener('click', () => {
+                const finalUrl = `${window.location.origin}/juegos.html`;
+                campaignLink.textContent = finalUrl;
+                campaignLink.href = finalUrl;
+                generatedCampaignLinkInfo.classList.remove('hidden');
+                displayMessage("Enlace de campaña generado.", "success");
+            });
+
+            copyCampaignLinkBtn.addEventListener('click', () => {
+                const linkToCopy = campaignLink.textContent;
+                navigator.clipboard.writeText(linkToCopy)
+                    .then(() => displayMessage("Enlace copiado al portapapeles.", "success"))
+                    .catch(err => {
+                        console.error('Error al copiar el enlace:', err);
+                        displayMessage("Error al copiar el enlace.", "error");
+                    });
+            });
+
+            sendCampaignWhatsappBtn.addEventListener('click', () => {
+                const linkToShare = campaignLink.textContent;
+                if (!linkToShare) {
+                    displayMessage("Primero genera el enlace de campaña.", "warning");
+                    return;
+                }
+                const whatsappMessage = `🎉 ¡Descubre la magia en Le Bardol! Juega y gana descuentos en nuestra ruleta. ¡Haz clic aquí para empezar a ganar: ${linkToShare}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+            });
+
+            // --- Registered Entries Display (for Turns) ---
+            const entrySearchInput = document.getElementById('entry-search-input');
+            const entriesTableBody = document.getElementById('entries-table-body');
+            const totalTurnsCountDisplay = document.getElementById('total-turns-count');
+            const totalEntriesCountSpan = document.getElementById('total-entries-count');
+
+            function updateEntryCounts() {
+                let totalTurns = Object.keys(turnsDB).length;
+                totalTurnsCountDisplay.textContent = totalTurns;
+                totalEntriesCountSpan.textContent = totalTurns;
+            }
+
+            function renderRegisteredEntries() {
+                entriesTableBody.innerHTML = '';
+                const searchTerm = entrySearchInput.value.toLowerCase();
+
+                const allEntries = [];
+                for (const id in turnsDB) {
+                    allEntries.push({ ...turnsDB[id], type: 'turn' });
+                }
+
+                allEntries.forEach(entry => {
+                    const clientName = entry.clientName;
+                    const entryId = entry.id;
+                    const type = entry.type === 'turn' ? 'Turno' : 'Desconocido';
+                    const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : 'N/A';
+
+                    if (searchTerm && !(clientName && clientName.toLowerCase().includes(searchTerm)) && !(entryId && entryId.toLowerCase().includes(searchTerm)) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm))) {
                         return;
                     }
 
-                    try {
-                        const turnId = `LeBardol-Turn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-                        const turnData = {
-                            clientName: clientName,
-                            date: turnDate,
-                            time: turnTime,
-                            treatment: turnTreatment,
-                            createdAt: new Date().toISOString(),
-                            id: turnId,
-                            type: 'turn'
-                        };
-
-                        await setDoc(doc(db, `artifacts/${appId}/users/${userId}/turns`, turnId), turnData);
-                        
-                        const encodedClientName = encodeURIComponent(clientName);
-                        const encodedTurnDate = encodeURIComponent(turnDate);
-                        const encodedTurnTime = encodeURIComponent(turnTime);
-                        const encodedTurnTreatment = encodeURIComponent(turnTreatment);
-                        const encodedTurnId = encodeURIComponent(turnId);
-
-                        const clientConfirmationUrl = `${window.location.origin}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${encodeURIComponent(window.location.origin + '/juegos.html')}`;
-
-                        const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${clientConfirmationUrl} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
-                        window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-
-                        turnClientNameInput.value = '';
-                        turnDateInput.value = '';
-                        turnTimeInput.value = '';
-                        turnTreatmentInput.value = '';
-                        alert("Turno guardado y enlace de WhatsApp generado.");
-                    } catch (e) {
-                        console.error("Error saving turn:", e);
-                        alert("Error al guardar el turno. Intenta de nuevo.");
-                    }
+                    const row = entriesTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${clientName || 'N/A'}</td>
+                        <td>${entryId}</td>
+                        <td>${type}</td>
+                        <td>${details}</td>
+                        <td>${new Date(entry.createdAt).toLocaleString()}</td>
+                    `;
                 });
+            }
 
-                const entrySearchInput = document.getElementById('entry-search-input');
-                const entriesTableBody = document.getElementById('entries-table-body');
+            entrySearchInput.addEventListener('input', renderRegisteredEntries);
 
-                function renderRegisteredEntries() {
-                    entriesTableBody.innerHTML = '';
-                    const searchTerm = entrySearchInput.value.toLowerCase();
+            // --- Notification System ---
+            function displayMessage(message, type = "info") {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.classList.add('floating-notification');
 
-                    const allEntries = [];
-                    for (const id in turnsDB) {
-                        allEntries.push({ ...turnsDB[id], displayType: 'Turno' });
-                    }
-                    for (const id in campaignsDB) {
-                        allEntries.push({ ...campaignsDB[id], displayType: 'Campaña' });
-                    }
-
-                    allEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-                    allEntries.forEach(entry => {
-                        const name = entry.clientName || entry.name || 'N/A';
-                        const id = entry.id;
-                        const type = entry.displayType;
-                        const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : `Contacto: ${entry.contact || 'N/A'}`;
-                        const dateTime = new Date(entry.createdAt).toLocaleString();
-
-                        if (searchTerm && !name.toLowerCase().includes(searchTerm) && !id.toLowerCase().includes(searchTerm) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm)) && !(entry.contact && entry.contact.toLowerCase().includes(searchTerm))) {
-                            return;
-                        }
-
-                        const row = entriesTableBody.insertRow();
-                        row.innerHTML = `
-                            <td>${name}</td>
-                            <td>${id}</td>
-                            <td>${type}</td>
-                            <td>${details}</td>
-                            <td>${dateTime}</td>
-                        `;
-                    });
+                if (type === "success") {
+                    notification.classList.add('notification-success');
+                } else if (type === "error") {
+                    notification.classList.add('notification-error');
+                } else if (type === "warning") {
+                    notification.classList.add('notification-warning');
+                } else {
+                    notification.classList.add('notification-info');
                 }
 
-                entrySearchInput.addEventListener('input', renderRegisteredEntries);
-                renderRegisteredEntries();
-            });
-        </script>
-    </body>
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            renderRegisteredEntries();
+            updateEntryCounts();
+        });
+    </script>
+</body>
 </html>
