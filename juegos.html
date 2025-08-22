@@ -2,45 +2,29 @@
 <html lang="es">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-s`cale=1.0">
     <title>Girá y Ganá en Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    
+
     <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
-    <meta property="og:description" content="Gana zonas GRATIS, descuentos y más beneficios. ¡Jugá todas las veces que quieras!">
+    <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
     <meta property="og:image" content="https://i.imgur.com/11RstI1.png">
-    <meta property="og:url" id="og-url-meta" content=""> 
+    <meta property="og:url" id="og-url-meta" content="">
     <meta property="og:type" content="website">
 
     <style>
-        @font-face {
-            font-family: 'The Seasons';
-            src: url('TheSeasons.woff2') format('woff2'),
-                 url('TheSeasons.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
+        /* Estilos generales y reseteo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Paleta de Colores: Grises cálidos, verde salvia y púrpura para acento */
-        :root {
-            --bg-light: #F4EDE7;
-            --bg-card: #ffffff;
-            --text-dark: #4E6C50;
-            --text-gray: #A3C1A1;
-            --accent-green: #A3C1A1;
-            --accent-dark-green: #4E6C50;
-            --accent-blue: #3498db;
-            --accent-red: #e74c3c;
-            --highlight-pink: #fde2e4;
-        }
-
-        /* Estilos generales y fuentes */
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
+            color: #4a2c5e;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -48,208 +32,123 @@
             padding: 20px;
             overflow-x: hidden;
         }
-        
-        /* Contenedor principal */
+
+        /* Contenedor principal de la tarjeta */
         .container {
             max-width: 500px;
             width: 100%;
-            background: var(--bg-card);
-            padding: 25px;
+            background: white;
+            padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            overflow: hidden;
             margin: 20px 0;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border: 1px solid #e9e9e9;
         }
-
-        /* Títulos de secciones */
-        .campaign-title {
-            font-family: 'The Seasons', serif;
-            font-size: 2.5rem;
+        
+        /* Contenedor del formulario */
+        #contact-form-container {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+        #contact-form-container h1 {
+            font-size: 2.2rem;
             font-weight: 900;
+            color: #e91e63;
             line-height: 1.2;
-            text-align: center;
-            width: 100%;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, var(--accent-dark-green), #2e7d32);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
         }
-        .campaign-subtitle {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--text-dark);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        /* Campos de formulario */
-        .user-input-group {
-            width: 90%;
-            max-width: 380px;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--text-gray);
-            font-size: 14px;
-        }
-        .user-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .user-input:focus {
-            outline: none;
-            border-color: var(--accent-dark-green);
-            box-shadow: 0 0 0 3px rgba(78, 108, 80, 0.1);
-        }
-        .user-input.required {
-            border-color: var(--accent-red);
-        }
-
-        /* Botones generales */
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 15px;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        .btn-spin {
-            background: linear-gradient(135deg, #A3C1A1, #688e68);
-            color: white;
-            font-size: 22px;
-        }
-        .btn-claim-prize {
-            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
-            color: white;
-        }
-        .btn-share {
-            background: linear-gradient(135deg, #A3C1A1, #688e68);
-            color: white;
-        }
-
-        /* Mensajes de resultado */
-        #resultMessage, #cardResultMessage {
-            margin-top: 20px;
-            font-family: 'The Seasons', serif;
+        #contact-form-container p {
             font-size: 1.5rem;
             font-weight: bold;
-            color: var(--accent-dark-green);
-            text-align: center;
-            line-height: 1.4;
-            padding: 15px;
-            background: var(--highlight-pink);
-            border-radius: 10px;
-            border: 2px solid var(--accent-dark-green);
-        }
-        #resultMessage small, #cardResultMessage small {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            font-weight: normal;
-            display: block;
-            margin-top: 5px;
-            color: var(--text-dark);
-        }
-
-        /* Separadores y otros elementos */
-        .separator {
-            width: 80%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--text-gray), transparent);
-            margin: 40px auto;
-        }
-        .logo-container {
-            margin-bottom: 25px;
-        }
-        .logo-container img {
-            max-width: 250px;
-            height: auto;
-            border-radius: 15px;
-        }
-
-        /* Modals */
-        .modal-overlay, .message-modal-overlay {
-            background: rgba(0, 0, 0, 0.8);
-        }
-        .modal-content, .message-modal-content {
-            background: var(--bg-card);
-            padding: 30px;
-        }
-        .close-modal {
-            color: var(--text-gray);
-        }
-        .message-modal-content button {
-            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
-            color: white;
-        }
-
-        /* Formulario inicial */
-        #contact-form-container {
-            text-align: center;
+            color: #4a2c5e;
+            margin-bottom: 20px;
         }
         .form-input {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
             font-size: 16px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e0c8f0;
+            background: #f9f0ff;
             margin-bottom: 15px;
-            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
         }
         .form-input:focus {
             outline: none;
-            border-color: var(--accent-dark-green);
-            box-shadow: 0 0 0 3px rgba(78, 108, 80, 0.1);
-        }
-        .form-input.required {
-            border-color: var(--accent-red);
+            border-color: #8a2be2;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
         .btn-submit {
-            background: linear-gradient(135deg, var(--accent-green), #688e68);
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
             color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- ESTILOS DE LA CAMPAÑA RULETA (originales) --- */
+        .roulette-section {
             width: 100%;
+            display: none; /* Oculto por defecto */
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .roulette-section .campaign-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #e91e63;
+            line-height: 1.2;
+            text-align: center;
+            width: 100%;
+            animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        }
+
+        @keyframes text-pop-up-top {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+
+        .roulette-section .campaign-subtitle {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a2c5e;
+            padding: 0 10px;
+            max-width: 400px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .prize-counter {
+            background-color: #ffeb3b;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            border: 2px solid #fbc02d;
+            animation: pulse-yellow 1.5s infinite;
+        }
+
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
         }
 
         .roulette-canvas-container {
@@ -259,7 +158,7 @@
             margin: 15px 0 0;
             aspect-ratio: 1 / 1;
             border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 0 5px #fde2e4;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
             overflow: visible;
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -290,7 +189,7 @@
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-top: 35px solid var(--accent-dark-green);
+            border-top: 35px solid #e91e63;
             z-index: 10;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
         }
@@ -303,30 +202,182 @@
             flex-direction: column;
             gap: 15px;
         }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-spin {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            font-size: 22px;
+        }
+
+        .btn-reserve {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .btn-claim-prize {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+            color: white;
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            flex-direction: column;
+            line-height: 1.2;
+            padding: 12px;
+        }
+
+        .btn-share .share-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .btn-share .share-subtitle {
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .btn-share .fab {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .btn-play-again {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        #resultMessage {
+            margin-top: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #4a2c5e;
+            animation: pulse-red 1.5s infinite;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            line-height: 1.4;
+        }
+
+        #resultMessage small {
+            font-size: 15px;
+            font-weight: normal;
+            color: #333;
+            display: block;
+            margin-top: 8px;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 25px rgba(233, 30, 99, 0.8); transform: scale(1.02); }
+            100% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
+        }
+
+        .prize-timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .whatsapp-logo-container {
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+        .whatsapp-logo-container img {
+            max-width: 250px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .whatsapp-float-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            text-decoration: none;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div id="contact-form-container" class="roulette-section">
+        <div id="contact-form-container">
+            <div class="whatsapp-logo-container">
+                <a href="https://wa.me/5493415216025" target="_blank">
+                    <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center">
+                </a>
+            </div>
             <h1 class="campaign-title">¡Juega y Gana!</h1>
             <p class="campaign-subtitle">Ingresa tus datos para girar la ruleta y ganar un premio.</p>
             <form id="roulette-form">
-                <div class="user-input-group">
-                    <label for="player-name">Tu Nombre Completo:</label>
-                    <input type="text" id="player-name" class="user-input" placeholder="Ej: María López" required>
-                </div>
-                <div class="user-input-group">
-                    <label for="player-contact">Tu Correo o Número de WhatsApp:</label>
-                    <input type="text" id="player-contact" class="user-input" placeholder="Ej: maria@ejemplo.com o +549341..." required>
-                </div>
+                <input type="text" id="player-name" class="form-input" placeholder="Tu Nombre Completo" required>
+                <input type="text" id="player-contact" class="form-input" placeholder="Tu Correo o Número de WhatsApp" required>
                 <button type="submit" class="btn-submit">Empezar a Jugar</button>
             </form>
         </div>
 
         <div id="roulette-container" class="roulette-section hidden">
+            <div class="whatsapp-logo-container">
+                <a href="https://wa.me/5493415216025" target="_blank">
+                    <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center">
+                </a>
+            </div>
             <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica y ganá! 🎁</h1>
             <p class="campaign-subtitle">Gana una zona gratis y más beneficios...</p>
-            
+            <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
+
             <div class="roulette-canvas-container" id="rouletteCanvasContainer">
                 <div class="wheel-indicator"></div>
                 <canvas id="rouletteCanvas"></canvas>
@@ -336,30 +387,37 @@
 
             <div class="buttons-container">
                 <button class="btn btn-spin" id="spinBtn" style="display: none;">👉 GIRAR LA RULETA AHORA</button>
-                <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;">
-                    <i class="fab fa-whatsapp"></i> RECLAMAR PREMIO
-                </button>
+                <button class="btn btn-reserve" id="reserveBtn" style="display: none;"></button>
+                <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;"></button>
+                <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar Ruleta</button>
                 <button class="btn btn-share" id="shareBtn" style="display: none;">
                     <i class="fab fa-whatsapp"></i>
                     <span class="share-title">💥 ¡Compartí para girar!</span>
                     <span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>
                 </button>
-                <button class="btn btn-share" id="playAgainBtn" style="display: none;">✨ Volver a Jugar Ruleta</button>
             </div>
         </div>
     </div>
+
+    <a href="https://wa.me/5493415216025" class="whatsapp-float-btn" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
     
+    <div id="policiesModal" class="modal-overlay">
+        </div>
+
+    <div id="messageModal" class="modal-overlay">
+        </div>
+
     <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
-    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
-    <audio id="cardFlipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-1033.mp3" preload="auto"></audio>
-    <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-win-2010.mp3" preload="auto"></audio>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        console.log("JavaScript is running!"); 
+        console.log("JavaScript is running!");
 
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("DOM fully loaded and parsed. Initializing script...");
@@ -392,44 +450,30 @@
             } catch (error) {
                 console.error("Error initializing Firebase or authenticating:", error);
             }
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialName = urlParams.get('nombre');
-            const initialContact = urlParams.get('contacto');
-            
-            // --- ROULETTE PRIZES ---
-            const segments = [
-                { text: 'Zona Grande GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Grande GRATIS' },
-                { text: '50% OFF', type: 'discount', value: 50, needsSeña: false, description: '50% OFF' },
-                { text: 'Zona Chica GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Chica GRATIS' },
-                { text: '70% OFF', type: 'discount', value: 70, needsSeña: false, description: '70% OFF' },
-                { text: 'Zona Mediana GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Mediana GRATIS' },
-                { text: '60% OFF', type: 'discount', value: 60, needsSeña: false, description: '60% OFF' },
-                { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' }, 
-            ];
-            segments.sort(() => Math.random() - 0.5);
 
-            const segmentColors = ['#A3C1A1', '#4E6C50', '#A3C1A1', '#4E6C50', '#A3C1A1', '#4E6C50', '#A3C1A1'];
-            
-            const numSegments = segments.length;
-            const arc = (2 * Math.PI) / numSegments;
+            // --- CAMPAIGN CONFIGURATION ---
+            const señaAmount = 8000;
+            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
+            const whatsappNumber = '5493415216025';
+            const appBaseUrl = window.location.origin + window.location.pathname;
 
-            // --- ROULETTE STATE ---
-            let state = {};
-            let currentRotation = 0;
-            let animationFrameId;
-            let prizeTimerInterval;
+            const ogUrlMeta = document.getElementById('og-url-meta');
+            if (ogUrlMeta) {
+                ogUrlMeta.setAttribute('content', appBaseUrl);
+            }
 
             // --- DOM ELEMENTS ---
             const canvas = document.getElementById('rouletteCanvas');
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spinBtn');
+            const reserveBtn = document.getElementById('reserveBtn');
+            const claimPrizeBtn = document.getElementById('claimPrizeBtn');
             const playAgainBtn = document.getElementById('playAgainBtn');
             const resultMessage = document.getElementById('resultMessage');
             const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
+            const prizeCounterDisplay = document.getElementById('prizeCounter');
             const shareBtn = document.getElementById('shareBtn');
             const rouletteCanvasContainer = document.getElementById('rouletteCanvasContainer');
-            const claimPrizeBtn = document.getElementById('claimPrizeBtn');
 
             // Form elements
             const rouletteForm = document.getElementById('roulette-form');
@@ -442,59 +486,53 @@
             const spinSound = document.getElementById('spinSound');
             const winSound = document.getElementById('winSound');
 
-            // Configs
-            const whatsappNumber = '5493415216025';
-            const appBaseUrl = 'https://lebardol-app.netlify.app/'; 
+            // --- ROULETTE PRIZES ---
+            const segments = [
+                { text: 'Zona Grande GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Grande GRATIS' },
+                { text: '50% OFF', type: 'discount', value: 50, needsSeña: false, description: '50% OFF' },
+                { text: 'Zona Chica GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Chica GRATIS' },
+                { text: '70% OFF', type: 'discount', value: 70, needsSeña: false, description: '70% OFF' },
+                { text: 'Zona Mediana GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Mediana GRATIS' },
+                { text: '60% OFF', type: 'discount', value: 60, needsSeña: false, description: '60% OFF' },
+                { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' }, 
+            ];
+            segments.sort(() => Math.random() - 0.5);
+
+            const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4'];
+            while (segmentColors.length < segments.length) {
+                segmentColors.push(segmentColors[segmentColors.length % 8]);
+            }
             
-            const ogUrlMeta = document.getElementById('og-url-meta');
-            if (ogUrlMeta) {
-                ogUrlMeta.setAttribute('content', appBaseUrl);
-            }
+            const numSegments = segments.length;
+            const arc = (2 * Math.PI) / numSegments;
 
-            // Initialize game state on page load
-            loadState();
-            updateUI();
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+            // --- ROULETTE STATE ---
+            let state = {};
+            let currentRotation = 0;
+            let animationFrameId;
+            let prizeTimerInterval;
 
-            // Event listener for form submission
-            rouletteForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const playerName = playerNameInput.value.trim();
-                const playerContact = playerContactInput.value.trim();
-                if (playerName && playerContact) {
-                    state.playerName = playerName;
-                    state.playerContact = playerContact;
-                    saveState();
-                    contactFormContainer.classList.add('hidden');
-                    rouletteContainer.classList.remove('hidden');
-                    drawRoulette(); // Initial draw of the roulette
-                    updateUI(); // Update UI to show the spin button
-                }
-            });
-
+            // --- FUNCTIONS ---
             function showMessageModal(title, message, buttonConfig = null) {
-                // To be implemented later if needed
+                // Implementación de modal de mensaje (originalmente en index.html)
             }
-
             function hideMessageModal() {
-                // To be implemented later if needed
+                // Implementación de modal de mensaje (originalmente en index.html)
             }
-
             function loadState() {
                 const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
                 const defaultState = {
-                    spinsLeft: 1, // Start with 1 spin
+                    spinsLeft: 1,
                     prize: null,
                     prizeEndTime: 0,
                     playerName: '',
-                    playerContact: ''
+                    playerContact: '',
+                    prizesLeft: 999
                 };
                 state = { ...defaultState, ...savedState };
                 playerNameInput.value = state.playerName;
                 playerContactInput.value = state.playerContact;
             }
-
             function saveState() {
                 localStorage.setItem('bardolRouletteState', JSON.stringify(state));
             }
@@ -503,12 +541,10 @@
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
                 const radius = Math.min(centerX, centerY) * 0.95;
-
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(rotation);
-
                 for (let i = 0; i < numSegments; i++) {
                     const angle = i * arc;
                     ctx.beginPath();
@@ -520,17 +556,15 @@
                     ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 5;
                     ctx.stroke();
-
                     ctx.save();
                     ctx.rotate(angle + arc / 2);
                     ctx.fillStyle = '#ffffff';
                     const fontSize = radius * 0.10;
-                    ctx.font = `bold ${fontSize}px Montserrat, sans-serif`;
+                    ctx.font = `bold ${fontSize}px sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
                     ctx.shadowBlur = 3;
-                    
                     const text = segments[i].text;
                     const words = text.split(' ');
                     if (words.length > 2) {
@@ -546,30 +580,30 @@
                 ctx.restore();
             }
 
-            function spin() {
+            async function spin() {
                 if (state.spinsLeft <= 0) {
                     return;
                 }
 
                 state.spinsLeft--;
+                state.prizesLeft--;
                 spinBtn.disabled = true;
                 spinBtn.textContent = 'GIRANDO...';
                 rouletteCanvasContainer.classList.add('spinning');
-                
+
                 if (spinSound) {
                     spinSound.currentTime = 0;
                     spinSound.play().catch(e => console.error("Error playing spin sound:", e));
                 }
 
                 const winningIndex = Math.floor(Math.random() * numSegments);
-                const totalRotation = 360 * 5; // 5 giros completos
+                const totalDegrees = 360 * 5;
                 const segmentDegrees = 360 / numSegments;
-                const finalRotation = totalRotation - (winningIndex * segmentDegrees) - (segmentDegrees / 2) + Math.random() * (segmentDegrees * 0.8 - (segmentDegrees * 0.2)) + (segmentDegrees * 0.1);
+                const finalRotation = totalDegrees - (winningIndex * segmentDegrees) - (segmentDegrees / 2) + Math.random() * (segmentDegrees * 0.8 - (segmentDegrees * 0.2)) + (segmentDegrees * 0.1);
 
                 rouletteCanvasContainer.style.transform = `rotate(${finalRotation}deg)`;
-        
-                setTimeout(() => {
-                    spinning = false;
+
+                setTimeout(async () => {
                     const prize = segments[winningIndex];
                     state.prize = prize;
                     
@@ -582,18 +616,16 @@
                             type: 'roulette-entry',
                             createdAt: new Date().toISOString()
                         };
-                        setDoc(doc(db, `artifacts/${appId}/users/${userId}/campaigns`, entryId), userData).catch(e => console.error("Error saving roulette data:", e));
-                        console.log("Datos de la ruleta guardados exitosamente.");
+                        await setDoc(doc(db, `artifacts/${appId}/users/${userId}/campaigns`, entryId), userData).catch(e => console.error("Error saving roulette data:", e));
                     }
 
                     resultMessage.innerHTML = `
-                        ¡FELICIDADES, ${state.playerName.split(' ')[0].toUpperCase()}! GANASTE <strong style="color: var(--accent-dark-green);">${prize.description.toUpperCase()}</strong><br>
+                        ¡FELICIDADES, ${state.playerName.split(' ')[0].toUpperCase()}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br>
                         <small>Reserva tu premio enviando el mensaje a continuación.</small>
                     `;
                     resultMessage.style.display = 'block';
 
                     fireConfetti();
-            
                     saveState();
                     updateUI();
                     rouletteCanvasContainer.classList.remove('spinning');
@@ -608,7 +640,6 @@
                 if (state.playerName && state.playerContact) {
                     contactFormContainer.classList.add('hidden');
                     rouletteContainer.classList.remove('hidden');
-                    drawRoulette();
                 }
 
                 const hasPrize = !!state.prize;
@@ -634,11 +665,11 @@
 
             function resetForNewSpin() {
                 state.prize = null;
-                state.spinsLeft = 1; // Give a new spin
+                state.spinsLeft = 1;
                 saveState();
                 updateUI();
                 resultMessage.style.display = 'none';
-                rouletteCanvasContainer.style.transform = `rotate(0deg)`; // Reset rotation
+                rouletteCanvasContainer.style.transform = `rotate(0deg)`;
             }
 
             function resizeCanvas() {
@@ -649,6 +680,22 @@
                 canvas.height = containerWidth;
                 drawRoulette(currentRotation);
             }
+
+            // Event listeners
+            rouletteForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const playerName = playerNameInput.value.trim();
+                const playerContact = playerContactInput.value.trim();
+                if (playerName && playerContact) {
+                    state.playerName = playerName;
+                    state.playerContact = playerContact;
+                    saveState();
+                    contactFormContainer.classList.add('hidden');
+                    rouletteContainer.classList.remove('hidden');
+                    resizeCanvas();
+                    updateUI();
+                }
+            });
 
             spinBtn.addEventListener('click', spin);
             playAgainBtn.addEventListener('click', resetForNewSpin);
