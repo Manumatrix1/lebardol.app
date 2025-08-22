@@ -67,6 +67,7 @@
             margin-bottom: 10px;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-light-purple));
             -webkit-background-clip: text;
+            background-clip: text; /* Línea agregada para compatibilidad */
             -webkit-text-fill-color: transparent;
             animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
         }
@@ -291,9 +292,63 @@
     </a>
     
     <div id="policiesModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closePoliciesModal" class="close-modal">×</button>
+            <h2>LE BARDOL – POLÍTICAS DE PROMOCIÓN</h2>
+            <h3>Juego “Girá la Ruleta y Ganá tu Zona Gratis” – Depilación Definitiva</h3>
+            <p><strong>1. Objeto del juego:</strong><br>El juego “Girá la Ruleta y Ganá tu Zona” es una acción promocional de Le Bardol destinada a premiar a clientes nuevos o actuales que participen cumpliendo con las condiciones detalladas a continuación.</p>
+            <p><strong>2. Premios posibles:</strong><br>El participante puede ganar una zona gratuita de depilación definitiva al azar:</p>
+            <ul>
+                <li>Zona Chica</li>
+                <li>Zona Mediana</li>
+                <li>Zona Grande</li>
+            </ul>
+            <p><strong>3. Condición de participación:</strong><br>Para hacer válido el premio obtenido en la ruleta, el participante deberá:
+            <br>a) Señar una zona adicional (de cualquier tamaño) dentro de los 30 minutos posteriores al giro.
+            <br>b) Compartir el juego con al menos 5 personas dentro del mismo plazo de 30 minutos.
+            <br>Si no se cumple con ambas condiciones dentro de ese tiempo, el beneficio de la zona gratuita queda anulado.</p>
+            <p><strong>4. Beneficio por referidos:</strong><br>Por cada persona referida que señe o compre una zona dentro de las 24 horas posteriores al giro, el participante titular del juego acumula un 10% de descuento para su segunda sesión de tratamiento.</p>
+            <ul>
+                <li>5 referidos señados = 50% de descuento</li>
+                <li>10 referidos señados = 100% de descuento (zona gratis)</li>
+            </ul>
+            <p><strong>5. Vigencia del beneficio por referidos:</strong><br>El tiempo límite para que los referidos realicen su seña o compra válida es de 24 horas desde el momento en que el participante titular gira la ruleta.</p>
+            <p><strong>6. Igualdad de beneficios para referidos:</strong><br>Las personas referidas pueden participar del mismo juego si cumplen con las condiciones (señar una zona + compartir con 5 personas), accediendo así a su propio beneficio de zona gratuita y programa de descuentos acumulables.</p>
+            <p><strong>7. Definición de zonas según tamaño:</strong></p>
+            <ul>
+                <li><strong>Zonas chicas:</strong> bozo, mentón, línea alba, dedos de pies/manos, tiro de cola.</li>
+                <li><strong>Zonas medianas:</strong> cavado, media pierna, medio brazo, glúteos, rostro completo.</li>
+                <li><strong>Zonas grandes:</strong> piernas completas, pecho completo, espalda completa.</li>
+            </ul>
+            <p><strong>8. Aplicación de los beneficios:</strong></p>
+            <ul>
+                <li>La zona gratuita obtenida solo se activa si se cumple con la seña y el envío del juego a 5 personas en los primeros 30 minutos.</li>
+                <li>El descuento acumulado solo se aplica a la segunda sesión, y exclusivamente sobre zonas nuevas.</li>
+                <li>No es válido para sesiones abonadas previamente ni zonas en las cuales el cliente ya se encuentre en tratamiento activo.</li>
+            </ul>
+            <p><strong>9. Repetición del juego:</strong><br>El participante podrá volver a tirar la ruleta y ganar nuevas zonas gratuitas todas las veces que desee, siempre y cuando:</p>
+            <ul>
+                <li>Señe una nueva zona adicional (distinta a la anterior).</li>
+                <li>Comparta nuevamente el juego con 5 personas nuevas.</li>
+                <li>Sus referidos hayan también concretado la seña.</li>
+            </ul>
+            <p>Cada jugada se considera individual y requiere cumplir nuevamente con todas las condiciones iniciales para activar un nuevo beneficio.</p>
+            <p><strong>10. Generalidades:</strong></p>
+            <ul>
+                <li>Los beneficios son personales e intransferibles.</li>
+                <li>No acumulables con otras promociones.</li>
+                <li>Le Bardol se reserva el derecho de modificar o suspender esta promoción sin previo aviso si se detectan usos indebidos o cambios operativos.</li>
+            </ul>
         </div>
+    </div>
+
     <div id="messageModal" class="modal-overlay">
-        </div>
+        <div class="modal-content">
+            <h3 id="messageModalTitle"></h3>
+            <p id="messageModalText"></p>
+            <button id="closeMessageModal">Entendido</button>
+            </div>
+    </div>
     
     <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
     <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
@@ -340,7 +395,6 @@
                 console.error("Error initializing Firebase or authenticating:", error);
             }
             
-            // --- CÓDIGO NUEVO AÑADIDO ---
             const urlParams = new URLSearchParams(window.location.search);
             const initialName = urlParams.get('nombre');
             const initialEmail = urlParams.get('email');
@@ -350,9 +404,7 @@
             if (initialEmail) {
                 document.getElementById('userEmail').value = decodeURIComponent(initialEmail);
             }
-            // --- FIN CÓDIGO NUEVO ---
-
-            // --- ROULETTE PRIZES ---
+            
             const segments = [
                 { text: 'Zona Grande GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Grande GRATIS' },
                 { text: '50% OFF', type: 'discount', value: 50, needsSeña: false, description: '50% OFF' },
@@ -362,24 +414,20 @@
                 { text: '60% OFF', type: 'discount', value: 60, needsSeña: false, description: '60% OFF' },
                 { text: 'Cavado GRATIS', type: 'freebie', needsSeña: true, description: 'Cavado GRATIS' }, 
             ];
-            // Shuffle the segments array to make them appear out of order
             segments.sort(() => Math.random() - 0.5);
 
             const segmentColors = ['#e91e63', '#4caf50', '#ff9800', '#2196f3', '#e91e63', '#9c27b0', '#4caf50', '#00bcd4'];
-            // Ensure segmentColors array has enough colors for all segments after removal
             while (segmentColors.length < segments.length) {
-                segmentColors.push(segmentColors[segmentColors.length % 8]); // Cycle through existing colors
+                segmentColors.push(segmentColors[segmentColors.length % 8]);
             }
             const numSegments = segments.length;
             const arc = (2 * Math.PI) / numSegments;
 
-            // --- ROULETTE STATE ---
             let state = {};
             let currentRotation = 0;
             let animationFrameId;
             let prizeTimerInterval;
 
-            // --- CARD GAME ELEMENTS AND STATE ---
             const cardsContainer = document.getElementById('cardsContainer');
             const cardResultMessage = document.getElementById('cardResultMessage');
             const cardGameInfo = document.getElementById('cardGameInfo');
@@ -404,7 +452,6 @@
             let currentCardPrize = null;
             let cardSessionTimerInterval;
 
-            // --- DOM ELEMENTS ---
             const canvas = document.getElementById('rouletteCanvas');
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spinBtn');
@@ -585,7 +632,6 @@
                     return;
                 }
 
-                // --- CÓDIGO PARA GUARDAR DATOS DEL USUARIO ---
                 if (db && userId) {
                     const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteUsers`, userName);
                     await setDoc(userDocRef, {
@@ -595,7 +641,6 @@
                     }, { merge: true });
                     console.log("Datos del usuario guardados exitosamente.");
                 }
-                // --- FIN CÓDIGO PARA GUARDAR DATOS DEL USUARIO ---
 
                 state.spinsLeft--;
                 state.prizesLeft--;
