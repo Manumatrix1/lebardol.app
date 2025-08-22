@@ -7,27 +7,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-    <!-- Open Graph Meta Tags para vista previa de WhatsApp/Redes Sociales -->
     <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
-    <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
-    <meta property="og:image" content="https://i.imgur.com/11RstI1.png"> <!-- URL de la imagen deseada -->
-    <!-- La URL de tu aplicación se establecerá dinámicamente en el script para la etiqueta og:url -->
+    <meta property="og:description" content="Gana zonas GRATIS, descuentos y más beneficios. ¡Jugá todas las veces que quieras!">
+    <meta property="og:image" content="https://i.imgur.com/11RstI1.png">
     <meta property="og:url" id="og-url-meta" content=""> 
     <meta property="og:type" content="website">
-    <!-- Fin Open Graph Meta Tags -->
 
     <style>
-        /* Estilos generales y reseteo */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Paleta de Colores: Grises cálidos, verde salvia y púrpura para acento */
+        :root {
+            --bg-light: #f5f7fa;
+            --bg-card: #ffffff;
+            --text-dark: #333d42;
+            --text-gray: #757c85;
+            --accent-purple: #6a1b9a;
+            --accent-light-purple: #8e2de2;
+            --accent-green: #38a169;
+            --accent-blue: #3498db;
+            --accent-red: #e74c3c;
+            --highlight-pink: #fde2e4;
         }
-        
+
+        /* Estilos generales y fuentes */
         body {
-            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
-            color: #4a2c5e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -36,127 +41,75 @@
             overflow-x: hidden;
         }
         
-        /* Contenedor principal de la tarjeta */
+        /* Contenedor principal */
         .container {
             max-width: 500px;
             width: 100%;
-            background: white;
-            padding: 20px;
+            background: var(--bg-card);
+            padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
-            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             margin: 20px 0;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        
-        /* --- ESTILOS DE LA CAMPAÑA RULETA --- */
-        .roulette-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 40px; /* Added margin to separate from card game */
+            border: 1px solid #e9e9e9;
         }
 
-        .roulette-section .campaign-title {
+        /* Títulos de secciones */
+        .campaign-title {
             font-size: 2.2rem;
             font-weight: 900;
-            color: #e91e63;
             line-height: 1.2;
             text-align: center;
             width: 100%;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-light-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
         }
-        
-        @keyframes text-pop-up-top {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-5px); }
-        }
 
-        .roulette-section .campaign-subtitle {
-            font-size: 1.5rem; /* Increased font size */
-            font-weight: bold; /* Made text bolder */
-            color: #4a2c5e;
-            padding: 0 10px;
-            max-width: 400px;
-            text-align: center;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Added text shadow for emphasis */
-        }
-
-        .prize-counter {
-            background-color: #ffeb3b;
-            color: #333;
-            padding: 8px 15px;
-            border-radius: 20px;
+        .campaign-subtitle {
+            font-size: 1.3rem;
             font-weight: bold;
-            margin-top: 10px;
-            border: 2px solid #fbc02d;
-            animation: pulse-yellow 1.5s infinite;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
-        }
-
-        .roulette-canvas-container {
-            position: relative;
+        /* Campos de formulario */
+        .user-input-group {
             width: 90%;
             max-width: 380px;
-            margin: 15px 0 0;
-            aspect-ratio: 1 / 1;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
-            overflow: visible;
-            cursor: pointer; /* Make the roulette itself clickable */
-            transition: transform 0.3s ease;
+            margin-bottom: 20px;
         }
-        .roulette-canvas-container:hover:not(.spinning) {
-            transform: scale(1.02); /* Slight scale effect on hover */
-        }
-        .roulette-canvas-container.spinning {
-            cursor: default; /* Change cursor when spinning */
-        }
-
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        label {
             display: block;
-            border-radius: 50%;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+        .user-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .user-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1);
+        }
+        .user-input.required {
+            border-color: var(--accent-red);
         }
 
-        .wheel-indicator {
-            position: absolute;
-            top: -15px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 35px solid #e91e63; 
-            z-index: 10;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
-        }
-
-        .buttons-container {
-            margin-top: 20px;
-            width: 90%;
-            max-width: 380px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
+        /* Botones generales */
         .btn {
             display: flex;
             align-items: center;
@@ -172,534 +125,89 @@
             text-align: center;
             transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 15px; /* Added margin to space buttons */
         }
-        
-        .btn-spin {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
-            color: white;
-            font-size: 22px;
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
-        
-        .btn-reserve {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-            color: white;
-        }
-
-        .btn-claim-prize {
-            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
-            color: white;
-        }
-
-        .btn-share { /* Reintroducido para el botón de compartir de la ruleta */
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            color: white;
-            flex-direction: column;
-            line-height: 1.2;
-            padding: 12px;
-        }
-
-        .btn-share .share-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .btn-share .share-subtitle {
-            font-size: 14px;
-            font-weight: normal;
-            opacity: 0.9;
-        }
-
-        .btn-share .fab {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .btn-play-again {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
-            color: white;
-        }
-
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
-        
-        .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        #resultMessage {
-            margin-top: 10px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #4a2c5e;
-            animation: pulse-red 1.5s infinite;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            text-align: center;
-            width: 90%;
-            max-width: 380px;
-            line-height: 1.4;
-        }
-
-        #resultMessage small {
-            font-size: 15px; /* Tamaño más pequeño para la aclaración */
-            font-weight: normal;
-            color: #333;
-            display: block;
-            margin-top: 8px;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
-            50% { box-shadow: 0 0 25px rgba(233, 30, 99, 0.8); transform: scale(1.02); }
-            100% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
-        }
-
-        .prize-timer {
-            font-size: 18px;
-            font-weight: bold;
-            color: #d32f2f;
-            margin-top: 10px;
-            text-align: center;
-            width: 100%;
-        }
-        
-        #upsellSection {
-            padding: 15px;
-            background: #e0f7fa;
-            border: 2px dashed #00bcd4;
-            border-radius: 15px;
-            width: 100%;
-        }
-        #upsellSection h3 {
-            color: #00796b;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        .btn-upsell {
-            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        .btn-spin {
+            background: linear-gradient(135deg, var(--accent-green), #2e7d32);
             color: white;
-            margin-top: 10px;
+            font-size: 22px;
         }
-        
-        .user-name-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            transition: border-color 0.3s ease;
+        .btn-claim-prize {
+            background: linear-gradient(135deg, var(--accent-blue), #1976D2);
+            color: white;
         }
-        .user-name-input:focus {
-            outline: none;
-            border-color: #8a2be2;
-        }
-        .user-name-input.required {
-            border-color: #ef4444;
-        }
-        .user-name-input.filled {
-            border-color: #22c55e;
+        .btn-share {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-light-purple));
+            color: white;
         }
 
-        .whatsapp-logo-container {
-            margin-bottom: 20px;
+        /* Mensajes de resultado */
+        #resultMessage, #cardResultMessage {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-purple);
             text-align: center;
-            width: 100%;
+            line-height: 1.4;
+            padding: 15px;
+            background: var(--highlight-pink);
+            border-radius: 10px;
+            border: 2px solid var(--accent-purple);
         }
-        .whatsapp-logo-container img {
+        #resultMessage small, #cardResultMessage small {
+            font-size: 0.9rem;
+            font-weight: normal;
+            display: block;
+            margin-top: 5px;
+            color: var(--text-dark);
+        }
+
+        /* Separadores y otros elementos */
+        .separator {
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--text-gray), transparent);
+            margin: 40px auto;
+        }
+        .logo-container {
+            margin-bottom: 25px;
+        }
+        .logo-container img {
             max-width: 250px;
             height: auto;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            display: block;
-            margin: 0 auto;
-        }
-        .whatsapp-logo-container img:hover {
-            transform: scale(1.05);
         }
 
-        .whatsapp-float-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #25D366;
-            color: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            text-decoration: none;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+        /* Modal y Overlays */
+        .modal-overlay, .message-modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
         }
-        .whatsapp-float-btn:hover {
-            transform: scale(1.1);
-            background-color: #1DA851;
-        }
-        .whatsapp-float-btn i {
-            color: white;
-        }
-
-        /* --- ESTILOS PARA LA VENTANA MODAL DE POLÍTICAS --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .modal-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        .modal-content h2 {
-            margin-bottom: 15px;
-            color: #4a2c5e;
-        }
-        .modal-content p, .modal-content li {
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        .modal-content ul {
-            padding-left: 20px;
+        .modal-content, .message-modal-content {
+            background: var(--bg-card);
+            padding: 30px;
         }
         .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            color: #888;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-        .policies-link {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #8a2be2;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* --- ESTILOS PARA LA VENTANA MODAL DE MENSAJES (CUSTOM ALERT) --- */
-        .message-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001; /* Higher than policies modal */
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .message-modal-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .message-modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transform: translateY(-20px);
-            transition: transform 0.3s ease-out;
-        }
-        .message-modal-overlay.visible .message-modal-content {
-            transform: translateY(0);
-        }
-        .message-modal-content h3 {
-            color: #e91e63;
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-        .message-modal-content p {
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 20px;
-            line-height: 1.5;
+            color: var(--text-gray);
         }
         .message-modal-content button {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-light-purple));
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
         }
-        .message-modal-content button:hover {
-            background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
-        }
-
-        /* --- ESTILOS JUEGO DE CARTAS --- */
-        .card-game-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px dashed #ffc0cb; /* Separator */
-        }
-
-        .card-game-section .campaign-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #00bcd4; /* Different color for distinction */
-            line-height: 1.2;
-            text-align: center;
-            width: 100%;
-        }
-
-        .card-game-section .campaign-subtitle {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #4a2c5e;
-            padding: 0 10px;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns for 6 cards, will create 2 rows */
-            gap: 15px;
-            width: 90%;
-            max-width: 380px;
-            perspective: 1000px; /* For 3D flip effect */
-        }
-
-        .card {
-            width: 100%;
-            height: 120px; /* Fixed height for cards */
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-            cursor: pointer;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            line-height: 1.2;
-        }
-
-        .card-front {
-            background: linear-gradient(135deg, #ff7043 0%, #e64a19 100%); /* Orange/Red for front */
-            transform: rotateY(180deg); /* Hidden initially */
-        }
-
-        .card-back {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%); /* Purple for back */
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .card-back .icon {
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-        }
-        .card-back .text {
-            font-size: 1rem;
-        }
-
-        .card.disabled {
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        #cardResultMessage {
-            margin-top: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #00796b;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgba(224, 247, 250, 0.8);
-            text-align: center;
-            width: 90%;
-            max-width: 380px;
-            line-height: 1.4;
-            display: none;
-        }
-        #cardResultMessage small {
-            font-size: 14px;
-            font-weight: normal;
-            color: #333;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .card-game-info {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-            width: 90%;
-            max-width: 380px;
-            display: none; /* Hidden by default, shown when played */
-        }
-
-        /* Styles for card game specific buttons */
-        .btn-card-game-share {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            color: white;
-            flex-direction: column;
-            line-height: 1.2;
-            padding: 12px;
-        }
-        .btn-card-game-share .share-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .btn-card-game-share .share-subtitle {
-            font-size: 14px;
-            font-weight: normal;
-            opacity: 0.9;
-        }
-        .btn-card-game-share .fab {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .card-game-attempts {
-            font-size: 16px;
-            font-weight: bold;
-            color: #4a2c5e;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .card-prize-timer {
-            font-size: 18px;
-            font-weight: bold;
-            color: #d32f2f;
-            margin-top: 10px;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* New footer style */
-        .footer-info {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-            width: 100%;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-
-        /* Styles for social links */
-        .social-links {
-            margin-top: 20px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            width: 100%;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-
-        .social-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #4a2c5e;
-            font-size: 14px;
-            font-weight: bold;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .social-link i {
-            font-size: 30px;
-            margin-bottom: 5px;
-            color: #8a2be2; /* Default icon color */
-            transition: color 0.3s ease;
-        }
-
-        .social-link:hover {
-            color: #6a1b9a;
-            transform: translateY(-3px);
-        }
-
-        .social-link:hover .fa-instagram {
-            color: #E1306C; /* Instagram color */
-        }
-
-        .social-link:hover .fa-map-marker-alt {
-            color: #4285F4; /* Google Maps color */
-        }
-
-        .social-link:hover .fa-link {
-            color: #00C853; /* A generic green for Linktree */
-        }
-
-        /* Style for share counter (removed) */
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="whatsapp-logo-container">
+        <div class="logo-container">
             <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
                 <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
             </a>
@@ -707,12 +215,17 @@
 
         <div class="roulette-section" id="rouletteSection">
             <h1 class="campaign-title">🎉 ¡Girá la ruleta mágica y ganá! 🎁</h1>
-            <p class="campaign-subtitle">Gana una zona gratis y más beneficios...</p>
+            <p class="campaign-subtitle">Gana zonas gratis, descuentos y más beneficios.</p>
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
-            <div style="margin-bottom: 15px; width: 90%; max-width: 380px;">
-                <label for="userName" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a2c5e; font-size: 14px;">Tu nombre completo (para personalizar el mensaje):</label>
-                <input type="text" id="userName" class="user-name-input" placeholder="Ej: Maria Lopez" required>
+            <div class="user-input-group">
+                <label for="userName">Tu nombre completo:</label>
+                <input type="text" id="userName" class="user-input" placeholder="Ej: Maria Lopez" required>
+            </div>
+            
+            <div class="user-input-group">
+                <label for="userEmail">Tu correo electrónico o WhatsApp:</label>
+                <input type="text" id="userEmail" class="user-input" placeholder="Ej: maria@ejemplo.com o +549341..." required>
             </div>
 
             <div class="roulette-canvas-container" id="rouletteCanvasContainer">
@@ -724,46 +237,32 @@
             <p class="prize-timer" id="prizeTimerDisplay"></p>
 
             <div class="buttons-container">
-                <button class="btn btn-spin" id="spinBtn" style="display: none;">👉 GIRAR LA RULETA AHORA</button>
-                <button class="btn btn-reserve" id="reserveBtn" style="display: none;"></button>
+                <button class="btn btn-spin" id="spinBtn" style="display: none;">👉 GIRAR LA RULETA</button>
                 <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;"></button>
-                <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar Ruleta</button>
-                <!-- Botón de Compartir para obtener tiros de ruleta -->
-                <button class="btn btn-share" id="shareBtn" style="display: none;">
-                    <i class="fab fa-whatsapp"></i>
-                    <span class="share-title"></span>
-                    <span class="share-subtitle"></span>
-                </button>
-                <div id="upsellSection" style="display: none;">
-                    <h3>¡Potenciá tu premio!</h3>
-                    <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
-                    <button class="btn btn-upsell" id="upsellBtn">👉 Ver zonas disponibles</button>
-                </div>
+                <button class="btn btn-share" id="shareBtn" style="display: none;"></button>
+                <button class="btn btn-share" id="playAgainBtn" style="display: none;">✨ Volver a Jugar</button>
             </div>
-
             <p id="policiesLink" class="policies-link">Ver Términos y Condiciones del Juego</p>
         </div>
+        
+        <div class="separator"></div>
 
         <div class="card-game-section" id="cardGameSection">
             <h1 class="campaign-title">🃏 ¡Descubrí tu descuento sorpresa!</h1>
             <p class="campaign-subtitle">Elegí una carta y ganá un descuento exclusivo.</p>
             
             <div id="cardPlaysCounter" class="card-game-attempts"></div>
-
-            <div class="cards-container" id="cardsContainer">
-                </div>
+            <div class="cards-container" id="cardsContainer"></div>
             <p id="cardResultMessage" style="display: none;"></p>
             <p class="card-prize-timer" id="cardPrizeTimerDisplay"></p>
 
-            <button class="btn btn-claim-prize" id="claimCardPrizeBtn" style="display: none; margin-top: 15px;">
+            <button class="btn btn-claim-prize" id="claimCardPrizeBtn" style="display: none;">
                 <i class="fab fa-whatsapp"></i> RECLAMAR MIS PREMIOS DE CARTAS
             </button>
-            <button class="btn btn-card-game-share" id="shareCardGameBtn" style="display: none; margin-top: 15px;">
-                <i class="fab fa-whatsapp"></i>
-                <span class="share-title">¡Compartí para Jugar!</span>
-                <span class="share-subtitle">Obtén 3 tiros para el juego de cartas.</span>
+            <button class="btn btn-share" id="shareCardGameBtn" style="display: none;">
+                <i class="fab fa-whatsapp"></i> Compartí para Jugar!
             </button>
-            <p id="cardGameInfo" class="card-game-info">Los premios de este juego no son acumulables.</p>
+            <p id="cardGameInfo" class="card-game-info"></p>
         </div>
 
         <p class="footer-info">
@@ -786,179 +285,72 @@
             </a>
         </div>
     </div>
-
+    
     <a href="https://wa.me/5493415216025" class="whatsapp-float-btn" target="_blank" aria-label="Contactar por WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
     
     <div id="policiesModal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="closePoliciesModal" class="close-modal">×</button>
-            <h2>LE BARDOL – POLÍTICAS DE PROMOCIÓN</h2>
-            <h3>Juego “Girá la Ruleta y Ganá tu Zona Gratis” – Depilación Definitiva</h3>
-            <p><strong>1. Objeto del juego:</strong><br>El juego “Girá la Ruleta y Ganá tu Zona” es una acción promocional de Le Bardol destinada a premiar a clientes nuevos o actuales que participen cumpliendo con las condiciones detalladas a continuación.</p>
-            <p><strong>2. Premios posibles:</strong><br>El participante puede ganar una zona gratuita de depilación definitiva al azar:</p>
-            <ul>
-                <li>Zona Chica</li>
-                <li>Zona Mediana</li>
-                <li>Zona Grande</li>
-            </ul>
-            <p><strong>3. Condición de participación:</strong><br>Para hacer válido el premio obtenido en la ruleta, el participante deberá:
-            <br>a) Señar una zona adicional (de cualquier tamaño) dentro de los 30 minutos posteriores al giro.
-            <br>b) Compartir el juego con al menos 5 personas dentro del mismo plazo de 30 minutos.
-            <br>Si no se cumple con ambas condiciones dentro de ese tiempo, el beneficio de la zona gratuita queda anulado.</p>
-            <p><strong>4. Beneficio por referidos:</strong><br>Por cada persona referida que señe o compre una zona dentro de las 24 horas posteriores al giro, el participante titular del juego acumula un 10% de descuento para su segunda sesión de tratamiento.</p>
-            <ul>
-                <li>5 referidos señados = 50% de descuento</li>
-                <li>10 referidos señados = 100% de descuento (zona gratis)</li>
-            </ul>
-            <p><strong>5. Vigencia del beneficio por referidos:</strong><br>El tiempo límite para que los referidos realicen su seña o compra válida es de 24 horas desde el momento en que el participante titular gira la ruleta.</p>
-            <p><strong>6. Igualdad de beneficios para referidos:</strong><br>Las personas referidas pueden participar del mismo juego si cumplen con las condiciones (señar una zona + compartir con 5 personas), accediendo así a su propio beneficio de zona gratuita y programa de descuentos acumulables.</p>
-            <p><strong>7. Definición de zonas según tamaño:</strong></p>
-            <ul>
-                <li><strong>Zonas chicas:</strong> bozo, mentón, línea alba, dedos de pies/manos, tiro de cola.</li>
-                <li><strong>Zonas medianas:</strong> cavado, media pierna, medio brazo, glúteos, rostro completo.</li>
-                <li><strong>Zonas grandes:</strong> piernas completas, pecho completo, espalda completa.</li>
-            </ul>
-            <p><strong>8. Aplicación de los beneficios:</strong></p>
-            <ul>
-                <li>La zona gratuita obtenida solo se activa si se cumple con la seña y el envío del juego a 5 personas en los primeros 30 minutos.</li>
-                <li>El descuento acumulado solo se aplica a la segunda sesión, y exclusivamente sobre zonas nuevas.</li>
-                <li>No es válido para sesiones abonadas previamente ni zonas en las cuales el cliente ya se encuentre en tratamiento activo.</li>
-            </ul>
-            <p><strong>9. Repetición del juego:</strong><br>El participante podrá volver a tirar la ruleta y ganar nuevas zonas gratuitas todas las veces que desee, siempre y cuando:</p>
-            <ul>
-                <li>Señe una nueva zona adicional (distinta a la anterior).</li>
-                <li>Comparta nuevamente el juego con 5 personas nuevas.</li>
-                <li>Sus referidos hayan también concretado la seña.</li>
-            </ul>
-            <p>Cada jugada se considera individual y requiere cumplir nuevamente con todas las condiciones iniciales para activar un nuevo beneficio.</p>
-            <p><strong>10. Generalidades:</strong></p>
-            <ul>
-                <li>Los beneficios son personales e intransferibles.</li>
-                <li>No acumulables con otras promociones.</li>
-                <li>Le Bardol se reserva el derecho de modificar o suspender esta promoción sin previo aviso si se detectan usos indebidos o cambios operativos.</li>
-            </ul>
         </div>
-    </div>
-
     <div id="messageModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 id="messageModalTitle"></h3>
-            <p id="messageModalText"></p>
-            <button id="closeMessageModal">Entendido</button>
-            </div>
-    </div>
-
+        </div>
+    
     <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
-    <!-- NOTA: Para usar "aplausos.mp3", debes alojarlo en un servidor web y reemplazar esta URL. -->
-    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-win-2010.mp3" preload="auto"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
     <audio id="cardFlipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-1033.mp3" preload="auto"></audio>
     <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
 
     <script type="module">
-        // Firebase SDK imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // Importa onAuthStateChanged aquí
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // Se reintrodujeron las importaciones de Firestore para el contador de compartidos
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        console.log("JavaScript is running!"); // Debug: Script loaded
+        console.log("JavaScript is running!"); 
 
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("DOM fully loaded and parsed. Initializing script...");
 
-            // --- Firebase Initialization ---
-            // Las variables __app_id y __firebase_config son proporcionadas por el entorno Canvas.
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
 
             let app;
-            let db; // Instancia de Firestore
+            let db;
             let auth;
-            let userId = 'cargando...'; // Valor por defecto hasta que se autentique
+            let userId = 'cargando...';
 
             try {
-                // Solo inicializa Firebase si la configuración está disponible
                 if (Object.keys(firebaseConfig).length > 0) {
                     app = initializeApp(firebaseConfig);
-                    db = getFirestore(app); // Inicializa Firestore
+                    db = getFirestore(app);
                     auth = getAuth(app);
+                    await signInAnonymously(auth);
 
-                    // Autenticar al usuario
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                        console.log("Signed in with custom token.");
-                    } else {
-                        await signInAnonymously(auth);
-                        console.log("Signed in anonymously.");
-                    }
-
-                    // Listener para el estado de autenticación (solo para depuración, no hay lógica de UI dependiente aquí)
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
                             userId = user.uid;
                             console.log("User authenticated:", userId);
                         } else {
-                            console.log("No user is signed in.");
                             userId = 'no-autenticado';
                         }
                     });
                 } else {
-                    console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");
+                    console.warn("Firebase config not found. Functions will not work.");
                 }
-
             } catch (error) {
                 console.error("Error initializing Firebase or authenticating:", error);
-                // Usar showMessageModal para mensajes al usuario
-                showMessageModal("Error al iniciar la aplicación.", "Por favor, recarga la página.");
             }
-
-            // --- CAMPAIGN CONFIGURATION ---
-            const señaAmount = 8000;
-            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
-            const whatsappNumber = '5493415216025';
-            // URL base de la aplicación para los enlaces de referido. Asegúrate de que esta URL sea la real de tu sitio.
-            // CAMBIO AQUÍ: Usar la URL estática proporcionada por el usuario
-            const appBaseUrl = 'https://lebardol-app.netlify.app/'; 
-
-            // Actualizar la meta etiqueta og:url dinámicamente
-            const ogUrlMeta = document.getElementById('og-url-meta');
-            if (ogUrlMeta) {
-                ogUrlMeta.setAttribute('content', appBaseUrl);
+            
+            // --- CÓDIGO NUEVO AÑADIDO ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialName = urlParams.get('nombre');
+            const initialEmail = urlParams.get('email');
+            if (initialName) {
+                document.getElementById('userName').value = decodeURIComponent(initialName);
             }
-
-            // --- DOM ELEMENTS ---
-            const canvas = document.getElementById('rouletteCanvas');
-            const ctx = canvas.getContext('2d');
-            const spinBtn = document.getElementById('spinBtn');
-            const reserveBtn = document.getElementById('reserveBtn');
-            const claimPrizeBtn = document.getElementById('claimPrizeBtn'); // For single roulette prize claim
-            const playAgainBtn = document.getElementById('playAgainBtn'); // For resetting roulette game
-            const resultMessage = document.getElementById('resultMessage');
-            const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
-            const prizeCounterDisplay = document.getElementById('prizeCounter');
-            const upsellSection = document.getElementById('upsellSection');
-            const upsellBtn = document.getElementById('upsellBtn');
-            const shareBtn = document.getElementById('shareBtn'); // Reintroducido para la ruleta
-            const userNameInput = document.getElementById('userName');
-            const policiesLink = document.getElementById('policiesLink');
-            const policiesModal = document.getElementById('policiesModal');
-            const closePoliciesModal = document.getElementById('closePoliciesModal');
-            const rouletteCanvasContainer = document.getElementById('rouletteCanvasContainer'); // New element reference
-
-            // Custom Message Modal elements
-            const messageModal = document.getElementById('messageModal');
-            const messageModalTitle = document.getElementById('messageModalTitle');
-            const messageModalText = document.getElementById('messageModalText');
-            const closeMessageModal = document.getElementById('closeMessageModal');
-
-            // Audio elements
-            const spinSound = document.getElementById('spinSound');
-            const winSound = document.getElementById('winSound');
-            const cardFlipSound = document.getElementById('cardFlipSound');
-            const cardWinSound = document.getElementById('cardWinSound');
+            if (initialEmail) {
+                document.getElementById('userEmail').value = decodeURIComponent(initialEmail);
+            }
+            // --- FIN CÓDIGO NUEVO ---
 
             // --- ROULETTE PRIZES ---
             const segments = [
@@ -990,11 +382,11 @@
             // --- CARD GAME ELEMENTS AND STATE ---
             const cardsContainer = document.getElementById('cardsContainer');
             const cardResultMessage = document.getElementById('cardResultMessage');
-            const cardGameInfo = document.getElementById('cardGameInfo'); // New info element
-            const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn'); // New button element
-            const cardPlaysCounter = document.getElementById('cardPlaysCounter'); // New element for card plays left
-            const shareCardGameBtn = document.getElementById('shareCardGameBtn'); // New share button for card game
-            const cardPrizeTimerDisplay = document.getElementById('cardPrizeTimerDisplay'); // Timer for card game prize reservation
+            const cardGameInfo = document.getElementById('cardGameInfo');
+            const claimCardPrizeBtn = document.getElementById('claimCardPrizeBtn');
+            const cardPlaysCounter = document.getElementById('cardPlaysCounter');
+            const shareCardGameBtn = document.getElementById('shareCardGameBtn');
+            const cardPrizeTimerDisplay = document.getElementById('cardPrizeTimerDisplay');
 
             const cardPrizes = [
                 { text: 'Pilling 20% OFF', description: 'Pilling 20% OFF', needsReservation: true },
@@ -1007,119 +399,127 @@
                 { text: 'Boucher $6000 de Regalo', description: 'Boucher $6000 de Regalo', needsReservation: true },
                 { text: 'Boucher $5000 de Regalo', description: 'Boucher $5000 de Regalo', needsReservation: true }
             ];
-            let cards = []; // Array to hold card DOM elements
-            let cardGameActive = false; // To prevent multiple card flips during animation
-            let currentCardPrize = null; // To store the last prize won from the card game for display
-            let cardSessionTimerInterval; // Timer for card game session prize reservation
+            let cards = [];
+            let cardGameActive = false;
+            let currentCardPrize = null;
+            let cardSessionTimerInterval;
 
-            // --- FUNCTIONS ---
+            // --- DOM ELEMENTS ---
+            const canvas = document.getElementById('rouletteCanvas');
+            const ctx = canvas.getContext('2d');
+            const spinBtn = document.getElementById('spinBtn');
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            const resultMessage = document.getElementById('resultMessage');
+            const prizeTimerDisplay = document.getElementById('prizeTimerDisplay');
+            const prizeCounterDisplay = document.getElementById('prizeCounter');
+            const shareBtn = document.getElementById('shareBtn');
+            const userNameInput = document.getElementById('userName');
+            const userEmailInput = document.getElementById('userEmail');
+            const policiesLink = document.getElementById('policiesLink');
+            const policiesModal = document.getElementById('policiesModal');
+            const closePoliciesModal = document.getElementById('closePoliciesModal');
+            const rouletteCanvasContainer = document.getElementById('rouletteCanvasContainer');
 
-            /**
-             * Displays a custom message modal.
-             * @param {string} title - The title for the modal.
-             * @param {string} message - The message content for the modal.
-             * @param {object} [buttonConfig] - Optional configuration for a button in the modal.
-             * @param {string} buttonConfig.text - The text for the button.
-             * @param {function} buttonConfig.callback - The function to call when the button is clicked.
-             * @param {string} [buttonConfig.class] - Optional CSS class for the button.
-             */
+            const messageModal = document.getElementById('messageModal');
+            const messageModalTitle = document.getElementById('messageModalTitle');
+            const messageModalText = document.getElementById('messageModalText');
+            const closeMessageModal = document.getElementById('closeMessageModal');
+
+            const spinSound = document.getElementById('spinSound');
+            const winSound = document.getElementById('winSound');
+            const cardFlipSound = document.getElementById('cardFlipSound');
+            const cardWinSound = document.getElementById('cardWinSound');
+
+            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
+            const whatsappNumber = '5493415216025';
+            const appBaseUrl = 'https://lebardol-app.netlify.app/'; 
+
+            const ogUrlMeta = document.getElementById('og-url-meta');
+            if (ogUrlMeta) {
+                ogUrlMeta.setAttribute('content', appBaseUrl);
+            }
+
             function showMessageModal(title, message, buttonConfig = null) {
                 messageModalTitle.textContent = title;
                 messageModalText.textContent = message;
 
-                // Clear previous custom button if any
                 let existingCustomButton = messageModal.querySelector('#messageModalCustomButton');
                 if (existingCustomButton) {
                     existingCustomButton.remove();
                 }
 
-                // Add custom button if config is provided
                 if (buttonConfig) {
                     const customButton = document.createElement('button');
                     customButton.id = 'messageModalCustomButton';
-                    customButton.innerHTML = buttonConfig.text; // Use innerHTML to allow icons
+                    customButton.innerHTML = buttonConfig.text;
                     if (buttonConfig.class) {
-                        customButton.classList.add(...buttonConfig.class.split(' ')); // Add multiple classes
+                        customButton.classList.add(...buttonConfig.class.split(' '));
                     } else {
-                        customButton.classList.add('btn'); // Default style
+                        customButton.classList.add('btn');
                     }
                     customButton.addEventListener('click', () => {
                         if (buttonConfig.callback) {
                             buttonConfig.callback();
                         }
-                        hideMessageModal(); // Hide modal after button click
+                        hideMessageModal();
                     });
-                    // Corrected selector: changed '.message-modal-content' to '.modal-content'
                     messageModal.querySelector('.modal-content').appendChild(customButton);
-                    closeMessageModal.style.display = 'none'; // Hide default "Entendido" button
+                    closeMessageModal.style.display = 'none';
                 } else {
-                    closeMessageModal.style.display = 'block'; // Show default "Entendido" button
+                    closeMessageModal.style.display = 'block';
                 }
 
                 messageModal.classList.add('visible');
             }
 
-            /**
-             * Hides the custom message modal.
-             */
             function hideMessageModal() {
                 messageModal.classList.remove('visible');
             }
 
-            /**
-             * Loads the game state from localStorage. Initializes with default values if no state is found.
-             * Also updates the prize counter based on elapsed time since last activity.
-             */
             function loadState() {
                 const savedState = JSON.parse(localStorage.getItem('bardolRouletteState'));
                 const defaultState = {
-                    spinsLeft: 0, // Inicia con 0 tiros, se ganan al compartir
-                    prize: null, // Último premio individual de ruleta
-                    prizeEndTime: 0, // Temporizador para premio individual de ruleta
+                    spinsLeft: 0,
+                    prize: null,
+                    prizeEndTime: 0,
                     prizesLeft: 999,
                     lastActivity: Date.now(),
                     userName: '',
-                    cardPlaysLeft: 0, // Inicia en 0, el usuario debe compartir para obtener los 3 tiros de cartas
-                    wonCardPrizes: [], // Array para almacenar los premios ganados en la sesión de 3 cartas
-                    cardSessionEndTime: 0, // Tiempo de finalización para la reserva de premios de cartas
-                    hasPlayedAllCardPlays: false // Flag para indicar si ya usó los 3 tiros de cartas
+                    userEmail: '',
+                    cardPlaysLeft: 0,
+                    wonCardPrizes: [],
+                    cardSessionEndTime: 0,
+                    hasPlayedAllCardPlays: false
                 };
                 state = { ...defaultState, ...savedState };
                 userNameInput.value = state.userName;
+                userEmailInput.value = state.userEmail;
                 
                 const now = Date.now();
                 const hoursPassed = (now - state.lastActivity) / (1000 * 60 * 60);
-                const prizesToDecrease = Math.floor(hoursPassed * 5); // Disminuye 5 premios por hora de inactividad
-                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease); // Asegura que queden al menos 50 premios
+                const prizesToDecrease = Math.floor(hoursPassed * 5);
+                state.prizesLeft = Math.max(50, state.prizesLeft - prizesToDecrease);
                 state.lastActivity = now;
 
-                // Asegurar que los flags existan si no están en el estado guardado
                 if (state.hasPlayedAllCardPlays === undefined) {
                     state.hasPlayedAllCardPlays = false;
                 }
                 if (state.cardPlaysLeft === undefined) {
                     state.cardPlaysLeft = 0;
                 }
-                // Ensure wonCardPrizes is always an array
                 if (state.wonCardPrizes === undefined || !Array.isArray(state.wonCardPrizes)) {
                     state.wonCardPrizes = [];
                 }
                 
-                saveState(); // Guarda el estado actualizado
+                saveState();
             }
 
-            /**
-             * Saves the current game state to localStorage.
-             */
             function saveState() {
                 state.userName = userNameInput.value.trim();
+                state.userEmail = userEmailInput.value.trim();
                 localStorage.setItem('bardolRouletteState', JSON.stringify(state));
             }
             
-            /**
-             * Draws the roulette wheel on the canvas.
-             * @param {number} rotation - The current rotation angle of the wheel in radians.
-             */
             function drawRoulette(rotation = 0) {
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
@@ -1153,112 +553,85 @@
                     ctx.shadowBlur = 3;
                     
                     const text = segments[i].text;
-                    const lines = text.split('\n'); // Split by newline character
-
-                    if (lines.length > 1) {
-                        // Draw multi-line text
-                        for (let j = 0; j < lines.length; j++) {
-                            ctx.fillText(lines[j], radius * 0.6, (j - (lines.length - 1) / 2) * fontSize * 1.1);
-                        }
+                    const words = text.split(' ');
+                    if (words.length > 2) {
+                        const line1 = words.slice(0, 2).join(' ');
+                        const line2 = words.slice(2).join(' ');
+                        ctx.fillText(line1, radius * 0.6, -fontSize / 2);
+                        ctx.fillText(line2, radius * 0.6, fontSize / 2);
                     } else {
-                        // Draw single-line text, potentially splitting by words if too long
-                        const words = text.split(' ');
-                        if (words.length > 2 && text.indexOf('\n') === -1) { // Only split by words if no explicit newline
-                            const line1 = words.slice(0, 2).join(' ');
-                            const line2 = words.slice(2).join(' ');
-                            ctx.fillText(line1, radius * 0.6, -fontSize / 2);
-                            ctx.fillText(line2, radius * 0.6, fontSize / 2);
-                        } else {
-                            ctx.fillText(text, radius * 0.6, 0);
-                        }
+                        ctx.fillText(text, radius * 0.6, 0);
                     }
                     ctx.restore();
                 }
                 ctx.restore();
             }
 
-            /**
-             * Initiates the roulette spin.
-             * Performs validation checks before spinning.
-             */
-            function spin() {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
+            async function spin() {
+                const userName = userNameInput.value.trim();
+                const userEmail = userEmailInput.value.trim();
+                
+                if (userName === '' || userEmail === '') {
+                    showMessageModal("¡Faltan datos!", "Por favor, ingresa tu nombre y un contacto (email o WhatsApp).");
+                    if (userName === '') userNameInput.classList.add('required');
+                    if (userEmail === '') userEmailInput.classList.add('required');
                     return;
                 }
-                userNameInput.classList.remove('required'); // Remove highlight if valid
+                userNameInput.classList.remove('required');
+                userEmailInput.classList.remove('required');
 
                 if (state.spinsLeft <= 0) {
                     showMessageModal("¡No tenés tiros!", "Compartí con 5 amigos para ganar uno.");
                     return;
                 }
 
+                // --- CÓDIGO PARA GUARDAR DATOS DEL USUARIO ---
+                if (db && userId) {
+                    const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteUsers`, userName);
+                    await setDoc(userDocRef, {
+                        name: userName,
+                        contact: userEmail,
+                        firstSpin: new Date().toISOString()
+                    }, { merge: true });
+                    console.log("Datos del usuario guardados exitosamente.");
+                }
+                // --- FIN CÓDIGO PARA GUARDAR DATOS DEL USUARIO ---
+
                 state.spinsLeft--;
-                state.prizesLeft--; // Decrement available prizes
+                state.prizesLeft--;
                 spinBtn.disabled = true;
                 spinBtn.textContent = 'GIRANDO...';
-                rouletteCanvasContainer.classList.add('spinning'); // Add spinning class
+                rouletteCanvasContainer.classList.add('spinning');
                 
-                // Play spin sound
                 if (spinSound) {
                     try {
-                        spinSound.load(); // Explicitly load the audio
-                        spinSound.currentTime = 0; // Rewind to start
+                        spinSound.load();
+                        spinSound.currentTime = 0;
                         spinSound.play().catch(e => console.error("Error al reproducir sonido de giro:", e));
                     } catch (e) {
                         console.error("No se pudo iniciar la reproducción del sonido de giro:", e);
                     }
                 }
 
-                // Filter out 'nowin' segments for actual prize selection
                 const winnableSegments = segments.filter(s => s.type !== 'nowin');
                 const randomWinnableIndex = Math.floor(Math.random() * winnableSegments.length);
                 const actualWinningSegment = winnableSegments[randomWinnableIndex];
-                state.prize = actualWinningSegment; // This is the actual prize won
+                state.prize = actualWinningSegment;
 
-                // Find the original index of the actual winning segment in the full segments array
-                // This ensures the wheel visually lands on the correct segment.
-                const visualLandingIndex = segments.indexOf(state.prize); // Use state.prize here
-
-                // Calculate final rotation for the selected segment
-                // The indicator is at the top (12 o'clock), which is -Math.PI / 2 radians in standard math.
-                // In canvas, 0 is right, Math.PI/2 is down, Math.PI is left, 3*Math.PI/2 is up.
-                // So, the top is 3*Math.PI/2 or -Math.PI/2. Let's use -Math.PI/2 for consistency with rotation direction.
-                const desiredIndicatorAngle = -Math.PI / 2; 
-
-                // Angle of the center of the target segment (relative to 0 radians / 3 o'clock)
+                const visualLandingIndex = segments.indexOf(state.prize);
+                const desiredIndicatorAngle = -Math.PI / 2;
                 const targetSegmentCenterAngle = visualLandingIndex * arc + arc / 2;
-
-                // Calculate the rotation needed to bring the center of the target segment to the indicator
-                // We want the wheel to rotate such that the targetSegmentCenterAngle aligns with desiredIndicatorAngle.
-                // The rotation needed is the difference between the desired final position and the segment's current position.
                 let rotationOffset = desiredIndicatorAngle - targetSegmentCenterAngle;
-
-                // Normalize rotationOffset to be within [0, 2*PI) for a positive clockwise spin
-                // This ensures the shortest positive rotation to the target.
                 rotationOffset = (rotationOffset % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-
-                // Add multiple full spins to make it spin a few times before landing
-                const numFullSpins = 5; 
+                const numFullSpins = 5;
                 let totalRotation = currentRotation + rotationOffset + (numFullSpins * 2 * Math.PI);
-
-                // Ensure the final rotation is always enough to pass the current position and land correctly.
-                // This handles cases where rotationOffset might be very small or negative if currentRotation is large,
-                // ensuring at least one full spin from the *start* of the animation.
-                while (totalRotation <= currentRotation + (2 * Math.PI)) { 
+                while (totalRotation <= currentRotation + (2 * Math.PI)) {
                     totalRotation += (2 * Math.PI);
                 }
 
-                animateRoulette(totalRotation, 6000); // 6 seconds animation
+                animateRoulette(totalRotation, 6000);
             }
 
-            /**
-             * Animates the roulette wheel rotation.
-             * @param {number} finalAngle - The target rotation angle.
-             * @param {number} duration - The duration of the animation in milliseconds.
-             */
             function animateRoulette(finalAngle, duration) {
                 const startAngle = currentRotation;
                 const startTime = performance.now();
@@ -1266,7 +639,6 @@
                 function animate(currentTime) {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
-                    // Easing function for a smoother stop (ease-out effect)
                     const easedProgress = 1 - Math.pow(1 - progress, 4); 
                     currentRotation = startAngle + (finalAngle - startAngle) * easedProgress;
                     drawRoulette(currentRotation);
@@ -1274,7 +646,6 @@
                     if (progress < 1) {
                         animationFrameId = requestAnimationFrame(animate);
                     } else {
-                        // Ensure the wheel stops exactly at the final angle
                         currentRotation = finalAngle % (2 * Math.PI);
                         handleSpinEnd();
                     }
@@ -1282,18 +653,13 @@
                 animationFrameId = requestAnimationFrame(animate);
             }
 
-            /**
-             * Handles actions after the roulette spin animation ends.
-             * Displays prize, starts timer if needed, and updates UI.
-             */
             function handleSpinEnd() {
-                fireConfetti(); // Celebrate the win!
+                fireConfetti();
                 
-                // Play win sound
                 if (winSound) {
                     try {
-                        winSound.load(); // Explicitly load the audio
-                        winSound.currentTime = 0; // Rewind to start
+                        winSound.load();
+                        winSound.currentTime = 0;
                         winSound.play().catch(e => console.error("Error al reproducir sonido de victoria:", e));
                     } catch (e) {
                         console.error("No se pudo iniciar la reproducción del sonido de victoria:", e);
@@ -1301,41 +667,34 @@
                 }
 
                 const prize = state.prize;
-                // Convert userName to uppercase here
-                const userName = (state.userName.split(' ')[0] || 'crack').toUpperCase(); // Get first name or default to 'crack' and convert to uppercase
+                const userName = (state.userName.split(' ')[0] || 'crack').toUpperCase();
 
-                // Always display the message about winning and needing to purchase another zone
                 resultMessage.innerHTML = `
-                    ¡FELICITACIONES, ${userName}! GANASTE <strong style="color: #e91e63;">${prize.description.toUpperCase()}</strong><br>
+                    ¡FELICITACIONES, ${userName}! GANASTE <strong style="color: var(--accent-purple);">${prize.description.toUpperCase()}</strong><br>
                     <small>Podés tener esta zona gratis al contratar otra zona de depilación definitiva.</small><br>
-                    <strong style="color: #d32f2f; font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>
+                    <strong style="color: var(--accent-red); font-size: 1.1em; display: block; margin-top: 10px;">¡SEÑÁ AHORA TU TURNO Y NO PIERDAS TU PREMIO!</strong>
                 `;
                 
-                // Start prize timer if a deposit is needed
                 if (prize.needsSeña) {
-                    state.prizeEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes from now
+                    state.prizeEndTime = Date.now() + 30 * 60 * 1000;
                     startPrizeTimer();
                 }
                 
-                saveState(); // Save the new state with the won prize
-                updateUI(); // Update button visibility and messages
-                rouletteCanvasContainer.classList.remove('spinning'); // Remove spinning class
+                saveState();
+                updateUI();
+                rouletteCanvasContainer.classList.remove('spinning');
             }
 
-            /**
-             * Starts or updates the countdown timer for prize reservation.
-             * Clears existing timer if any.
-             */
             function startPrizeTimer() {
-                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Clear any previous timer
-                prizeTimerDisplay.style.display = 'block'; // Show the timer display
+                if (prizeTimerInterval) clearInterval(prizeTimerInterval);
+                prizeTimerDisplay.style.display = 'block';
 
                 prizeTimerInterval = setInterval(() => {
                     const timeLeft = state.prizeEndTime - Date.now();
                     if (timeLeft <= 0) {
                         clearInterval(prizeTimerInterval);
                         prizeTimerDisplay.textContent = 'Tu premio expiró y fue liberado.';
-                        state.prize = null; // Clear the prize
+                        state.prize = null;
                         saveState();
                         updateUI();
                         return;
@@ -1343,19 +702,13 @@
                     const minutes = Math.floor(timeLeft / 60000);
                     const seconds = Math.floor((timeLeft % 60000) / 1000);
                     prizeTimerDisplay.textContent = `⏳ Tenés ${minutes}m ${seconds}s para reservar, o el premio se libera.`;
-                }, 1000); // Update every second
+                }, 1000);
             }
 
-            /**
-             * Triggers a confetti animation.
-             */
             function fireConfetti() {
                 confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
             }
 
-            /**
-             * Increments the roulette share count in Firestore.
-             */
             async function incrementRouletteShareCount() {
                 if (!db || !userId || userId === 'cargando...') {
                     console.warn("Firestore o userId no están listos para incrementar el contador de compartidos.");
@@ -1370,21 +723,17 @@
                 }
             }
 
-            /**
-             * Handles the action when the user needs to share to get a spin.
-             */
             function handleShareForSpin() {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
+                if (userNameInput.value.trim() === '' || userEmailInput.value.trim() === '') {
+                    showMessageModal("¡Faltan datos!", "Por favor, ingresa tu nombre y un contacto para poder compartir.");
+                    if (userNameInput.value.trim() === '') userNameInput.classList.add('required');
+                    if (userEmailInput.value.trim() === '') userEmailInput.classList.add('required');
                     return;
                 }
-                userNameInput.classList.remove('required'); // Remove highlight if valid
-                const userName = state.userName.split(' ')[0]; // Get only the first name for brevity
+                userNameInput.classList.remove('required');
+                userEmailInput.classList.remove('required');
+                const userName = state.userName.split(' ')[0];
                 
-                // Mensaje de WhatsApp personalizado con el link de la ruleta
-                // MODIFICACIÓN: Se actualizó el contenido del mensaje de WhatsApp
                 const whatsappMessage = `
 Hola, soy *${userName.toUpperCase()}*
 Jugué y gané en la Ruleta Mágica de Le Bardol.
@@ -1399,115 +748,92 @@ Referí amigas y sumá más premios y descuentos.
 
 También hay sorpresas en juegos de cartas.
 Jugá ahora: ${appBaseUrl}
-                `.trim(); // .trim() para eliminar saltos de línea iniciales/finales
+                `.trim();
 
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-
-                // Incrementar el contador de compartidos en Firestore
                 incrementRouletteShareCount();
 
-                // Simulate sharing and grant a spin after a delay
                 setTimeout(() => {
                     state.spinsLeft++;
                     saveState();
-                    updateUI(); // This will update the button states and spin count
-                    showMessageModal("¡Tiro Obtenido!", "¡Ganaste un tiro libre para la ruleta! ¡Ahora puedes girar!"); // Confirmation message
-                }, 3000); // Wait 3 seconds before granting the spin
+                    updateUI();
+                    showMessageModal("¡Tiro Obtenido!", "¡Ganaste un tiro libre para la ruleta! ¡Ahora puedes girar!");
+                }, 3000);
             }
 
-            /**
-             * Updates the visibility and content of various UI elements based on the current game state.
-             */
             function updateUI() {
                 prizeCounterDisplay.textContent = `💥 ¡Quedan solo ${Math.floor(state.prizesLeft)} premios disponibles!`;
                 
-                const hasPrize = !!state.prize; // Check if a prize has been won (current spin)
+                const hasPrize = !!state.prize;
 
                 resultMessage.style.display = hasPrize ? 'block' : 'none';
                 
-                // Logic for roulette prize timer display
                 if (hasPrize && state.prize.needsSeña && state.prizeEndTime > Date.now()) {
                     prizeTimerDisplay.style.display = 'block';
-                    startPrizeTimer(); // Ensure timer is running if a prize is active and needs seña
+                    startPrizeTimer();
                 } else {
                     prizeTimerDisplay.style.display = 'none';
-                    if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Clear timer if no active prize or prize expired
+                    if (prizeTimerInterval) clearInterval(prizeTimerInterval);
                 }
 
-                upsellSection.style.display = hasPrize ? 'block' : 'none';
-                playAgainBtn.style.display = hasPrize ? 'block' : 'none'; // Play again button for roulette
+                playAgainBtn.style.display = hasPrize ? 'block' : 'none';
 
-                // Roulette button logic:
-                if (hasPrize) { // If a prize has been won
-                    spinBtn.style.display = 'none'; // Hide spin button after winning
-                    shareBtn.style.display = 'block'; // Show share button after winning for MORE spins
+                if (hasPrize) {
+                    spinBtn.style.display = 'none';
+                    shareBtn.style.display = 'block';
                     shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">¡Compartí para más tiros!</span><span class="share-subtitle">Ganá otra oportunidad para girar.</span>`;
                     shareBtn.disabled = false;
-
-                    reserveBtn.style.display = state.prize.needsSeña ? 'block' : 'none';
-                    reserveBtn.innerHTML = `<i class="fas fa-credit-card"></i> RESERVÁ TU LUGAR (SEÑA $${señaAmount})`;
-                    claimPrizeBtn.style.display = 'block';
-                    claimPrizeBtn.innerHTML = `<i class="fab fa-whatsapp"></i> RECLAMAR PREMIO`;
-                } else { // No prize won yet for current session
-                    reserveBtn.style.display = 'none';
-                    claimPrizeBtn.style.display = 'none';
-                    playAgainBtn.style.display = 'none';
-
+                } else {
                     if (state.spinsLeft > 0) {
                         spinBtn.textContent = `👉 GIRAR LA RULETA (${state.spinsLeft} TIRO${state.spinsLeft !== 1 ? 'S' : ''})`;
-                        spinBtn.style.display = 'block'; // Show spin button
-                        shareBtn.style.display = 'none'; // Hide share button
-                        spinBtn.disabled = false; // Habilitar si no está girando
+                        spinBtn.style.display = 'block';
+                        shareBtn.style.display = 'none';
+                        spinBtn.disabled = false;
                     } else {
-                        spinBtn.style.display = 'none'; // Hide spin button
-                        shareBtn.style.display = 'block'; // Show share button (for initial share to get a spin)
+                        spinBtn.style.display = 'none';
+                        shareBtn.style.display = 'block';
                         shareBtn.innerHTML = `<i class="fab fa-whatsapp"></i><span class="share-title">💥 ¡Compartí para girar!</span><span class="share-subtitle">Ganá un tiro compartiendo con 5 amigos.</span>`;
-                        shareBtn.disabled = false; // Siempre habilitado para compartir
+                        shareBtn.disabled = false;
                     }
                 }
-
-                // --- Card game UI update ---
-                // Defensive check for state.wonCardPrizes
+                
                 const wonCardPrizesLength = state.wonCardPrizes ? state.wonCardPrizes.length : 0;
-                const allCardsFlippedInSession = wonCardPrizesLength === 3; // Todas las 3 cartas volteadas
+                const allCardsFlippedInSession = wonCardPrizesLength === 3;
                 const canPlayCardGame = state.cardPlaysLeft > 0;
-                const hasPlayedAllCardPlaysEver = state.hasPlayedAllCardPlays; // Si ya usó los 3 tiros alguna vez
+                const hasPlayedAllCardPlaysEver = state.hasPlayedAllCardPlays;
 
                 cardPlaysCounter.textContent = `Te quedan ${state.cardPlaysLeft} tiro${state.cardPlaysLeft !== 1 ? 's' : ''} de cartas.`;
 
-                // Controlar la clickabilidad del contenedor de cartas
                 if (canPlayCardGame && !hasPlayedAllCardPlaysEver) {
                     cardsContainer.classList.remove('disabled');
-                    cardGameActive = true; // Habilitar clics en las cartas
+                    cardGameActive = true;
                 } else {
                     cardsContainer.classList.add('disabled');
-                    cardGameActive = false; // Deshabilitar clics en las cartas
+                    cardGameActive = false;
                 }
 
-                // Controlar la visibilidad de los botones del juego de cartas
-                if (hasPlayedAllCardPlaysEver) { // Si ya jugó sus 3 tiros totales
-                    claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar (si hay premios)
-                    shareCardGameBtn.style.display = 'none'; // Ya no se pueden obtener más tiros
+                if (hasPlayedAllCardPlaysEver) {
+                    claimCardPrizeBtn.style.display = 'block';
+                    shareCardGameBtn.style.display = 'none';
                     cardGameInfo.textContent = 'Ya has jugado tus 3 tiros. ¡Gracias por participar!';
-                } else if (allCardsFlippedInSession) { // Si acaba de voltear las 3 cartas de la sesión actual
-                    claimCardPrizeBtn.style.display = 'block'; // Mostrar botón de reclamar
-                    shareCardGameBtn.style.display = 'none'; // Ocultar compartir si ya usó los 3 tiros
+                } else if (allCardsFlippedInSession) {
+                    claimCardPrizeBtn.style.display = 'block';
+                    shareCardGameBtn.style.display = 'none';
                     cardGameInfo.textContent = '¡Has usado todos tus tiros! Reclama tus premios.';
-                } else if (state.cardPlaysLeft === 0 && wonCardPrizesLength === 0) { // Estado inicial o después de reclamar si no hay tiros
+                } else if (state.cardPlaysLeft === 0 && wonCardPrizesLength === 0) {
                     claimCardPrizeBtn.style.display = 'none';
-                    shareCardGameBtn.style.display = 'block'; // Mostrar compartir para obtener los 3 tiros iniciales
+                    shareCardGameBtn.style.display = 'block';
                     cardGameInfo.textContent = '¡Comparte para obtener 3 tiros y descubrir tu descuento!';
-                } else { // Todavía tiene tiros disponibles o está en medio de una sesión
+                } else {
                     claimCardPrizeBtn.style.display = 'none';
                     shareCardGameBtn.style.display = 'none';
                     cardGameInfo.textContent = 'Los premios de este juego no son acumulables.';
                 }
 
-                // Mostrar el último premio ganado o un resumen para el juego de cartas
                 if (wonCardPrizesLength > 0) {
-                    if (wonCardPrizesLength < 3) { // Mientras se están jugando las cartas
+                    if (wonCardPrizesLength < 3) {
                         cardResultMessage.innerHTML = `¡FELICITACIONES! GANASTE <strong style="color: #00bcd4;">${state.wonCardPrizes[wonCardPrizesLength - 1].description.toUpperCase()}</strong>`;
-                    } else { // Todas las 3 cartas volteadas
+                    } else {
                         const prizesList = state.wonCardPrizes.map(p => p.description).join(', ');
                         cardResultMessage.innerHTML = `¡Has ganado: <strong style="color: #00bcd4;">${prizesList}</strong>!`;
                     }
@@ -1516,58 +842,44 @@ Jugá ahora: ${appBaseUrl}
                     cardResultMessage.style.display = 'none';
                 }
 
-                // Mostrar el temporizador de premios de cartas
                 if (wonCardPrizesLength > 0 && state.cardSessionEndTime > Date.now()) {
                     cardPrizeTimerDisplay.style.display = 'block';
-                    startCardSessionTimer(); // Asegurar que el temporizador esté corriendo
+                    startCardSessionTimer();
                 } else {
                     cardPrizeTimerDisplay.style.display = 'none';
                     if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval);
                 }
             }
 
-            /**
-             * Resets the roulette game (clears current prize).
-             */
             function resetForNewSpin() {
-                state.prize = null; // Clear the won prize
-                if (prizeTimerInterval) clearInterval(prizeTimerInterval); // Stop any running timer
-                state.prizeEndTime = 0; // Reset prize end time
-                saveState(); // Save the cleared state
-                updateUI(); // Update UI to reflect reset state
+                state.prize = null;
+                if (prizeTimerInterval) clearInterval(prizeTimerInterval);
+                state.prizeEndTime = 0;
+                saveState();
+                updateUI();
             }
 
-            /**
-             * Resizes the canvas to fit its container, maintaining aspect ratio.
-             * Redraws the roulette after resizing.
-             */
             function resizeCanvas() {
                 const container = document.querySelector('.roulette-canvas-container');
-                if (!container) return; // Exit if container is not found
+                if (!container) return;
                 const containerWidth = container.clientWidth;
                 canvas.width = containerWidth;
                 canvas.height = containerWidth;
-                drawRoulette(currentRotation); // Redraw roulette to fit new size
+                drawRoulette(currentRotation);
             }
 
-            // --- CARD GAME FUNCTIONS ---
-
-            /**
-             * Starts or updates the countdown timer for the entire card game session.
-             * Clears existing timer if any.
-             */
             function startCardSessionTimer() {
-                if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval); // Clear any previous timer
-                cardPrizeTimerDisplay.style.display = 'block'; // Show the timer display
+                if (cardSessionTimerInterval) clearInterval(cardSessionTimerInterval);
+                cardPrizeTimerDisplay.style.display = 'block';
 
                 cardSessionTimerInterval = setInterval(() => {
                     const timeLeft = state.cardSessionEndTime - Date.now();
                     if (timeLeft <= 0) {
                         clearInterval(cardSessionTimerInterval);
                         cardPrizeTimerDisplay.textContent = '¡El tiempo para tus premios de carta ha expirado!';
-                        state.wonCardPrizes = []; // Clear all won prizes
-                        state.cardSessionEndTime = 0; // Clear session timer
-                        currentCardPrize = null; // Also clear local variable
+                        state.wonCardPrizes = [];
+                        state.cardSessionEndTime = 0;
+                        currentCardPrize = null;
                         saveState();
                         updateUI();
                         return;
@@ -1575,35 +887,27 @@ Jugá ahora: ${appBaseUrl}
                     const minutes = Math.floor(timeLeft / 60000);
                     const seconds = Math.floor((timeLeft % 60000) / 1000);
                     cardPrizeTimerDisplay.innerHTML = `⏳ Tenés ${minutes}m ${seconds}s para reservar tus premios.<br><strong>¡RESERVÁ AHORA Y NO PIERDAS TU DESCUENTO!</strong>`;
-                }, 1000); // Update every second
+                }, 1000);
             }
 
-            /**
-             * Resets the card game state for a new session (after claiming prizes or timer expires).
-             * This function is now only called internally after claiming prizes or expiration.
-             */
             function resetCardGameSession() {
-                state.cardPlaysLeft = 0; // Se asume que ya se usaron los 3 tiros o el timer expiró
-                state.wonCardPrizes = []; // Limpiar los premios ganados
-                state.cardSessionEndTime = 0; // Limpiar el temporizador
-                currentCardPrize = null; // Limpiar la variable local
-                state.hasPlayedAllCardPlays = true; // Marcar que ya jugó sus 3 tiros totales
+                state.cardPlaysLeft = 0;
+                state.wonCardPrizes = [];
+                state.cardSessionEndTime = 0;
+                currentCardPrize = null;
+                state.hasPlayedAllCardPlays = true;
                 saveState();
-                initializeCardGame(); // Reinicializar las cartas (voltearlas a su estado original)
-                updateUI(); // Actualizar la UI
+                initializeCardGame();
+                updateUI();
             }
 
-            /**
-             * Initializes the card game by creating and shuffling cards.
-             */
             function initializeCardGame() {
-                cardsContainer.innerHTML = ''; // Limpiar cartas existentes
-                cards = []; // Resetear el array de cartas
-                currentCardPrize = null; // Resetear el premio actual para mostrar
+                cardsContainer.innerHTML = '';
+                cards = [];
+                currentCardPrize = null;
 
-                const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5); // Barajar premios
+                const shuffledPrizes = [...cardPrizes].sort(() => Math.random() - 0.5);
                 
-                // Crear 9 cartas
                 for (let i = 0; i < 9; i++) { 
                     const card = document.createElement('div');
                     card.classList.add('card');
@@ -1625,44 +929,38 @@ Jugá ahora: ${appBaseUrl}
 
                     card.addEventListener('click', handleCardClick);
                 }
-                // cardGameActive se controla por updateUI basado en state.cardPlaysLeft
                 cardResultMessage.style.display = 'none';
-                // updateUI se llama después de esto en DOMContentLoaded
             }
 
-            /**
-             * Handles a click on a card.
-             * @param {Event} event - The click event.
-             */
             function handleCardClick(event) {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar en el juego de cartas.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
+                if (userNameInput.value.trim() === '' || userEmailInput.value.trim() === '') {
+                    showMessageModal("¡Faltan datos!", "Por favor, ingresa tu nombre y un contacto para poder jugar.");
+                    if (userNameInput.value.trim() === '') userNameInput.classList.add('required');
+                    if (userEmailInput.value.trim() === '') userEmailInput.classList.add('required');
                     return;
                 }
-                userNameInput.classList.remove('required'); // Remove highlight if valid
+                userNameInput.classList.remove('required');
+                userEmailInput.classList.remove('required');
 
                 if (state.cardPlaysLeft <= 0) {
                     showMessageModal("¡No te quedan tiros!", "Ya has usado tus 3 tiros en el juego de cartas.");
                     return;
                 }
 
-                if (!cardGameActive) { // Este flag previene clics rápidos durante la animación
+                if (!cardGameActive) {
                     return; 
                 }
 
                 const clickedCard = event.currentTarget;
                 if (clickedCard.classList.contains('flipped') || clickedCard.classList.contains('disabled')) {
-                    return; // No hacer nada si ya está volteada o deshabilitada
+                    return;
                 }
 
-                cardGameActive = false; // Deshabilitar temporalmente el juego para evitar clics rápidos durante la animación
+                cardGameActive = false;
 
-                // Reproducir sonido de voltear carta
                 if (cardFlipSound) {
                     try {
-                        cardFlipSound.load(); // Explicitly load the audio
+                        cardFlipSound.load();
                         cardFlipSound.currentTime = 0;
                         cardFlipSound.play().catch(e => console.error("Error al reproducir sonido de volteo de carta:", e));
                     } catch (e) {
@@ -1672,147 +970,98 @@ Jugá ahora: ${appBaseUrl}
 
                 clickedCard.classList.add('flipped');
                 
-                state.cardPlaysLeft--; // Disminuir tiros restantes
+                state.cardPlaysLeft--;
                 
                 const prizeData = JSON.parse(clickedCard.querySelector('.card-front').dataset.prize);
-                state.wonCardPrizes.push(prizeData); // Añadir premio a la lista de premios ganados
-                currentCardPrize = prizeData; // Establecer para mostrar inmediatamente el último premio ganado
+                state.wonCardPrizes.push(prizeData);
+                currentCardPrize = prizeData;
 
-                // Iniciar el temporizador de sesión si es la primera carta volteada en la sesión actual
                 if (state.wonCardPrizes.length === 1) {
-                    state.cardSessionEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes para la reserva
+                    state.cardSessionEndTime = Date.now() + 30 * 60 * 1000;
                     startCardSessionTimer();
                 }
                 
                 saveState();
 
-                // Deshabilitar solo la carta clickeada permanentemente
                 clickedCard.classList.add('disabled');
                 clickedCard.removeEventListener('click', handleCardClick);
 
                 setTimeout(() => {
-                    // Volver a habilitar el juego si aún quedan tiros y no se han volteado las 3 cartas
                     if (state.cardPlaysLeft > 0 && state.wonCardPrizes.length < 3) {
                         cardGameActive = true;
                     } else if (state.wonCardPrizes.length === 3) {
-                        // Si ya se voltearon las 3 cartas, marcar que ya jugó todos sus tiros
                         state.hasPlayedAllCardPlays = true;
                         saveState();
                     }
                     
-                    fireConfetti(); // Celebrar el premio
-                    updateUI(); // Actualizar la UI para mostrar el botón de reclamar y los tiros restantes
+                    fireConfetti();
+                    updateUI();
                     
-                }, 600); // Esperar la animación de volteo
+                }, 600);
             }
 
             // --- EVENT LISTENERS ---
-            // Event listener para el contenedor de la ruleta
             rouletteCanvasContainer.addEventListener('click', () => {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para participar.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
+                if (userNameInput.value.trim() === '' || userEmailInput.value.trim() === '') {
+                    showMessageModal("¡Faltan datos!", "Por favor, ingresa tu nombre y un contacto (email o WhatsApp).");
+                    if (userNameInput.value.trim() === '') userNameInput.classList.add('required');
+                    if (userEmailInput.value.trim() === '') userEmailInput.classList.add('required');
                     return;
                 }
                 userNameInput.classList.remove('required');
+                userEmailInput.classList.remove('required');
 
-                if (state.prize) { // Si ya hay un premio ganado, no se puede girar de nuevo directamente desde la ruleta
-                    showMessageModal("¡Premio Obtenido!", "Ya tienes un premio de la ruleta. Usa los botones de abajo para reclamarlo o jugar de nuevo.");
+                if (state.prize) {
+                    showMessageModal("¡Premio Obtenido!", "Ya tienes un premio. Usa los botones de abajo para reclamarlo o jugar de nuevo.");
                     return;
                 }
 
                 if (state.spinsLeft > 0) {
                     spin();
                 } else {
-                    // Show the modal to prompt sharing
                     showMessageModal(
                         "¡Necesitas un tiro!",
-                        "Compartí con 5 amigos para girar y ganar un tiro gratis.",
+                        "Comparte con 5 amigos para girar y ganar un tiro gratis.",
                         {
                             text: '<i class="fab fa-whatsapp"></i> Compartir y Obtener Tiro',
-                            callback: () => {
-                                handleShareForSpin(); // This will handle the WhatsApp share and grant spin
-                            },
-                            class: 'btn btn-share' // Use existing share button style
+                            callback: () => { handleShareForSpin(); },
+                            class: 'btn btn-share'
                         }
                     );
                 }
             });
 
+            spinBtn.addEventListener('click', spin);
+            shareBtn.addEventListener('click', handleShareForSpin);
+            playAgainBtn.addEventListener('click', resetForNewSpin);
+            
+            userNameInput.addEventListener('input', saveState);
+            userEmailInput.addEventListener('input', saveState);
 
-            spinBtn.addEventListener('click', spin); // El listener de spin siempre es 'spin'
-            shareBtn.addEventListener('click', handleShareForSpin); // El listener de share siempre es 'handleShareForSpin'
-
-            playAgainBtn.addEventListener('click', resetForNewSpin); // Ahora llama a resetForNewSpin
-            userNameInput.addEventListener('input', () => {
-                saveState(); // Guardar nombre de usuario al cambiar input
-                // Añadir/quitar clase 'filled' para feedback visual
-                if (userNameInput.value.trim() !== '') {
-                    userNameInput.classList.add('filled');
-                } else {
-                    userNameInput.classList.remove('filled');
-                }
-            });
-
-            reserveBtn.addEventListener('click', () => window.open(mercadopagoLinkUrl, '_blank'));
-
-            claimPrizeBtn.addEventListener('click', () => {
-                // Este botón de reclamar es para premios de ruleta individuales
-                const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" en la ruleta y quiero reclamar mi premio.`;
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-            });
-
-            upsellBtn.addEventListener('click', () => {
-                const message = `¡Hola! Soy ${state.userName}. Gané "${state.prize.description}" y además quiero sumar otra zona con 30% OFF. ¿Me pasás la lista de precios?`;
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-            });
-
-            // Listeners para el modal de políticas
-            policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
-            closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
-            policiesModal.addEventListener('click', (e) => {
-                if (e.target === policiesModal) {
-                    policiesModal.classList.remove('visible');
-                }
-            });
-
-            // Listener para el modal de mensajes (alerta personalizada)
-            closeMessageModal.addEventListener('click', hideMessageModal);
-            messageModal.addEventListener('click', (e) => {
-                if (e.target === messageModal) {
-                    hideMessageModal();
-                }
-            });
-
-            // Event listener para reclamar TODOS los premios de cartas
             document.getElementById('claimCardPrizeBtn').addEventListener('click', () => {
                 if (state.wonCardPrizes && state.wonCardPrizes.length > 0) {
                     const prizesList = state.wonCardPrizes.map(p => `"${p.description}"`).join(', ');
                     const message = `¡Hola! Soy ${state.userName}. Gané los siguientes descuentos en el juego de cartas: ${prizesList}. Quiero reclamar mis premios.`;
                     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                     
-                    // Después de reclamar, limpiar los premios y el temporizador de la sesión
-                    resetCardGameSession(); // Reiniciar la sesión de cartas
+                    resetCardGameSession();
                     showMessageModal("¡Premios Reclamados!", "Tus premios han sido enviados a WhatsApp. ¡Disfrútalos!");
                 } else {
                     showMessageModal("Sin premios", "No hay premios de cartas para reclamar en este momento.");
                 }
             });
 
-            // Event listener para compartir el juego de cartas (para obtener los 3 tiros iniciales)
             shareCardGameBtn.addEventListener('click', () => {
-                if (userNameInput.value.trim() === '') {
-                    showMessageModal("¡Falta tu nombre!", "Por favor, ingresalo para poder compartir.");
-                    userNameInput.focus();
-                    userNameInput.classList.add('required');
+                if (userNameInput.value.trim() === '' || userEmailInput.value.trim() === '') {
+                    showMessageModal("¡Faltan datos!", "Por favor, ingresa tu nombre y un contacto para poder compartir.");
+                    if (userNameInput.value.trim() === '') userNameInput.classList.add('required');
+                    if (userEmailInput.value.trim() === '') userEmailInput.classList.add('required');
                     return;
                 }
                 if (state.hasPlayedAllCardPlays) {
                     showMessageModal("¡Juego completado!", "Ya has usado tus 3 tiros en el juego de cartas. ¡Gracias por participar!");
                     return;
                 }
-                // Mensaje de WhatsApp personalizado con el link de la ruleta
                 const message = `
 Hola, soy *${state.userName.split(' ')[0].toUpperCase()}*
 Jugué y gané en la Ruleta Mágica de Le Bardol.
@@ -1829,25 +1078,37 @@ También hay sorpresas en juegos de cartas.
 Jugá ahora: ${appBaseUrl}
                 `.trim();
                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                // Simular un compartir después de un retraso y otorgar 3 tiros para hoy
                 setTimeout(() => {
                     showMessageModal("¡Gracias por compartir!", "¡Has ganado 3 tiros para el juego de cartas!");
-                    state.cardPlaysLeft = 3; // Otorgar 3 tiros
-                    state.lastCardPlayDate = new Date().toDateString(); // Marcar hoy como el día en que se otorgaron los tiros
+                    state.cardPlaysLeft = 3;
+                    state.lastCardPlayDate = new Date().toDateString();
                     saveState();
-                    initializeCardGame(); // Reiniciar cartas y habilitarlas
+                    initializeCardGame();
                     updateUI();
-                }, 3000); // Esperar 3 segundos antes de otorgar los tiros
+                }, 3000);
             });
 
-            // --- INITIALIZATION ---
-            loadState(); // Cargar estado del juego al cargar la página
-            updateUI(); // Actualizar la UI según el estado cargado
-            resizeCanvas(); // Redimensionar el canvas inicial
-            initializeCardGame(); // Inicializar el juego de cartas (configura las cartas, pero no las habilita hasta que se otorguen tiros)
-            window.addEventListener('resize', resizeCanvas); // Redimensionar el canvas al cambiar el tamaño de la ventana
+            policiesLink.addEventListener('click', () => policiesModal.classList.add('visible'));
+            closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
+            policiesModal.addEventListener('click', (e) => {
+                if (e.target === policiesModal) {
+                    policiesModal.classList.remove('visible');
+                }
+            });
 
-            // Si hay un temporizador de sesión de cartas activo, reiniciarlo al cargar
+            closeMessageModal.addEventListener('click', hideMessageModal);
+            messageModal.addEventListener('click', (e) => {
+                if (e.target === messageModal) {
+                    hideMessageModal();
+                }
+            });
+
+            loadState();
+            updateUI();
+            resizeCanvas();
+            initializeCardGame();
+            window.addEventListener('resize', resizeCanvas);
+
             if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
                 startCardSessionTimer();
             }
