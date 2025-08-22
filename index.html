@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bardol Estética Center</title>
+    <title>Panel de Control Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @font-face {
             font-family: 'The Seasons';
@@ -14,6 +15,7 @@
             font-weight: normal;
             font-style: normal;
         }
+
         :root {
             --bg-light: #F4EDE7;
             --bg-card: #ffffff;
@@ -22,97 +24,436 @@
             --accent-green: #A3C1A1;
             --accent-dark-green: #4E6C50;
             --accent-blue: #3498db;
+            --accent-red: #e74c3c;
+            --highlight-pink: #fde2e4;
         }
+
         body {
             font-family: 'Montserrat', sans-serif;
             background: var(--bg-light);
             color: var(--text-dark);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
+
         .container {
-            max-width: 500px;
-            width: 100%;
-            background: var(--bg-card);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: var(--bg-card);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header {
             text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
         }
-        .logo-container {
-            margin-bottom: 25px;
-        }
-        .logo-container img {
-            max-width: 250px;
-            height: auto;
-        }
-        h1 {
+
+        .app-title {
             font-family: 'The Seasons', serif;
-            font-size: 2.5rem;
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--accent-dark-green);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .app-subtitle {
+            color: var(--text-gray);
+            font-size: 1.125rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(78, 108, 80, 0.2);
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(78, 108, 80, 0.3);
+        }
+
+        .section-header {
+            font-family: 'The Seasons', serif;
+            font-size: 1.875rem;
             font-weight: 700;
             color: var(--accent-dark-green);
-            margin-bottom: 10px;
-        }
-        p {
-            font-size: 1rem;
-            color: var(--text-dark);
-            margin-bottom: 30px;
-        }
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
+            margin-bottom: 1.5rem;
             text-align: center;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-dark-green);
+            border-radius: 2px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-dark-green);
+            box-shadow: 0 0 0 3px rgba(78, 108, 80, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .entries-table-container {
+            margin-top: 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .entries-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .entries-table th, .entries-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .entries-table th {
+            background-color: var(--accent-green);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        .entries-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .entries-table tbody tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .notification-success {
+            background-color: #10b981;
             color: white;
         }
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+
+        .notification-error {
+            background-color: #ef4444;
+            color: white;
         }
-        .btn-whatsapp {
+        
+        .copy-link-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        #copy-welcome-link-btn {
             background: linear-gradient(135deg, var(--accent-green), #688e68);
-        }
-        .btn-game {
-            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
         }
     </style>
 </head>
-<body>
+<body class="font-inter antialiased">
     <div class="container">
-        <div class="logo-container">
-            <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
+        <div class="app-header">
+            <h1 class="app-title">LE BARDOL</h1>
+            <p class="app-subtitle">Panel de Control y Gestión</p>
         </div>
-        <h1>¡Bienvenidos a Le Bardol Estética Center!</h1>
-        <p>Tu lugar para el bienestar y la belleza. Elige una opción para comenzar.</p>
 
-        <div class="button-group">
-            <a href="https://wa.me/5493415216025?text=¡Hola! Quiero agendar un turno." target="_blank" class="btn btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> Reservar Turno
-            </a>
-            <a href="juegos.html" class="btn btn-game">
-                <i class="fas fa-gift"></i> Jugar y Ganar Premios
-            </a>
+        <div class="flex justify-center flex-wrap gap-4 mb-8">
+            <button id="show-turn-management-btn" class="button-primary">
+                Gestión de Turnos
+            </button>
+            <button id="show-registered-entries-btn" class="button-primary">
+                Ver Registros
+            </button>
         </div>
-    </div>
-</body>
+        
+        <div id="copy-welcome-link-section">
+            <h2 class="section-header">Enlace de Bienvenida para Clientes</h2>
+            <div class="copy-link-section">
+                <button id="copy-welcome-link-btn" class="button-primary">
+                    <i class="fas fa-copy"></i> Copiar Enlace de Bienvenida
+                </button>
+                <div id="copy-message" class="hidden text-sm text-green-700 mt-2">
+                    Enlace copiado.
+                </div>
+            </div>
+        </div>
+
+        <div id="turn-management-section" class="hidden">
+            <h2 class="section-header">Generar Enlace de Turno</h2>
+            <div class="mb-4">
+                <label for="turn-client-name" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Cliente:</label>
+                <input type="text" id="turn-client-name" class="input-field" placeholder="Ej: Ana Gómez">
+            </div>
+            <div class="mb-4">
+                <label for="turn-date" class="block text-gray-700 text-sm font-bold mb-2">Fecha del Turno:</label>
+                <input type="date" id="turn-date" class="input-field">
+            </div>
+            <div class="mb-4">
+                <label for="turn-time" class="block text-gray-700 text-sm font-bold mb-2">Hora del Turno:</label>
+                <input type="time" id="turn-time" class="input-field">
+            </div>
+            <div class="mb-4">
+                <label for="turn-treatment" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Tratamiento:</label>
+                <input type="text" id="turn-treatment" class="input-field" placeholder="Ej: Depilación Láser Piernas">
+            </div>
+            <button id="generate-turn-link-btn" class="button-primary w-full">Generar Enlace de Turno</button>
+        </div>
+
+        <div id="registered-entries-section" class="entries-table-container hidden">
+            <h2 class="section-header">Registros de Turnos y Campañas</h2>
+            <div class="mb-4">
+                <label for="entry-search-input" class="block text-gray-700 text-sm font-bold mb-2">Buscar por Nombre o ID:</label>
+                <input type="text" id="entry-search-input" class="input-field" placeholder="Ej: Ana Gómez o LeBardol-Turn-... ">
+            </div>
+            <div class="entries-table-container mt-6">
+                <table class="entries-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente/Campaña</th>
+                            <th>ID de Registro</th>
+                            <th>Tipo</th>
+                            <th>Detalles</th>
+                            <th>Fecha/Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entries-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+            import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+            import { getFirestore, doc, setDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+            
+            document.addEventListener('DOMContentLoaded', async () => {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+                let app;
+                let db;
+                let auth;
+                let userId = 'cargando...';
+
+                try {
+                    if (Object.keys(firebaseConfig).length > 0) {
+                        app = initializeApp(firebaseConfig);
+                        db = getFirestore(app);
+                        auth = getAuth(app);
+                        await signInAnonymously(auth);
+
+                        onAuthStateChanged(auth, (user) => {
+                            if (user) {
+                                userId = user.uid;
+                                setupFirestoreListeners();
+                            } else {
+                                userId = 'no-autenticado';
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error initializing Firebase or authenticating:", error);
+                }
+
+                let turnsDB = {};
+                let campaignsDB = {};
+
+                function setupFirestoreListeners() {
+                    if (!db || !userId || userId === 'cargando...') return;
+
+                    const turnsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/turns`);
+                    const campaignsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/campaigns`);
+
+                    onSnapshot(turnsCollectionRef, (snapshot) => {
+                        turnsDB = {};
+                        snapshot.forEach(doc => {
+                            turnsDB[doc.id] = { id: doc.id, ...doc.data() };
+                        });
+                        renderRegisteredEntries();
+                    }, (error) => {
+                        console.error("Error listening to turns collection:", error);
+                    });
+                    
+                    onSnapshot(campaignsCollectionRef, (snapshot) => {
+                        campaignsDB = {};
+                        snapshot.forEach(doc => {
+                            campaignsDB[doc.id] = { id: doc.id, ...doc.data() };
+                        });
+                        renderRegisteredEntries();
+                    }, (error) => {
+                        console.error("Error listening to campaigns collection:", error);
+                    });
+                }
+
+                const sections = {
+                    'copy-welcome-link-section': document.getElementById('copy-welcome-link-section'),
+                    'turn-management-section': document.getElementById('turn-management-section'),
+                    'registered-entries-section': document.getElementById('registered-entries-section')
+                };
+
+                function showSection(sectionId) {
+                    for (const id in sections) {
+                        if (sections[id]) {
+                            sections[id].classList.add('hidden');
+                        }
+                    }
+                    if (sections[sectionId]) {
+                        sections[sectionId].classList.remove('hidden');
+                    }
+                }
+
+                showSection('copy-welcome-link-section');
+                document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
+                document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
+
+                const turnClientNameInput = document.getElementById('turn-client-name');
+                const turnDateInput = document.getElementById('turn-date');
+                const turnTimeInput = document.getElementById('turn-time');
+                const turnTreatmentInput = document.getElementById('turn-treatment');
+                const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
+                const copyWelcomeLinkBtn = document.getElementById('copy-welcome-link-btn');
+                const copyMessage = document.getElementById('copy-message');
+
+                copyWelcomeLinkBtn.addEventListener('click', () => {
+                    const welcomeUrl = `${window.location.origin}/bienvenido.html`;
+                    navigator.clipboard.writeText(welcomeUrl).then(() => {
+                        copyMessage.classList.remove('hidden');
+                        setTimeout(() => {
+                            copyMessage.classList.add('hidden');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Error al copiar el enlace: ', err);
+                        alert('Error al copiar el enlace. Por favor, cópialo manualmente: ' + welcomeUrl);
+                    });
+                });
+
+                generateTurnLinkBtn.addEventListener('click', async () => {
+                    const clientName = turnClientNameInput.value.trim();
+                    const turnDate = turnDateInput.value;
+                    const turnTime = turnTimeInput.value;
+                    const turnTreatment = turnTreatmentInput.value.trim();
+
+                    if (!clientName || !turnDate || !turnTime || !turnTreatment) {
+                        alert("Por favor, completa todos los campos del turno.");
+                        return;
+                    }
+
+                    try {
+                        const turnId = `LeBardol-Turn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                        const turnData = {
+                            clientName: clientName,
+                            date: turnDate,
+                            time: turnTime,
+                            treatment: turnTreatment,
+                            createdAt: new Date().toISOString(),
+                            id: turnId,
+                            type: 'turn'
+                        };
+
+                        await setDoc(doc(db, `artifacts/${appId}/users/${userId}/turns`, turnId), turnData);
+                        
+                        const encodedClientName = encodeURIComponent(clientName);
+                        const encodedTurnDate = encodeURIComponent(turnDate);
+                        const encodedTurnTime = encodeURIComponent(turnTime);
+                        const encodedTurnTreatment = encodeURIComponent(turnTreatment);
+                        const encodedTurnId = encodeURIComponent(turnId);
+
+                        const clientConfirmationUrl = `${window.location.origin}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${encodeURIComponent(window.location.origin + '/juegos.html')}`;
+
+                        const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${clientConfirmationUrl} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                        window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+
+                        turnClientNameInput.value = '';
+                        turnDateInput.value = '';
+                        turnTimeInput.value = '';
+                        turnTreatmentInput.value = '';
+                        alert("Turno guardado y enlace de WhatsApp generado.");
+                    } catch (e) {
+                        console.error("Error saving turn:", e);
+                        alert("Error al guardar el turno. Intenta de nuevo.");
+                    }
+                });
+
+                const entrySearchInput = document.getElementById('entry-search-input');
+                const entriesTableBody = document.getElementById('entries-table-body');
+
+                function renderRegisteredEntries() {
+                    entriesTableBody.innerHTML = '';
+                    const searchTerm = entrySearchInput.value.toLowerCase();
+
+                    const allEntries = [];
+                    for (const id in turnsDB) {
+                        allEntries.push({ ...turnsDB[id], displayType: 'Turno' });
+                    }
+                    for (const id in campaignsDB) {
+                        allEntries.push({ ...campaignsDB[id], displayType: 'Campaña' });
+                    }
+
+                    allEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                    allEntries.forEach(entry => {
+                        const name = entry.clientName || entry.name || 'N/A';
+                        const id = entry.id;
+                        const type = entry.displayType;
+                        const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : `Email: ${entry.email || 'N/A'}`;
+                        const dateTime = new Date(entry.createdAt).toLocaleString();
+
+                        if (searchTerm && !name.toLowerCase().includes(searchTerm) && !id.toLowerCase().includes(searchTerm) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm)) && !(entry.email && entry.email.toLowerCase().includes(searchTerm))) {
+                            return;
+                        }
+
+                        const row = entriesTableBody.insertRow();
+                        row.innerHTML = `
+                            <td>${name}</td>
+                            <td>${id}</td>
+                            <td>${type}</td>
+                            <td>${details}</td>
+                            <td>${dateTime}</td>
+                        `;
+                    });
+                }
+
+                entrySearchInput.addEventListener('input', renderRegisteredEntries);
+                renderRegisteredEntries();
+            });
+        </script>
+    </body>
 </html>
