@@ -319,106 +319,134 @@
     </div>
 
     <script type="module">
+        // Importaciones de Firebase (ahora innecesarias para esta página)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIDo-_yARvS8TkULGYO2unNGvC2F3UvMI",
+            authDomain: "le-bardol.firebaseapp.com",
+            projectId: "le-bardol",
+            storageBucket: "le-bardol.firebasestorage.app",
+            messagingSenderId: "772635863658",
+            appId: "1:772635863658:web:4a049bb6fcf0aed3ed7813",
+            measurementId: "G-LYD84M1X44"
+        };
+        const appId = firebaseConfig.appId;
+
+        // Aunque no usaremos Firestore, mantenemos la autenticación anónima para que la app se inicialice sin errores.
+        let app, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            signInAnonymously(auth);
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+        }
         
         console.log("JavaScript is running!");
-
+        
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("DOM fully loaded and parsed. Initializing script...");
 
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-
-            let app;
-            let db;
-            let auth;
-            let userId = 'cargando...';
-
-            const userIdDisplay = document.getElementById('user-id-display');
-            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
-
-            try {
-                if (Object.keys(firebaseConfig).length > 0) {
-                    app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
-
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-
-                    onAuthStateChanged(auth, (user) => {
-                        if (user) {
-                            userId = user.uid;
-                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
-                            setupFirestoreListeners();
-                        } else {
-                            userId = 'no-autenticado';
-                            if (userIdDisplay) userIdDisplay.textContent = `ID de Usuario: ${userId}`;
-                        }
-                    });
+            const turnClientNameInput = document.getElementById('turn-client-name');
+            const turnDateInput = document.getElementById('turn-date');
+            const turnTimeInput = document.getElementById('turn-time');
+            const turnTreatmentInput = document.getElementById('turn-treatment');
+            const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
+            const generatedTurnLinkInfo = document.getElementById('generated-turn-link-info');
+            const clientTurnLink = document.getElementById('client-turn-link');
+            const copyTurnLinkBtn = document.getElementById('copy-turn-link-btn');
+            const sendTurnWhatsappBtn = document.getElementById('send-turn-whatsapp-btn');
+            const generateCampaignLinkBtn = document.getElementById('generate-campaign-link-btn');
+            const generatedCampaignLinkInfo = document.getElementById('generated-campaign-link-info');
+            const campaignLink = document.getElementById('campaign-link');
+            const copyCampaignLinkBtn = document.getElementById('copy-campaign-link-btn');
+            const sendCampaignWhatsappBtn = document.getElementById('send-campaign-whatsapp-btn');
+            
+            // Función para determinar el base URL
+            const getClientBaseUrl = () => {
+                const isLocal = window.location.protocol === 'file:';
+                if (isLocal) {
+                    return '';
                 } else {
-                    console.warn("Firebase config not found. Authentication and Firestore functionality will not work.");
-                    displayMessage("Configuración de Firebase no encontrada. Algunas funciones no estarán disponibles.", "warning");
+                    const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+                    return window.location.origin + path;
+                }
+            };
+            const clientBaseUrl = getClientBaseUrl();
+            const whatsappNumber = '5493415216025';
+
+            // Listener para el botón "Generar Enlace de Turno"
+            generateTurnLinkBtn.addEventListener('click', async () => {
+                const clientName = turnClientNameInput.value.trim();
+                const turnDate = turnDateInput.value;
+                const turnTime = turnTimeInput.value;
+                const turnTreatment = turnTreatmentInput.value.trim();
+
+                if (!clientName || !turnDate || !turnTime || !turnTreatment) {
+                    displayMessage("Por favor, completa todos los campos del turno.", "warning");
                     return;
                 }
 
-            } catch (error) {
-                console.error("Error initializing Firebase or authenticating:", error);
-                displayMessage("Error al iniciar la aplicación. Por favor, recarga.", "error");
-            }
+                const encodedClientName = encodeURIComponent(clientName);
+                const encodedTurnDate = encodeURIComponent(turnDate);
+                const encodedTurnTime = encodeURIComponent(turnTime);
+                const encodedTurnTreatment = encodeURIComponent(turnTreatment);
+                
+                // Enlace al archivo de confirmación de turno (corregido)
+                const clientConfirmationUrl = `${clientBaseUrl}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}`;
+                
+                clientTurnLink.href = clientConfirmationUrl;
+                clientTurnLink.textContent = clientConfirmationUrl;
+                generatedTurnLinkInfo.classList.remove('hidden');
+                
+                // Guardar enlace en el botón de WhatsApp
+                sendTurnWhatsappBtn.dataset.turnLink = clientConfirmationUrl;
+                
+                displayMessage("Enlace de turno generado exitosamente.", "success");
+            });
 
-            let turnsDB = {};
-            let rouletteShareCount = 0;
+            // Listener para el botón "Enviar por WhatsApp"
+            sendTurnWhatsappBtn.addEventListener('click', () => {
+                const turnLink = sendTurnWhatsappBtn.dataset.turnLink;
+                const clientName = turnClientNameInput.value.trim() || 'Estimado cliente';
+                const turnDate = turnDateInput.value;
+                const turnTime = turnTimeInput.value;
+                const turnTreatment = turnTreatmentInput.value.trim();
 
-            function setupFirestoreListeners() {
-                if (!db || !userId || userId === 'cargando...') {
-                    console.warn("Firestore o userId no están listos para configurar los listeners.");
+                if (!turnLink) {
+                    displayMessage("Primero genera el enlace del turno.", "warning");
                     return;
                 }
+                
+                // Mensaje de WhatsApp que incluye el recordatorio del turno y el enlace a la ruleta
+                const formattedDate = new Date(turnDate).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+            });
 
-                const turnsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/turns`);
-                onSnapshot(turnsCollectionRef, (snapshot) => {
-                    turnsDB = {};
-                    snapshot.forEach(doc => {
-                        turnsDB[doc.id] = { id: doc.id, ...doc.data() };
-                    });
-                    updateEntryCounts();
-                    renderRegisteredEntries();
-                }, (error) => {
-                    console.error("Error listening to turns collection:", error);
-                    displayMessage("Error al cargar los turnos.", "error");
-                });
+            // Listener para el botón "Generar Enlace de Campaña"
+            generateCampaignLinkBtn.addEventListener('click', () => {
+                const finalUrl = `${clientBaseUrl}/juegos.html`;
+                campaignLink.textContent = finalUrl;
+                campaignLink.href = finalUrl;
+                generatedCampaignLinkInfo.classList.remove('hidden');
+                displayMessage("Enlace de campaña generado.", "success");
+            });
 
-                const rouletteShareCountRef = doc(db, `artifacts/${appId}/users/${userId}/rouletteShareCounts`, 'totalShares');
-                onSnapshot(rouletteShareCountRef, (docSnap) => {
-                    const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
-                    if (rouletteShareCountDisplay) {
-                        if (docSnap.exists()) {
-                            const data = docSnap.data();
-                            rouletteShareCount = data.count || 0;
-                            rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: ${rouletteShareCount}`;
-                        } else {
-                            rouletteShareCount = 0;
-                            rouletteShareCountDisplay.textContent = `Veces compartida Ruleta: 0`;
-                            setDoc(rouletteShareCountRef, { count: 0 }, { merge: true }).catch(e => console.error("Error initializing share count:", e));
-                        }
-                    } else {
-                        console.warn("Elemento 'roulette-share-count-display' no encontrado.");
-                    }
-                }, (error) => {
-                    console.error("Error listening to private roulette share count:", error);
-                    const rouletteShareCountDisplay = document.getElementById('roulette-share-count-display');
-                    if (rouletteShareCountDisplay) {
-                        rouletteShareCountDisplay.textContent = "Error al cargar el contador de ruleta.";
-                    }
-                });
-            }
-
+            // Listener para el botón "Enviar por WhatsApp" (Campaña)
+            sendCampaignWhatsappBtn.addEventListener('click', () => {
+                const linkToShare = campaignLink.textContent;
+                if (!linkToShare) {
+                    displayMessage("Primero genera el enlace de campaña.", "warning");
+                    return;
+                }
+                const whatsappMessage = `🎉 ¡Descubre la magia en Le Bardol! Juega y gana descuentos en nuestra ruleta. ¡Haz clic aquí para empezar a ganar: ${linkToShare}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+            });
+            
             // --- UI Management ---
             const sections = {
                 'turn-management-section': document.getElementById('turn-management-section'),
@@ -435,187 +463,18 @@
                         } else {
                             sections[id].classList.add('hidden');
                         }
-                    } else {
-                        console.warn(`Attempted to show/hide missing section: ${id}`);
                     }
                 }
             }
 
-            // Initial view
-            showSection('turn-management-section');
-
-            // --- Event Listeners for Navigation ---
+            // --- Navigation Event Listeners ---
             document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
             document.getElementById('show-campaign-link-generator-btn').addEventListener('click', () => showSection('campaign-link-generator-section'));
             document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
             document.getElementById('show-campaign-stats-btn').addEventListener('click', () => showSection('campaign-stats-section'));
-
-            // --- Turn Management ---
-            const turnClientNameInput = document.getElementById('turn-client-name');
-            const turnDateInput = document.getElementById('turn-date');
-            const turnTimeInput = document.getElementById('turn-time');
-            const turnTreatmentInput = document.getElementById('turn-treatment');
-            const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
-            const generatedTurnLinkInfo = document.getElementById('generated-turn-link-info');
-            const clientTurnLink = document.getElementById('client-turn-link');
-            const copyTurnLinkBtn = document.getElementById('copy-turn-link-btn');
-            const sendTurnWhatsappBtn = document.getElementById('send-turn-whatsapp-btn');
-
-            generateTurnLinkBtn.addEventListener('click', async () => {
-                const clientName = turnClientNameInput.value.trim();
-                const turnDate = turnDateInput.value;
-                const turnTime = turnTimeInput.value;
-                const turnTreatment = turnTreatmentInput.value.trim();
-
-                if (!clientName || !turnDate || !turnTime || !turnTreatment) {
-                    displayMessage("Por favor, completa todos los campos del turno.", "warning");
-                    return;
-                }
-
-                try {
-                    const turnId = `LeBardol-Turn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-                    const turnData = {
-                        clientName: clientName,
-                        date: turnDate,
-                        time: turnTime,
-                        treatment: turnTreatment,
-                        createdAt: new Date().toISOString(),
-                        id: turnId,
-                        type: 'turn'
-                    };
-
-                    await setDoc(doc(db, `artifacts/${appId}/users/${userId}/turns`, turnId), turnData);
-                    displayMessage("Turno guardado exitosamente.", "success");
-
-                    const encodedClientName = encodeURIComponent(clientName);
-                    const encodedTurnDate = encodeURIComponent(turnDate);
-                    const encodedTurnTime = encodeURIComponent(turnTime);
-                    const encodedTurnTreatment = encodeURIComponent(turnTreatment);
-                    const encodedTurnId = encodeURIComponent(turnId);
-                    const encodedAppBaseUrl = encodeURIComponent(window.location.origin + '/juegos.html');
-
-                    const clientConfirmationUrl = `${window.location.origin}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}&turnId=${encodedTurnId}&rouletteLink=${encodedAppBaseUrl}`;
-
-                    clientTurnLink.href = clientConfirmationUrl;
-                    clientTurnLink.textContent = clientConfirmationUrl;
-                    generatedTurnLinkInfo.classList.remove('hidden');
-
-                    sendTurnWhatsappBtn.dataset.turnLink = clientConfirmationUrl;
-
-                    turnClientNameInput.value = '';
-                    turnDateInput.value = '';
-                    turnTimeInput.value = '';
-                    turnTreatmentInput.value = '';
-                } catch (e) {
-                    console.error("Error saving turn:", e);
-                    displayMessage("Error al guardar el turno. Intenta de nuevo.", "error");
-                }
-            });
-
-            copyTurnLinkBtn.addEventListener('click', () => {
-                const linkToCopy = clientTurnLink.textContent;
-                navigator.clipboard.writeText(linkToCopy)
-                    .then(() => displayMessage("Enlace copiado al portapapeles.", "success"))
-                    .catch(err => {
-                        console.error('Error al copiar el enlace:', err);
-                        displayMessage("Error al copiar el enlace.", "error");
-                    });
-            });
-
-            sendTurnWhatsappBtn.addEventListener('click', () => {
-                const turnLink = sendTurnWhatsappBtn.dataset.turnLink;
-                const clientName = turnClientNameInput.value.trim() || 'Estimado cliente';
-                const turnDate = turnDateInput.value;
-                const turnTime = turnTimeInput.value;
-                const turnTreatment = turnTreatmentInput.value.trim();
-
-                if (!turnLink) {
-                    displayMessage("Primero genera el enlace del turno.", "warning");
-                    return;
-                }
-
-                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${new Date(turnDate).toLocaleDateString()} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-            });
-
-            // --- Campaign Link Generator ---
-            const generateCampaignLinkBtn = document.getElementById('generate-campaign-link-btn');
-            const generatedCampaignLinkInfo = document.getElementById('generated-campaign-link-info');
-            const campaignLink = document.getElementById('campaign-link');
-            const copyCampaignLinkBtn = document.getElementById('copy-campaign-link-btn');
-            const sendCampaignWhatsappBtn = document.getElementById('send-campaign-whatsapp-btn');
-
-            generateCampaignLinkBtn.addEventListener('click', () => {
-                const finalUrl = `${window.location.origin}/juegos.html`;
-                campaignLink.textContent = finalUrl;
-                campaignLink.href = finalUrl;
-                generatedCampaignLinkInfo.classList.remove('hidden');
-                displayMessage("Enlace de campaña generado.", "success");
-            });
-
-            copyCampaignLinkBtn.addEventListener('click', () => {
-                const linkToCopy = campaignLink.textContent;
-                navigator.clipboard.writeText(linkToCopy)
-                    .then(() => displayMessage("Enlace copiado al portapapeles.", "success"))
-                    .catch(err => {
-                        console.error('Error al copiar el enlace:', err);
-                        displayMessage("Error al copiar el enlace.", "error");
-                    });
-            });
-
-            sendCampaignWhatsappBtn.addEventListener('click', () => {
-                const linkToShare = campaignLink.textContent;
-                if (!linkToShare) {
-                    displayMessage("Primero genera el enlace de campaña.", "warning");
-                    return;
-                }
-                const whatsappMessage = `🎉 ¡Descubre la magia en Le Bardol! Juega y gana descuentos en nuestra ruleta. ¡Haz clic aquí para empezar a ganar: ${linkToShare}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-            });
-
-            // --- Registered Entries Display (for Turns) ---
-            const entrySearchInput = document.getElementById('entry-search-input');
-            const entriesTableBody = document.getElementById('entries-table-body');
-            const totalTurnsCountDisplay = document.getElementById('total-turns-count');
-            const totalEntriesCountSpan = document.getElementById('total-entries-count');
-
-            function updateEntryCounts() {
-                let totalTurns = Object.keys(turnsDB).length;
-                totalTurnsCountDisplay.textContent = totalTurns;
-                totalEntriesCountSpan.textContent = totalTurns;
-            }
-
-            function renderRegisteredEntries() {
-                entriesTableBody.innerHTML = '';
-                const searchTerm = entrySearchInput.value.toLowerCase();
-
-                const allEntries = [];
-                for (const id in turnsDB) {
-                    allEntries.push({ ...turnsDB[id], type: 'turn' });
-                }
-
-                allEntries.forEach(entry => {
-                    const clientName = entry.clientName;
-                    const entryId = entry.id;
-                    const type = entry.type === 'turn' ? 'Turno' : 'Desconocido';
-                    const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : 'N/A';
-
-                    if (searchTerm && !(clientName && clientName.toLowerCase().includes(searchTerm)) && !(entryId && entryId.toLowerCase().includes(searchTerm)) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm))) {
-                        return;
-                    }
-
-                    const row = entriesTableBody.insertRow();
-                    row.innerHTML = `
-                        <td>${clientName || 'N/A'}</td>
-                        <td>${entryId}</td>
-                        <td>${type}</td>
-                        <td>${details}</td>
-                        <td>${new Date(entry.createdAt).toLocaleString()}</td>
-                    `;
-                });
-            }
-
-            entrySearchInput.addEventListener('input', renderRegisteredEntries);
+            
+            // Inicialización
+            showSection('turn-management-section');
 
             // --- Notification System ---
             function displayMessage(message, type = "info") {
@@ -639,9 +498,6 @@
                     notification.remove();
                 }, 3000);
             }
-
-            renderRegisteredEntries();
-            updateEntryCounts();
         });
     </script>
 </body>
