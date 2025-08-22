@@ -433,10 +433,10 @@
                         const name = entry.clientName || entry.name || 'N/A';
                         const id = entry.id;
                         const type = entry.displayType;
-                        const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : `Email: ${entry.email || 'N/A'}`;
+                        const details = entry.type === 'turn' ? `${entry.treatment} - ${new Date(entry.date).toLocaleDateString()} ${entry.time}` : `Contacto: ${entry.contact || 'N/A'}`;
                         const dateTime = new Date(entry.createdAt).toLocaleString();
 
-                        if (searchTerm && !name.toLowerCase().includes(searchTerm) && !id.toLowerCase().includes(searchTerm) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm)) && !(entry.email && entry.email.toLowerCase().includes(searchTerm))) {
+                        if (searchTerm && !name.toLowerCase().includes(searchTerm) && !id.toLowerCase().includes(searchTerm) && !(entry.treatment && entry.treatment.toLowerCase().includes(searchTerm)) && !(entry.contact && entry.contact.toLowerCase().includes(searchTerm))) {
                             return;
                         }
 
