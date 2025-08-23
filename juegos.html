@@ -1611,7 +1611,7 @@ Jugá ahora: ${appBaseUrl}
             closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
             policiesModal.addEventListener('click', (e) => {
                 if (e.target === policiesModal) {
-                    policiesModal.classList.remove('visible');
+                    hideMessageModal();
                 }
             });
 
