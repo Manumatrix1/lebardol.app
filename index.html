@@ -378,6 +378,33 @@
             const clientBaseUrl = getClientBaseUrl();
             const whatsappNumber = '5493415216025';
 
+            // --- Funciones de copiar al portapapeles y notificaciones ---
+            function copyToClipboard(text, successMessage, errorMessage) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text)
+                        .then(() => displayMessage(successMessage, "success"))
+                        .catch(err => {
+                            console.error('Error al copiar el enlace:', err);
+                            displayMessage(errorMessage, "error");
+                        });
+                } else {
+                    // Fallback para navegadores antiguos
+                    const tempInput = document.createElement('textarea');
+                    tempInput.value = text;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    try {
+                        document.execCommand('copy');
+                        displayMessage(successMessage, "success");
+                    } catch (err) {
+                        console.error('Fallback: Error al copiar el enlace:', err);
+                        displayMessage(errorMessage, "error");
+                    } finally {
+                        document.body.removeChild(tempInput);
+                    }
+                }
+            }
+
             // Listener para el botón "Generar Enlace de Turno"
             generateTurnLinkBtn.addEventListener('click', async () => {
                 const clientName = turnClientNameInput.value.trim();
@@ -407,6 +434,12 @@
                 
                 displayMessage("Enlace de turno generado exitosamente.", "success");
             });
+            
+            // Listener para el botón "Copiar Enlace" del turno
+            copyTurnLinkBtn.addEventListener('click', () => {
+                const linkToCopy = clientTurnLink.textContent;
+                copyToClipboard(linkToCopy, "Enlace de turno copiado.", "Error al copiar el enlace de turno.");
+            });
 
             // Listener para el botón "Enviar por WhatsApp"
             sendTurnWhatsappBtn.addEventListener('click', () => {
@@ -421,9 +454,8 @@
                     return;
                 }
                 
-                // Mensaje de WhatsApp que incluye el recordatorio del turno y el enlace a la ruleta
                 const formattedDate = new Date(turnDate).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const whatsappMessage = `¡Hola ${clientName}! Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink} \n\n¡Además, juega y gana descuentos en nuestra ruleta!`;
+                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}.\n\nPor favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
@@ -434,6 +466,12 @@
                 campaignLink.href = finalUrl;
                 generatedCampaignLinkInfo.classList.remove('hidden');
                 displayMessage("Enlace de campaña generado.", "success");
+            });
+            
+            // Listener para el botón "Copiar Enlace" de la campaña
+            copyCampaignLinkBtn.addEventListener('click', () => {
+                const linkToCopy = campaignLink.textContent;
+                copyToClipboard(linkToCopy, "Enlace de campaña copiado.", "Error al copiar el enlace de campaña.");
             });
 
             // Listener para el botón "Enviar por WhatsApp" (Campaña)
