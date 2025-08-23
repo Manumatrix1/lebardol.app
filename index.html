@@ -455,15 +455,22 @@
                 }
                 
                 const formattedDate = new Date(turnDate).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
+                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}.\n\nPor favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
             // Listener para el botón "Generar Enlace de Campaña"
             generateCampaignLinkBtn.addEventListener('click', () => {
-                const finalUrl = `${clientBaseUrl}/juegos.html`;
+                const finalUrl = `${clientBaseUrl}/bienvenidos.html`;
                 campaignLink.textContent = finalUrl;
                 campaignLink.href = finalUrl;
+                // Ocultar el enlace visualmente, pero mantener el div con los botones visible
+                const linkElement = document.getElementById('campaign-link');
+                const linkTextElement = linkElement.previousElementSibling; // El <p> que contiene el texto del enlace
+                linkElement.classList.add('hidden');
+                if (linkTextElement && linkTextElement.tagName === 'P') {
+                    linkTextElement.classList.add('hidden');
+                }
                 generatedCampaignLinkInfo.classList.remove('hidden');
                 displayMessage("Enlace de campaña generado.", "success");
             });
