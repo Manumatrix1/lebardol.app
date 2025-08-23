@@ -455,7 +455,7 @@
                 }
                 
                 const formattedDate = new Date(turnDate).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}.\n\nPor favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
+                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}. Por favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
