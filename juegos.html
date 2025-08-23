@@ -9,7 +9,8 @@
 
     <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
     <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
-    <meta property="og:image" content="https://i.imgur.com/11RstI1.png"> <meta property="og:url" id="og-url-meta" content=""> 
+    <meta property="og:image" content="https://i.imgur.com/11RstI1.png">
+    <meta property="og:url" id="og-url-meta" content=""> 
     <meta property="og:type" content="website">
     <style>
         /* Estilos generales y reseteo */
@@ -117,6 +118,7 @@
         .roulette-canvas-container.spinning {
             cursor: default;
         }
+
 
         canvas {
             position: absolute;
@@ -536,12 +538,12 @@
         }
 
         .card-front {
-            background: linear-gradient(135deg, #ff7043 0%, #e64a19 100%); /* Orange/Red for front */
-            transform: rotateY(180deg); /* Hidden initially */
+            background: linear-gradient(135deg, #ff7043 0%, #e64a19 100%);
+            transform: rotateY(180deg);
         }
 
         .card-back {
-            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%); /* Purple for back */
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -588,7 +590,7 @@
             text-align: center;
             width: 90%;
             max-width: 380px;
-            display: none; /* Hidden by default, shown when played */
+            display: none;
         }
 
         /* Styles for card game specific buttons */
@@ -667,7 +669,7 @@
         .social-link i {
             font-size: 30px;
             margin-bottom: 5px;
-            color: #8a2be2; /* Default icon color */
+            color: #8a2be2;
             transition: color 0.3s ease;
         }
 
@@ -677,15 +679,15 @@
         }
 
         .social-link:hover .fa-instagram {
-            color: #E1306C; /* Instagram color */
+            color: #E1306C;
         }
 
         .social-link:hover .fa-map-marker-alt {
-            color: #4285F4; /* Google Maps color */
+            color: #4285F4;
         }
 
         .social-link:hover .fa-link {
-            color: #00C853; /* A generic green for Linktree */
+            color: #00C853;
         }
     </style>
 </head>
@@ -693,7 +695,7 @@
     <div class="container">
         <div class="whatsapp-logo-container">
             <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
-                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
+                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center">
             </a>
         </div>
 
@@ -897,7 +899,6 @@
                 showMessageModal("Error al iniciar la aplicación.", "Por favor, recarga la página.");
             }
 
-            // Función para determinar el base URL (local vs. servidor)
             const getClientBaseUrl = () => {
                 const isLocal = window.location.protocol === 'file:';
                 if (isLocal) {
@@ -908,20 +909,8 @@
                 }
             };
             const clientBaseUrl = getClientBaseUrl();
-            const appBaseUrl = clientBaseUrl; // Usar el mismo base URL para todo el sitio.
+            const appBaseUrl = clientBaseUrl;
 
-            // --- CAMPAIGN CONFIGURATION ---
-            const señaAmount = 8000;
-            const mercadopagoLinkUrl = `https://mpago.la/2tpSkE9`;
-            const whatsappNumber = '5493415216025';
-
-            // Actualizar la meta etiqueta og:url dinámicamente
-            const ogUrlMeta = document.getElementById('og-url-meta');
-            if (ogUrlMeta) {
-                ogUrlMeta.setAttribute('content', appBaseUrl);
-            }
-
-            // --- DOM ELEMENTS ---
             const canvas = document.getElementById('rouletteCanvas');
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spinBtn');
@@ -950,7 +939,6 @@
             const cardFlipSound = document.getElementById('cardFlipSound');
             const cardWinSound = document.getElementById('cardWinSound');
 
-            // --- ROULETTE PRIZES ---
             const segments = [
                 { text: 'Zona Grande GRATIS', type: 'freebie', needsSeña: true, description: 'Zona Grande GRATIS' },
                 { text: '50% OFF', type: 'discount', value: 50, needsSeña: false, description: '50% OFF' },
@@ -969,13 +957,11 @@
             const numSegments = segments.length;
             const arc = (2 * Math.PI) / numSegments;
 
-            // --- ROULETTE STATE ---
             let state = {};
             let currentRotation = 0;
             let animationFrameId;
             let prizeTimerInterval;
 
-            // --- CARD GAME ELEMENTS AND STATE ---
             const cardsContainer = document.getElementById('cardsContainer');
             const cardResultMessage = document.getElementById('cardResultMessage');
             const cardGameInfo = document.getElementById('cardGameInfo');
@@ -1625,7 +1611,7 @@ Jugá ahora: ${appBaseUrl}
             closePoliciesModal.addEventListener('click', () => policiesModal.classList.remove('visible'));
             policiesModal.addEventListener('click', (e) => {
                 if (e.target === policiesModal) {
-                    policiesModal.classList.remove('visible');
+                    hideMessageModal();
                 }
             });
 
@@ -1686,7 +1672,6 @@ Jugá ahora: ${appBaseUrl}
                 }, 3000);
             });
 
-            // --- INITIALIZATION ---
             loadState();
             updateUI();
             resizeCanvas();
@@ -1696,7 +1681,6 @@ Jugá ahora: ${appBaseUrl}
             if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
                 startCardSessionTimer();
             }
-
         });
     </script>
 </body>

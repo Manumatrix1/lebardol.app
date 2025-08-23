@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bardol Estética Center</title>
+    <title>Juega y Gana - Le Bardol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @font-face {
             font-family: 'The Seasons';
@@ -13,6 +14,7 @@
             font-weight: normal;
             font-style: normal;
         }
+
         :root {
             --bg-light: #F4EDE7;
             --bg-card: #ffffff;
@@ -21,7 +23,9 @@
             --accent-green: #A3C1A1;
             --accent-dark-green: #4E6C50;
             --accent-blue: #3498db;
+            --prize-gold: #FFD700;
         }
+        
         body {
             font-family: 'Montserrat', sans-serif;
             background: var(--bg-light);
@@ -33,6 +37,7 @@
             justify-content: center;
             padding: 20px;
         }
+        
         .container {
             max-width: 500px;
             width: 100%;
@@ -42,77 +47,73 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             text-align: center;
         }
-        .logo-container {
-            margin-bottom: 25px;
+
+        #contact-form-container {
+            text-align: center;
+            padding: 2rem;
         }
-        .logo-container img {
-            max-width: 250px;
-            height: auto;
-        }
-        h1 {
-            font-family: 'The Seasons', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent-dark-green);
-            margin-bottom: 10px;
-        }
-        p {
-            font-size: 1rem;
-            color: var(--text-dark);
-            margin-bottom: 30px;
-        }
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        
         .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 16px;
-            border: none;
+            background: linear-gradient(135deg, var(--accent-green), #688e68);
+            color: white;
+            padding: 12px 24px;
             border-radius: 12px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s;
+            border: none;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            color: white;
-            font-family: 'Montserrat', sans-serif;
         }
+
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
-        .btn-whatsapp {
-            background: linear-gradient(135deg, var(--accent-green), #688e68);
-        }
-        .btn-game {
-            background: linear-gradient(135deg, var(--accent-dark-green), #4e6c50);
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo-container">
-            <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
-        </div>
-        <h1>¡Bienvenidos a Le Bardol Estética Center!</h1>
-        <p>Tu lugar para el bienestar y la belleza. Elige una opción para comenzar.</p>
-
-        <div class="button-group">
-            <a href="https://wa.me/5493415216025?text=¡Hola! Quiero agendar un turno." target="_blank" class="btn btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> Reservar Turno
-            </a>
-            <a href="juegos.html" class="btn btn-game">
-                <i class="fas fa-gift"></i> Jugar y Ganar Premios
-            </a>
+        <div id="contact-form-container">
+            <h1 class="font-bold text-2xl mb-4 text-center" style="font-family: 'The Seasons', serif; color: var(--accent-dark-green);">¡Juega y Gana!</h1>
+            <p class="mb-6 text-center">Ingresa tus datos para girar la ruleta y ganar un premio.</p>
+            <form id="roulette-form" class="flex flex-col gap-4">
+                <input type="text" id="player-name" class="form-input" placeholder="Tu Nombre" required>
+                <input type="text" id="player-contact" class="form-input" placeholder="Tu Mail o Teléfono" required>
+                <button type="submit" class="btn">Empezar a Jugar</button>
+            </form>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const rouletteForm = document.getElementById('roulette-form');
+            
+            rouletteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const playerName = document.getElementById('player-name').value;
+                const playerContact = document.getElementById('player-contact').value;
+                
+                if (playerName && playerContact) {
+                    const encodedName = encodeURIComponent(playerName);
+                    const encodedContact = encodeURIComponent(playerContact);
+                    
+                    const currentPagePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+                    const fullPath = window.location.origin + currentPagePath;
+
+                    // Redirigir a la página de juegos con los datos en la URL
+                    window.location.href = `${fullPath}/juegos.html?name=${encodedName}&contact=${encodedContact}`;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
