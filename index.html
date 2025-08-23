@@ -322,7 +322,7 @@
         // Importaciones de Firebase (ahora innecesarias para esta página)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
+        
         // CONFIGURACIÓN DE FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBIDo-_yARvS8TkULGYO2unNGvC2F3UvMI",
@@ -395,7 +395,7 @@
                 const encodedTurnTime = encodeURIComponent(turnTime);
                 const encodedTurnTreatment = encodeURIComponent(turnTreatment);
                 
-                // Enlace al archivo de confirmación de turno (corregido)
+                // Enlace al archivo de confirmación de turno
                 const clientConfirmationUrl = `${clientBaseUrl}/confirmacionturno.html?clientName=${encodedClientName}&date=${encodedTurnDate}&time=${encodedTurnTime}&treatment=${encodedTurnTreatment}`;
                 
                 clientTurnLink.href = clientConfirmationUrl;
