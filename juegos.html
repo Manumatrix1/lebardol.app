@@ -1149,6 +1149,7 @@
                 spinBtn.textContent = 'GIRANDO...';
                 rouletteCanvasContainer.classList.add('spinning');
                 
+                // --- CAMBIO AQUÍ: INICIAR EL SONIDO DE GIRO INMEDIATAMENTE ---
                 if (spinSound) {
                     try {
                         spinSound.load();
@@ -1202,6 +1203,7 @@
             function handleSpinEnd() {
                 fireConfetti();
                 
+                // --- CAMBIO AQUÍ: INICIAR EL SONIDO DE APLAUSOS EN CUANTO TERMINA EL GIRO ---
                 if (winSound) {
                     try {
                         winSound.load();
@@ -1279,7 +1281,7 @@
                 userNameInput.classList.remove('required');
                 const userName = state.userName.split(' ')[0];
 
-                const finalUrl = `${appBaseUrl}/juegos.html`; // <-- ¡ESTA ES LA LÍNEA QUE SE MODIFICÓ!
+                const finalUrl = `${appBaseUrl}/juegos.html`;
 
                 const whatsappMessage = `
 Hola, soy *${userName.toUpperCase()}*
@@ -1686,7 +1688,7 @@ Jugá ahora: ${appBaseUrl}/juegos.html
             initializeCardGame();
             window.addEventListener('resize', resizeCanvas);
 
-            if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.now()) {
+            if (state.wonCardPrizes.length > 0 && state.cardSessionEndTime > Date.o()) {
                 startCardSessionTimer();
             }
         });
