@@ -1,1 +1,50 @@
-<audio id="applauseSound" src="apalusos.mp3" preload="auto"></audio>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Prueba sonido de aplausos</title>
+	<style>
+		body { font-family: system-ui, Arial, sans-serif; padding: 2rem; background:#111; color:#eee; }
+		h1 { font-size: 1.4rem; margin-top:0; }
+		button { cursor:pointer; padding:.75rem 1.25rem; font-size:1rem; border-radius:6px; border:none; background:#f5c518; color:#111; font-weight:600; }
+		button:active { transform: scale(.96); }
+		#estado { margin-top:1rem; font-size:.9rem; opacity:.8; }
+	</style>
+</head>
+<body>
+	<h1>Reprobar sonido de aplausos</h1>
+	<p>Haz clic en el botón para cargar y reproducir el audio (los navegadores bloquean <em>autoplay</em> sin interacción).</p>
+	<button id="btnApplause">▶️ Reproducir aplausos</button>
+	<div id="estado" aria-live="polite"></div>
+
+	<!-- OJO: El archivo actualmente se llama "apalusos.mp3" (posible typo). Si lo renombras a "aplausos.mp3" cambia también el src abajo. -->
+	<audio id="applauseSound" src="apalusos.mp3" preload="auto"></audio>
+
+	<script>
+		const btn = document.getElementById('btnApplause');
+		const audio = document.getElementById('applauseSound');
+		const estado = document.getElementById('estado');
+
+		function setEstado(msg) { estado.textContent = msg; }
+
+		audio.addEventListener('canplaythrough', () => setEstado('Audio listo.'));
+		audio.addEventListener('ended', () => setEstado('Reproducción finalizada.'));
+		audio.addEventListener('error', (e) => setEstado('Error cargando audio (ver consola).'));
+
+		btn.addEventListener('click', async () => {
+			try {
+				setEstado('Reproduciendo...');
+				btn.disabled = true;
+				await audio.play();
+				btn.textContent = '🔁 Reproducir de nuevo';
+				btn.disabled = false;
+			} catch (err) {
+				console.error(err);
+				setEstado('No se pudo reproducir: ' + err.message);
+				btn.disabled = false;
+			}
+		});
+	</script>
+</body>
+</html>
