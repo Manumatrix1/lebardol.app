@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girá y Ganá en Le Bardol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <meta property="og:title" content="¡Girá y Ganá en Le Bardol! 🎁">
+    <meta property="og:description" content="¡La Ruleta Mágica de Le Bardol está ON FIRE! Cada giro = una zona GRATIS de depilación. ¡Jugá todas las veces que quieras y siempre ganás!">
+    <meta property="og:image" content="https://i.imgur.com/11RstI1.png">
+    <meta property="og:url" id="og-url-meta" content="">
+    <meta property="og:type" content="website">
+    <style>
+        /* Estilos generales y reseteo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f5 100%);
+            color: #4a2c5e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Contenedor principal de la tarjeta */
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- ESTILOS DE LA CAMPAÑA RULETA --- */
+        .roulette-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .roulette-section .campaign-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #e91e63;
+            line-height: 1.2;
+            text-align: center;
+            width: 100%;
+            animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+            word-break: break-word;
+        }
+        @media (max-width: 600px) {
+            .roulette-section .campaign-title {
+                font-size: 1.35rem;
+                line-height: 1.15;
+            }
+        }
+
+        @keyframes text-pop-up-top {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+
+        .roulette-section .campaign-subtitle {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a2c5e;
+            padding: 0 10px;
+            max-width: 400px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .prize-counter {
+            background-color: #ffeb3b;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            border: 2px solid #fbc02d;
+            animation: pulse-yellow 1.5s infinite;
+        }
+
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
+        }
+
+        .roulette-canvas-container {
+            position: relative;
+            width: 90%;
+            max-width: 380px;
+            margin: 15px 0 0;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2), 0 0 0 5px #ffc0cb;
+            overflow: visible;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .roulette-canvas-container:hover:not(.spinning) {
+            transform: scale(1.02);
+        }
+        .roulette-canvas-container.spinning {
+            cursor: default;
+        }
+
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .wheel-indicator {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 35px solid #e91e63;
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .buttons-container {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-spin {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            font-size: 22px;
+        }
+
+        .btn-reserve {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .btn-claim-prize {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+            color: white;
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            flex-direction: column;
+            line-height: 1.2;
+            padding: 12px;
+        }
+
+        .btn-share .share-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .btn-share .share-subtitle {
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .btn-share .fab {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .btn-play-again {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        #resultMessage {
+            margin-top: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #4a2c5e;
+            animation: pulse-red 1.5s infinite;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            line-height: 1.4;
+        }
+
+        #resultMessage small {
+            font-size: 15px;
+            font-weight: normal;
+            color: #333;
+            display: block;
+            margin-top: 8px;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 25px rgba(233, 30, 99, 0.8); transform: scale(1.02); }
+            100% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5); transform: scale(1); }
+        }
+
+        .prize-timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        #upsellSection {
+            padding: 15px;
+            background: #e0f7fa;
+            border: 2px dashed #00bcd4;
+            border-radius: 15px;
+            width: 100%;
+        }
+        #upsellSection h3 {
+            color: #00796b;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .btn-upsell {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .user-name-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            transition: border-color 0.3s ease;
+        }
+        .user-name-input:focus {
+            outline: none;
+            border-color: #8a2be2;
+        }
+        .user-name-input.required {
+            border-color: #ef4444;
+        }
+        .user-name-input.filled {
+            border-color: #22c55e;
+        }
+
+        .whatsapp-logo-container {
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+        .whatsapp-logo-container img {
+            max-width: 250px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        .whatsapp-logo-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .whatsapp-float-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            text-decoration: none;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .whatsapp-float-btn:hover {
+            transform: scale(1.1);
+            background-color: #1DA851;
+        }
+        .whatsapp-float-btn i {
+            color: white;
+        }
+
+        /* --- ESTILOS PARA LA VENTANA MODAL DE POLÍTICAS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #4a2c5e;
+        }
+        .modal-content p, .modal-content li {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .modal-content ul {
+            padding-left: 20px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: #888;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .policies-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8a2be2;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* --- ESTILOS PARA LA VENTANA MODAL DE MENSAJES (CUSTOM ALERT) --- */
+        .message-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .message-modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .message-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-out;
+        }
+        .message-modal-overlay.visible .message-modal-content {
+            transform: translateY(0);
+        }
+        .message-modal-content h3 {
+            color: #e91e63;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .message-modal-content p {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .message-modal-content button {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .message-modal-content button:hover {
+            background: linear-gradient(135deg, #6a1b9a 0%, #8a2be2 100%);
+        }
+
+        /* --- ESTILOS JUEGO DE CARTAS AJUSTADO --- */
+.card-game-section {
+  width: 100%;
+  max-width: 420px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 2px dashed #e91e63;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  box-shadow: none;
+}
+.card-game-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #e91e63;
+  margin: 0 0 22px;
+  text-align: center;
+  letter-spacing: .5px;
+  text-shadow: 0 2px 6px #e91e6322;
+}
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 420px;
+  perspective: 1200px;
+  margin-bottom: 18px;
+}
+@media (max-width: 700px) {
+  .cards-container { grid-template-columns: repeat(3,1fr); gap: 10px; }
+}
+@media (max-width: 480px) {
+  .cards-container { grid-template-columns: repeat(3,1fr); gap: 6px; }
+}
+.card {
+  position: relative;
+  width: 110px;
+  height: 160px;
+  max-width: 100%;
+  transform-style: preserve-3d;
+  transition: transform .6s cubic-bezier(.4,2,.3,.1);
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #00000022, 0 2px 8px #e9b80033;
+  background: #fff;
+  border: 2px solid #e9b800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 8px 24px #e9b80044, 0 2px 8px #e91e6333;
+}
+.card:active {
+  transform: scale(.98);
+}
+.card.flipped {
+  transform: rotateY(180deg);
+}
+.card-face {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px #e9b80011;
+}
+.card-back {
+  background: linear-gradient(135deg,#8be68b 0%,#b6f7b6 100%);
+  font-size: 2rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #4caf50;
+  box-shadow: 0 2px 8px #8be68b44;
+}
+.card-front {
+  background: #fff;
+  transform: rotateY(180deg);
+  color: #4a2c5e;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-shadow: 0 2px 8px #e9b80011;
+}
+.card-result-message {
+  font-size: 1.1rem;
+  color: #e91e63;
+  margin-top: 14px;
+  font-weight: 800;
+  text-align: center;
+  background: #fffbe6;
+  border: 2px solid #e9b800;
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #e9b80011;
+  animation: fadeIn .4s ease;
+}
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);}
+}
+.btn-reset-cards {
+  background: linear-gradient(135deg,#e9b800,#e91e63);
+  color: #fff;
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #e9b80011;
+}
+.btn-reset-cards:hover {
+  filter: brightness(1.08);
+}
+/* --- FIN ESTILOS AJUSTADOS --- */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="whatsapp-logo-container">
+            <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
+                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
+            </a>
+        </div>
+
+        <div class="roulette-section" id="rouletteSection">
+            <h1 class="campaign-title">🎉 Gana zonas gratis<br>en Depilación Definitiva 🎁</h1>
+            <p class="campaign-subtitle">Gana una zona gratis y más beneficios...</p>
+            <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
+
+            <div style="margin-bottom: 15px; width: 90%; max-width: 380px;">
+                <div id="userWelcome" style="font-size:1.1rem; color:#4a2c5e; font-weight:600; margin-bottom:8px;"></div>
+            </div>
+
+            <div class="roulette-canvas-container" id="rouletteCanvasContainer">
+                <div class="wheel-indicator"></div>
+                <canvas id="rouletteCanvas"></canvas>
+            </div>
+
+            <p id="resultMessage" style="display: none;"></p>
+            <p class="prize-timer" id="prizeTimerDisplay"></p>
+
+            <div class="buttons-container">
+                <button class="btn btn-spin" id="spinBtn" style="display: none;">👉 GIRAR LA RULETA AHORA</button>
+                <button class="btn btn-reserve" id="reserveBtn" style="display: none;"></button>
+                <button class="btn btn-claim-prize" id="claimPrizeBtn" style="display: none;"></button>
+                <button class="btn btn-play-again" id="playAgainBtn" style="display: none;">✨ Volver a Jugar Ruleta</button>
+                <button class="btn btn-share" id="shareBtn" style="display: none;">
+                    <i class="fab fa-whatsapp"></i>
+                    <span class="share-title">Invita a 5 amigos</span>
+                </button>
+                <div id="upsellSection" style="display: none;">
+                    <h3>¡Potenciá tu premio!</h3>
+                    <p>¿Querés sumar otra zona con <strong>30% OFF</strong>?</p>
+                    <button class="btn btn-upsell" id="upsellBtn">👉 Ver zonas disponibles</button>
+                </div>
+            </div>
+
+            <p id="policiesLink" class="policies-link">Ver Términos y Condiciones del Juego</p>
+            <!-- Juego de Cartas: HTML y CSS funcional -->
+                <section class="card-game-section" id="cardGameSection">
+                    <h2 class="card-game-title">🃏 Juego de Cartas</h2>
+                    <div class="cards-container" id="cardsContainer"></div>
+                    <button class="btn btn-reset-cards" id="resetCardsBtn" style="display:none;">🔄 Volver a jugar</button>
+                    <p id="cardResultMessage" class="card-result-message" style="display:none;"></p>
+                </section>
+        </div>
+
+        <!-- Se eliminó la sección de cartas, solo queda la ruleta -->
+
+        
+
+        <p class="footer-info">
+            <span style="display:block; width:100%; text-align:center; font-size:1rem; color:#4E6C50; font-weight:600; margin-bottom:6px;">Le Bardol Centro de Estética</span>
+            <span style="display:block; width:100%; text-align:center; font-size:.95rem; color:#888; margin-bottom:12px;">Nos reservamos el derecho de modificar esta promoción en cualquier momento.</span>
+        </p>
+
+        <div class="social-links">
+            <a href="https://maps.app.goo.gl/CusFUGvj4zFvv9EG8" target="_blank" class="social-link" aria-label="Ver ubicación en Google Maps" style="text-decoration:none; color:#4285F4; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+                <i class="fas fa-map-marker-alt" style="font-size:1.7rem;"></i>
+                <span style="font-size:.98rem; color:#4E6C50; text-align:center;">Ubicación</span>
+            </a>
+            <a href="https://www.instagram.com/lebardol.esteticacenter/" target="_blank" class="social-link" aria-label="Visitar Instagram de Le Bardol" style="text-decoration:none; color:#E1306C; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+                <i class="fab fa-instagram" style="font-size:1.7rem;"></i>
+                <span style="font-size:.98rem; color:#4E6C50; text-align:center;">Instagram</span>
+            </a>
+            <a href="https://linktr.ee/lebardol.estetica" target="_blank" class="social-link" aria-label="Visitar Linktree de Le Bardol" style="text-decoration:none; color:#4285F4; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+                <i class="fas fa-link" style="font-size:1.7rem;"></i>
+                <span style="font-size:.98rem; color:#4E6C50; text-align:center;">Linktree</span>
+            </a>
+        </div>
+        <div style="width:100%; text-align:center; margin-top:10px; font-size:1.08rem; color:#4E6C50; font-weight:600;">
+            <a href="https://wa.me/5493415216025" target="_blank" style="color:#4E6C50; text-decoration:none; font-weight:600; font-size:1.08rem; display:inline-flex; align-items:center; gap:8px;">
+                <i class="fab fa-whatsapp" style="font-size:1.3rem; color:#25D366;"></i>
+                3415 21 60 25
+            </a>
+        </div>
+        </div>
+    </div>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/68c6227a3c57f819275d5b5e/1j52vdc7u';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+    
+    <div id="policiesModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closePoliciesModal" class="close-modal">×</button>
+            <h2>LE BARDOL – POLÍTICAS DE PROMOCIÓN</h2>
+            <h3>Juego “Girá la Ruleta y Ganá tu Zona Gratis” – Depilación Definitiva</h3>
+            <p><strong>1. Objeto del juego:</strong><br>El juego “Girá la Ruleta y Ganá tu Zona” es una acción promocional de Le Bardol destinada a premiar a clientes nuevos o actuales que participen cumpliendo con las condiciones detalladas a continuación.</p>
+            <p><strong>2. Premios posibles:</strong><br>El participante puede ganar una zona gratuita de depilación definitiva al azar:</p>
+            <ul>
+                <li>Zona Chica</li>
+                <li>Zona Mediana</li>
+                <li>Zona Grande</li>
+            </ul>
+            <p><strong>3. Condición de participación:</strong><br>Para hacer válido el premio obtenido en la ruleta, el participante deberá:
+            <br>a) Señar una zona adicional (de cualquier tamaño) dentro de los 30 minutos posteriores al giro.
+            <br>b) Compartir el juego con al menos 5 personas dentro del mismo plazo de 30 minutos.
+            <br>Si no se cumple con ambas condiciones dentro de ese tiempo, el beneficio de la zona gratuita queda anulado.</p>
+            <p><strong>4. Beneficio por referidos:</strong><br>Por cada persona referida que señe o compre una zona dentro de las 24 horas posteriores al giro, el participante titular del juego acumula un 10% de descuento para su segunda sesión de tratamiento.</p>
+            <ul>
+                <li>5 referidos señados = 50% de descuento</li>
+                <li>10 referidos señados = 100% de descuento (zona gratis)</li>
+            </ul>
+            <p><strong>5. Vigencia del beneficio por referidos:</strong><br>El tiempo límite para que los referidos realicen su seña o compra válida es de 24 horas desde el momento en que el participante titular gira la ruleta.</p>
+            <p><strong>6. Igualdad de beneficios para referidos:</strong><br>Las personas referidas pueden participar del mismo juego si cumplen con las condiciones (señar una zona + compartir con 5 personas), accediendo así a su propio beneficio de zona gratuita y programa de descuentos acumulables.</p>
+            <p><strong>7. Definición de zonas según tamaño:</strong></p>
+            <ul>
+                <li><strong>Zonas chicas:</strong> bozo, mentón, línea alba, dedos de pies/manos, tiro de cola.</li>
+                <li><strong>Zonas medianas:</strong> cavado, media pierna, medio brazo, glúteos, rostro completo.</li>
+                <li><strong>Zonas grandes:</strong> piernas completas, pecho completo, espalda completa.</li>
+            </ul>
+            <p><strong>8. Aplicación de los beneficios:</strong></p>
+            <ul>
+                <li>La zona gratuita obtenida solo se activa si se cumple con la seña y el envío del juego a 5 personas en los primeros 30 minutos.</li>
+                <li>El descuento acumulado solo se aplica a la segunda sesión, y exclusivamente sobre zonas nuevas.</li>
+                <li>No es válido para sesiones abonadas previamente ni zonas en las cuales el cliente ya se encuentre en tratamiento activo.</li>
+            </ul>
+            <p><strong>9. Repetición del juego:</strong><br>El participante podrá volver a tirar la ruleta y ganar nuevas zonas gratuitas todas las veces que desee, siempre y cuando:</p>
+            <ul>
+                <li>Señe una nueva zona adicional (distinta a la anterior).</li>
+                <li>Comparta nuevamente el juego con 5 personas nuevas.</li>
+                <li>Sus referidos hayan también concretado la seña.</li>
+            </ul>
+            <p>Cada jugada se considera individual y requiere cumplir nuevamente con todas las condiciones iniciales para activar un nuevo beneficio.</p>
+            <p><strong>10. Generalidades:</strong></p>
+            <ul>
+                <li>Los beneficios son personales e intransferibles.</li>
+                <li>No acumulables con otras promociones.</li>
+                <li>Le Bardol se reserva el derecho de modificar o suspender esta promoción sin previo aviso si se detectan usos indebidos o cambios operativos.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="messageModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="messageModalTitle"></h3>
+            <p id="messageModalText"></p>
+            <button id="closeMessageModal">Entendido</button>
+            </div>
+    </div>
+
+    <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-win-2010.mp3" preload="auto"></audio>
+    <audio id="applauseSound" src="apalusos.mp3" preload="auto"></audio>
+    <audio id="cardFlipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-1033.mp3" preload="auto"></audio>
+    <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
+
+    <script type="module">
+// --- Juego de Cartas funcional ---
+document.addEventListener('DOMContentLoaded', () => {
+    const cardsContainer = document.getElementById('cardsContainer');
+    const cardResultMessage = document.getElementById('cardResultMessage');
+    const resetCardsBtn = document.getElementById('resetCardsBtn');
+    // Botones para pago y compartir
+    let mpBtn, sendBtn, shareBtn;
+    // Ahora 9 premios para 3 filas de 3 cartas
+    const premios = [
+        '10% OFF en depilación',
+        '20% OFF en facial',
+        '30% OFF en masajes',
+        'Zona chica gratis',
+        'Zona mediana gratis',
+        'Zona grande gratis',
+        'Gift especial',
+        'Sorpresa Le Bardol',
+        'Descuento extra'
+    ];
+    let cartas = [];
+    let juegoActivo = true;
+    let puedeReiniciar = false;
+    function barajar(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+    function inicializarJuego() {
+        cardsContainer.innerHTML = '';
+        cartas = [];
+        cardResultMessage.style.display = 'none';
+        resetCardsBtn.style.display = 'none';
+        if (mpBtn) mpBtn.remove();
+        if (sendBtn) sendBtn.remove();
+        if (shareBtn) shareBtn.remove();
+        let premiosBarajados = barajar([...premios]);
+        for (let i = 0; i < premiosBarajados.length; i++) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.premio = premiosBarajados[i];
+            // Cara trasera
+            const cardBack = document.createElement('div');
+            cardBack.classList.add('card-face', 'card-back');
+            cardBack.innerHTML = '<span>🃏</span>';
+            // Cara delantera
+            const cardFront = document.createElement('div');
+            cardFront.classList.add('card-face', 'card-front');
+            cardFront.textContent = premiosBarajados[i];
+            card.appendChild(cardBack);
+            card.appendChild(cardFront);
+            cardsContainer.appendChild(card);
+            cartas.push(card);
+            card.addEventListener('click', function() {
+                if (!juegoActivo || card.classList.contains('flipped')) return;
+                card.classList.add('flipped');
+                cardResultMessage.textContent = `¡Ganaste: ${premiosBarajados[i]}!`;
+                cardResultMessage.style.display = 'block';
+                // Botón Mercado Pago
+                mpBtn = document.createElement('button');
+                mpBtn.className = 'btn btn-reset-cards';
+                mpBtn.textContent = '💳 PAGA Y RESERVA TU TURNO AHORA';
+                mpBtn.style.marginTop = '10px';
+                mpBtn.onclick = function() {
+                    window.open('https://mpago.la/2tpSkE9', '_blank');
+                    // Botón enviar comprobante
+                    if (!sendBtn) {
+                        sendBtn = document.createElement('button');
+                        sendBtn.className = 'btn btn-share';
+                        sendBtn.textContent = '📲 Enviar comprobante y premio por WhatsApp';
+                        sendBtn.style.marginTop = '10px';
+                        sendBtn.onclick = function() {
+                            const juegoUrl = window.location.origin + '/juegos.html';
+                            let premio = premiosBarajados[i];
+                            const msg = `Hola! Ya reservé mi turno en Le Bardol.\nAdjunto mi comprobante de pago.\nPremio ganado: ${premio}\n¿Me confirman el turno?\n👉 ${juegoUrl}`;
+                            window.open(`https://wa.me/5493415216025?text=${encodeURIComponent(msg)}`, '_blank');
+                        };
+                        cardResultMessage.insertAdjacentElement('afterend', sendBtn);
+                    } else {
+                        sendBtn.style.display = 'block';
+                    }
+                };
+                cardResultMessage.insertAdjacentElement('afterend', mpBtn);
+                // Botón compartir para volver a jugar
+                if (!shareBtn) {
+                    shareBtn = document.createElement('button');
+                    shareBtn.className = 'btn btn-share';
+                    shareBtn.textContent = '🔄 Compartí a 5 amigos para volver a jugar';
+                    shareBtn.style.marginTop = '10px';
+                    shareBtn.onclick = function() {
+                        const juegoUrl = window.location.origin + '/bienvenidos.html';
+                        const msg = `¡Te invito a jugar las cartas mágicas de Le Bardol! 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}`;
+                        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                        puedeReiniciar = true;
+                        resetCardsBtn.style.display = 'inline-block';
+                        shareBtn.style.display = 'none';
+                    };
+                    cardResultMessage.insertAdjacentElement('afterend', shareBtn);
+                } else {
+                    shareBtn.style.display = 'block';
+                }
+                resetCardsBtn.style.display = 'none';
+                juegoActivo = false;
+            });
+        }
+        // Ajustar la grilla a 3x3
+        cardsContainer.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        cardsContainer.style.gridTemplateRows = 'none';
+    }
+    resetCardsBtn.addEventListener('click', () => {
+        if (!puedeReiniciar) return;
+        puedeReiniciar = false;
+        juegoActivo = true;
+        inicializarJuego();
+    });
+    inicializarJuego();
+});
+        
+        // Obtener el nombre del usuario desde la URL y mostrarlo
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param) || '';
+        }
+        const userName = getQueryParam('name');
+        const userWelcomeDiv = document.getElementById('userWelcome');
+        if (userName && userWelcomeDiv) {
+            userWelcomeDiv.textContent = `¡Bienvenido/a, ${decodeURIComponent(userName)}!`;
+        }
+
+        // --- Lógica de la ruleta ---
+        const spinBtn = document.getElementById('spinBtn');
+        const resultMessage = document.getElementById('resultMessage');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const rouletteCanvas = document.getElementById('rouletteCanvas');
+        const rouletteCanvasContainer = document.getElementById('rouletteCanvasContainer');
+        const spinSound = document.getElementById('spinSound');
+        const winSound = document.getElementById('winSound');
+
+        // Premios posibles
+        const prizes = [
+            'Zona Chica Gratis',
+            'Zona Mediana Gratis',
+            'Zona Grande Gratis',
+            '10% Descuento',
+            '20% Descuento',
+            '30% Descuento',
+            '¡Sorpresa Especial!'
+        ];
+
+        // Colores originales de la marca
+        const brandColors = [
+            '#e91e63', // rosa
+            '#8a2be2', // violeta
+            '#ffd700', // dorado
+            '#00bcd4', // celeste
+            '#f44336', // rojo
+            '#4caf50', // verde
+            '#ff9800'  // naranja
+        ];
+
+        // Mostrar botón de girar siempre
+        spinBtn.style.display = 'block';
+
+        // Dibujar ruleta visual y ordenada
+        function drawRoulette(rotation = 0) {
+            const ctx = rouletteCanvas.getContext('2d');
+            const size = rouletteCanvas.width = rouletteCanvas.height = 340;
+            const numSegments = prizes.length;
+            const angle = (2 * Math.PI) / numSegments;
+            ctx.clearRect(0, 0, size, size);
+            ctx.save();
+            ctx.translate(size/2, size/2);
+            ctx.rotate(rotation);
+            for (let i = 0; i < numSegments; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, size/2, i*angle, (i+1)*angle);
+                ctx.closePath();
+                ctx.fillStyle = brandColors[i % brandColors.length];
+                ctx.fill();
+                ctx.save();
+                ctx.rotate(i*angle + angle/2);
+                ctx.textAlign = 'center';
+                ctx.font = 'bold 18px Segoe UI';
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#4a2c5e';
+                ctx.shadowBlur = 4;
+                ctx.fillText(prizes[i], size/2 - 80, 0, 120);
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+        drawRoulette();
+        // Animación de giro
+        function animateSpin(finalIndex, callback) {
+            const numSegments = prizes.length;
+            const angle = (2 * Math.PI) / numSegments;
+            // El segmento seleccionado debe quedar bajo el indicador superior (vertical)
+            // Centramos el ángulo en el medio del segmento (sumando angle/2)
+            // Y hacemos la animación más lenta (duración 3200ms)
+            const finalAngle = (2 * Math.PI * 5) - finalIndex * angle - (angle / 2) - Math.PI / 2;
+            let start = null;
+            function step(ts) {
+                if (!start) start = ts;
+                const elapsed = ts - start;
+                // Duración total de la animación (ms)
+                const duration = 3200;
+                // Ease out
+                const progress = Math.min(elapsed / duration, 1);
+                const currentAngle = finalAngle * easeOutCubic(progress);
+                drawRoulette(currentAngle);
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    drawRoulette(finalAngle);
+                    if (callback) callback();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        // Estado de juego
+        let canSpin = true;
+
+        // Girar la ruleta
+        function girarRuleta() {
+            if (!canSpin) return;
+            spinBtn.disabled = true;
+            rouletteCanvasContainer.classList.add('spinning');
+            // Iniciar redoblante apenas hace clic
+            // Function to play sound and return a Promise that resolves when sound is ready or after a timeout
+            const playSpinSound = () => {
+                return new Promise(resolve => {
+                    const playAttempt = () => {
+                        spinSound.currentTime = 0;
+                        spinSound.play().then(() => {
+                            resolve(); // Sound started playing
+                        }).catch(e => {
+                            console.warn("Spin sound play failed, retrying or resolving after timeout:", e);
+                            // If play fails, try again after a short delay or just resolve to continue
+                            setTimeout(resolve, 100); // Resolve after 100ms even if play fails
+                        });
+                    };
+
+                    // Try playing immediately
+                    playAttempt();
+
+                    // Fallback: if sound doesn't play immediately, ensure it plays when ready
+                    spinSound.oncanplaythrough = () => {
+                        spinSound.oncanplaythrough = null; // Remove listener
+                        playAttempt(); // Try playing again if not already playing
+                        resolve();
+                    };
+                    spinSound.load(); // Ensure loading is initiated
+                });
+            };
+
+            playSpinSound().then(() => {
+                const numSegments = prizes.length;
+                const angle = (2 * Math.PI) / numSegments;
+                const prizeIndex = Math.floor(Math.random() * numSegments);
+                animateSpin(prizeIndex, () => {
+                    const prize = prizes[prizeIndex];
+                    resultMessage.innerHTML = `<span style='color:#e91e63; font-size:1.3rem; font-weight:900;'>${decodeURIComponent(userName)}: ¡Felicidades, ganaste ${prize}!</span>`;
+                    resultMessage.style.display = 'block';
+            // Mostrar botón Mercado Pago
+            let mpBtn = document.getElementById('mpPayBtn');
+            if (!mpBtn) {
+                resultMessage.insertAdjacentHTML('afterend', `<button id="mpPayBtn" class="btn btn-reserve" style="margin-top:18px;">💳 PAGA Y RESERVA TU TURNO AHORA</button>`);
+            } else {
+                mpBtn.style.display = 'block';
+            }
+                    // Al terminar el giro: sonido de victoria y aplausos y confetti
+                    winSound.currentTime = 0;
+                    winSound.play();
+                    const applauseSound = document.getElementById('applauseSound');
+                    if (applauseSound) {
+                        applauseSound.currentTime = 0;
+                        applauseSound.play();
+                    }
+                    if (window.confetti) {
+                        window.confetti({
+                            particleCount: 120,
+                            spread: 80,
+                            origin: { y: 0.6 }
+                        });
+                    }
+                    // Mostrar solo el botón de compartir
+                    shareBtn.style.display = 'block';
+                    playAgainBtn.style.display = 'none';
+                    rouletteCanvasContainer.classList.remove('spinning');
+                    canSpin = false;
+                    // Mostrar mensaje de compartir
+                    let shareInfoMsg = document.getElementById('shareInfoMsg');
+                    if (!shareInfoMsg) {
+                        shareBtn.insertAdjacentHTML('afterend', `<div id="shareInfoMsg" style="margin-top:12px; color:#e91e63; font-weight:600; text-align:center;">Para volver a tirar, compartí el juego con 5 amigos en WhatsApp.</div>`);
+                    } else {
+                        shareInfoMsg.style.display = 'block';
+                    }
+                });
+            });
+        }
+
+        spinBtn.addEventListener('click', girarRuleta);
+        rouletteCanvasContainer.addEventListener('click', girarRuleta);
+
+        // Compartir por WhatsApp
+        // Lógica Mercado Pago
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'mpPayBtn') {
+                window.open('https://mpago.la/2tpSkE9', '_blank');
+                // Mostrar botón para enviar comprobante por WhatsApp
+                let sendBtn = document.getElementById('sendProofBtn');
+                if (!sendBtn) {
+                    document.getElementById('mpPayBtn').insertAdjacentHTML('afterend', `<button id="sendProofBtn" class="btn btn-share" style="margin-top:14px;">📲 Enviar comprobante y premio por WhatsApp</button>`);
+                } else {
+                    sendBtn.style.display = 'block';
+                }
+            }
+            if (e.target && e.target.id === 'sendProofBtn') {
+                const juegoUrl = window.location.origin + '/juegos.html';
+                let nombre = decodeURIComponent(userName || '').trim();
+                if (!nombre) nombre = 'un amigo';
+                let premio = '';
+                const premioMatch = resultMessage.textContent.match(/ganaste (.+)!/);
+                if (premioMatch && premioMatch[1]) premio = premioMatch[1];
+                const msg = `Hola! Soy ${nombre} y ya reservé mi turno en Le Bardol.\nAdjunto mi comprobante de pago.\nPremio ganado: ${premio}\n¿Me confirman el turno?\n👉 ${juegoUrl}`;
+                window.open(`https://wa.me/5493415216025?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+        });
+        shareBtn.addEventListener('click', () => {
+            const juegoUrl = window.location.origin + '/juegos.html';
+            let nombre = decodeURIComponent(userName || '').trim();
+            if (!nombre) nombre = 'un amigo';
+            const msg = `Hola! Soy ${nombre} y te invito a jugar la ruleta mágica de Le Bardol 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            // Al compartir, habilitar la ruleta nuevamente
+            resultMessage.style.display = 'none';
+            shareBtn.style.display = 'none';
+            let shareInfoMsg = document.getElementById('shareInfoMsg');
+            if (shareInfoMsg) shareInfoMsg.style.display = 'none';
+            spinBtn.disabled = false;
+            canSpin = true;
+            drawRoulette();
+        });
+
+        // Volver a jugar (solo si compartió)
+        // El botón de volver a jugar queda oculto
+    </script>
+</body>
+</html>

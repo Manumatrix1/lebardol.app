@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="logo lb.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juega y Gana - Le Bardol</title>
+    <script type="module" src="js/campaignClick.js"></script>
+    <!-- Open Graph para vista previa en WhatsApp y redes sociales -->
+    <meta property="og:title" content="¡Jugá y Ganá en Le Bardol! 🎁" />
+    <meta property="og:description" content="Participá en la ruleta. ¡Premios, descuentos y diversión en Le Bardol!" />
+    <meta property="og:image" content="https://i.imgur.com/11RstI1.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lebardol.com/bienvenidos.html" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    /* Se eliminaron los estilos del juego de cartas */
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        /* Se eliminaron todos los estilos del juego de cartas */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:18px;">
+            <img src="jugaygana.png" alt="Jugá y ganá" style="max-width:320px; width:100%; height:auto; margin-bottom:12px; border-radius:24px; box-shadow:0 4px 24px #0002; display:block;">
+        </div>
+        <div id="contact-form-container">
+            <h1 class="font-bold text-3xl mb-4 text-center" style="font-family: 'The Seasons', serif; color: var(--accent-dark-green); letter-spacing:1px;">¡Juega y Gana!</h1>
+            <p class="mb-6 text-center" style="font-size:1.1rem; color:#4E6C50;">Completá tus datos para girar la ruleta y ganar premios exclusivos.</p>
+            <form id="roulette-form" class="flex flex-col gap-4" style="background:#F4EDE7; border-radius:16px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="fas fa-user" style="font-size:1.3rem; color:#A3C1A1;"></i>
+                    <input type="text" id="player-name" class="form-input" placeholder="Tu Nombre" required>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="fas fa-envelope" style="font-size:1.3rem; color:#A3C1A1;"></i>
+                    <input type="text" id="player-contact" class="form-input" placeholder="Mail o WhatsApp" required>
+                </div>
+                <button type="submit" class="btn" style="font-size:1.1rem; background:linear-gradient(135deg,#6bbf59 0%,#4E6C50 100%); color:#fff;">Empezar a Jugar</button>
+            </form>
+        </div>
+
+    <!-- Solo queda la ruleta -->
+        <!-- Sección inferior con íconos y nombres de redes/contacto -->
+        <div class="social-links" style="margin-top:32px; display:flex; justify-content:center; gap:32px;">
+            <a href="https://wa.me/5493415216025" target="_blank" class="social-link" style="text-decoration:none; color:#25D366; display:flex; flex-direction:column; align-items:center;">
+                <i class="fab fa-whatsapp" style="font-size:2.2rem;"></i>
+                <span style="font-size:1rem; color:#4E6C50;">WhatsApp</span>
+            </a>
+            <a href="https://www.instagram.com/lebardol.esteticacenter/" target="_blank" class="social-link" style="text-decoration:none; color:#E1306C; display:flex; flex-direction:column; align-items:center;">
+                <i class="fab fa-instagram" style="font-size:2.2rem;"></i>
+                <span style="font-size:1rem; color:#4E6C50;">Instagram</span>
+            </a>
+            <a href="https://maps.app.goo.gl/CusFUGvj4zFvv9EG8" target="_blank" class="social-link" style="text-decoration:none; color:#4285F4; display:flex; flex-direction:column; align-items:center;">
+                <i class="fas fa-map-marker-alt" style="font-size:2.2rem;"></i>
+                <span style="font-size:1rem; color:#4E6C50;">Ubicación</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script type="module">
+        // Se eliminó la lógica del juego de cartas
+    </script>
+</body>
+</html>
