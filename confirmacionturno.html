@@ -244,10 +244,11 @@
                 dateDisplay.textContent = formattedDate;
 
                 // Also use localDate for WhatsApp messages
-                const confirmMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. Confirmo mi turno para ${decodeURIComponent(treatment)} el ${localDate.toLocaleDateString('es-AR')} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
+                const turnIdMessage = turnId ? ` ID de Turno: ${decodeURIComponent(turnId)}` : '';
+                const confirmMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. Confirmo mi turno para ${decodeURIComponent(treatment)} el ${localDate.toLocaleDateString('es-AR')} a las ${decodeURIComponent(time)}.${turnIdMessage}`;
                 confirmTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(confirmMessage)}`;
 
-                const cancelMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. No podré asistir a mi turno para ${decodeURIComponent(treatment)} el ${localDate.toLocaleDateString('es-AR')} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
+                const cancelMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. No podré asistir a mi turno para ${decodeURIComponent(treatment)} el ${localDate.toLocaleDateString('es-AR')} a las ${decodeURIComponent(time)}.${turnIdMessage}`;
                 cancelTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(cancelMessage)}`;
             }
             if (time) timeDisplay.textContent = decodeURIComponent(time);
