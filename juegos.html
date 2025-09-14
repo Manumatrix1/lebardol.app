@@ -1111,7 +1111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         shareBtn.addEventListener('click', () => {
-            const juegoUrl = window.location.origin + '/juegos.html';
+            const juegoUrl = window.location.origin + '/bienvenidos.html';
             let nombre = decodeURIComponent(userName || '').trim();
             if (!nombre) nombre = 'un amigo';
             const msg = `Hola! Soy ${nombre} y te invito a jugar la ruleta mágica de Le Bardol 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}`;
