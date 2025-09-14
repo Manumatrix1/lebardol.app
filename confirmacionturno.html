@@ -234,17 +234,23 @@
             if (clientName) clientNameDisplay.textContent = decodeURIComponent(clientName);
             if (treatment) treatmentDisplay.textContent = decodeURIComponent(treatment);
             if (date) {
-                const formattedDate = new Date(decodeURIComponent(date)).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const dateParts = decodeURIComponent(date).split('-');
+                const year = parseInt(dateParts[0]);
+                const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+                const day = parseInt(dateParts[2]);
+                const localDate = new Date(year, month, day);
+
+                const formattedDate = localDate.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 dateDisplay.textContent = formattedDate;
+
+                // Also use localDate for WhatsApp messages
+                const confirmMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. Confirmo mi turno para ${decodeURIComponent(treatment)} el ${localDate.toLocaleDateString('es-AR')} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
+                confirmTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(confirmMessage)}`;
+
+                const cancelMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. No podré asistir a mi turno para ${decodeURIComponent(treatment)} el ${localDate.toLocaleDateString('es-AR')} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
+                cancelTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(cancelMessage)}`;
             }
             if (time) timeDisplay.textContent = decodeURIComponent(time);
-
-            // Set WhatsApp links for confirmation/cancellation
-            const confirmMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. Confirmo mi turno para ${decodeURIComponent(treatment)} el ${new Date(decodeURIComponent(date)).toLocaleDateString()} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
-            confirmTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(confirmMessage)}`;
-
-            const cancelMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. No podré asistir a mi turno para ${decodeURIComponent(treatment)} el ${new Date(decodeURIComponent(date)).toLocaleDateString()} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
-            cancelTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(cancelMessage)}`;
 
             // ** CÓDIGO CORREGIDO **
             // Obtiene la ruta base del directorio actual para que el enlace siempre funcione
