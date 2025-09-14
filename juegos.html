@@ -777,6 +777,40 @@
     <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
 
     <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { firebaseConfig } from "../firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function logShare() {
+    try {
+        await addDoc(collection(db, "campaign_stats"), {
+            type: "shared",
+            timestamp: new Date().toISOString()
+        });
+        console.log("Share event saved!");
+    } catch (e) {
+        console.error("Error saving share event:", e);
+    }
+}
+
+async function saveLead(name, contact, prize) {
+    try {
+        await addDoc(collection(db, "leads"), {
+            name: name,
+            contact: contact,
+            prize: prize,
+            timestamp: new Date().toISOString(),
+            email: "" // Adding email field to match data structure from leadForm
+        });
+        console.log("Lead saved from roulette!");
+    } catch (e) {
+        console.error("Error saving lead:", e);
+    }
+}
+
 // --- Juego de Cartas funcional ---
 document.addEventListener('DOMContentLoaded', () => {
     const cardsContainer = document.getElementById('cardsContainer');
@@ -830,8 +864,14 @@ document.addEventListener('DOMContentLoaded', () => {
             card.addEventListener('click', function() {
                 if (!juegoActivo || card.classList.contains('flipped')) return;
                 card.classList.add('flipped');
-                cardResultMessage.textContent = `¡Ganaste: ${premiosBarajados[i]}!`;
+                const prize = premiosBarajados[i];
+                cardResultMessage.textContent = `¡Ganaste: ${prize}!`;
                 cardResultMessage.style.display = 'block';
+
+                // Save the result to Firebase
+                if (userName) { // Only save if we have a user name
+                    saveLead(decodeURIComponent(userName), decodeURIComponent(userContact), `Carta: ${prize}`);
+                }
                 // Botón Mercado Pago
                 mpBtn = document.createElement('button');
                 mpBtn.className = 'btn btn-reset-cards';
@@ -900,6 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return urlParams.get(param) || '';
         }
         const userName = getQueryParam('name');
+        const userContact = getQueryParam('contact');
         const userWelcomeDiv = document.getElementById('userWelcome');
         if (userName && userWelcomeDiv) {
             userWelcomeDiv.textContent = `¡Bienvenido/a, ${decodeURIComponent(userName)}!`;
@@ -1043,6 +1084,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prizeIndex = Math.floor(Math.random() * numSegments);
                 animateSpin(prizeIndex, () => {
                     const prize = prizes[prizeIndex];
+                    
+                    if (userName) { // Only save if we have a user name
+                        saveLead(decodeURIComponent(userName), decodeURIComponent(userContact), prize);
+                    }
+
                     resultMessage.innerHTML = `<span style='color:#e91e63; font-size:1.3rem; font-weight:900;'>${decodeURIComponent(userName)}: ¡Felicidades, ganaste ${prize}!</span>`;
                     resultMessage.style.display = 'block';
             // Mostrar botón Mercado Pago
@@ -1111,6 +1157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         shareBtn.addEventListener('click', () => {
+            logShare();
             const juegoUrl = window.location.origin + '/bienvenidos.html';
             let nombre = decodeURIComponent(userName || '').trim();
             if (!nombre) nombre = 'un amigo';

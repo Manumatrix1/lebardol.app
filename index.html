@@ -163,6 +163,7 @@
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { firebaseConfig, appId } from "./firebase-config.js"; // Import Firebase config
     import { getRoulettePlayers } from "./js/roulettePlayers.js";
+    import { getShareCount } from "./js/campaignStats.js";
 
         // Aunque no usaremos Firestore, mantenemos la autenticación anónima para que la app se inicialice sin errores.
         let app, auth;
@@ -204,6 +205,19 @@
                 URL.revokeObjectURL(url);
             }
             console.log("DOM fully loaded and parsed. Initializing script...");
+
+            // --- Campaign Stats ---
+            async function renderCampaignStats() {
+                const shareCountDisplay = document.getElementById('roulette-share-count-display');
+                try {
+                    const count = await getShareCount();
+                    shareCountDisplay.textContent = `La ruleta se ha compartido ${count} veces.`;
+                } catch (err) {
+                    shareCountDisplay.textContent = "Error al cargar el contador de compartidos.";
+                    console.error(err);
+                }
+            }
+
             // Mostrar jugadores de la ruleta en estadísticas de campaña
             async function renderRoulettePlayers() {
                 const tableBody = document.getElementById('roulette-players-table-body');
@@ -234,7 +248,10 @@
             const statsBtn = document.getElementById('show-campaign-stats-btn');
             if (statsBtn) {
                 statsBtn.addEventListener('click', () => {
-                    setTimeout(renderRoulettePlayers, 300); // Espera a que la sección esté visible
+                    setTimeout(() => {
+                        renderRoulettePlayers();
+                        renderCampaignStats();
+                    }, 300); // Espera a que la sección esté visible
                 });
             }
 
@@ -353,7 +370,13 @@
                 const dateObj = new Date(dateTimeString);
                 const formattedDate = dateObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 const formattedTime = dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${formattedTime}.\n\nPor favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
+                const whatsappMessage = `¡Hola ${clientName}!
+
+Te recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${formattedTime}.
+
+Por favor, confirma o cancela tu turno aquí: ${turnLink}
+
+¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
