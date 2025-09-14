@@ -9,7 +9,9 @@ export async function saveLead(name, contact) {
     try {
         await addDoc(collection(db, "leads"), {
             name,
-            contact
+            contact,
+            email: "", // Si tienes el email, pásalo como argumento
+            timestamp: new Date().toISOString()
         });
     } catch (e) {
         console.error("Error guardando lead:", e);

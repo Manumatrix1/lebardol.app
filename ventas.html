@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas y Comisiones | Le Bardol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-body antialiased">
+    <div class="container">
+        <div class="app-header">
+            <div class="app-logo">
+                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center">
+            </div>
+            <h1 class="app-title">LE BARDOL</h1>
+            <p class="app-subtitle">Ventas y Comisiones Multinivel</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <a href="index.html" class="button-secondary">Volver al Panel</a>
+        </div>
+        <div class="sales-section">
+            <h2 class="section-header">Registro de Vendedora</h2>
+            <form id="seller-register-form" class="mb-6 max-w-md mx-auto">
+                <div class="mb-4">
+                    <label for="seller-name" class="block text-gray-700 text-sm font-bold mb-2">Nombre completo:</label>
+                    <input type="text" id="seller-name" class="input-field" placeholder="Ej: María Pérez" required>
+                </div>
+                <div class="mb-4">
+                    <label for="seller-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="seller-email" class="input-field" placeholder="Ej: maria@email.com" required>
+                </div>
+                <div class="mb-4">
+                    <label for="seller-phone" class="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
+                    <input type="tel" id="seller-phone" class="input-field" placeholder="Ej: 3415123456" required>
+                </div>
+                <button type="submit" class="button-primary w-full">Registrarse</button>
+            </form>
+            <div id="seller-register-message" class="mb-6"></div>
+            <div id="sales-panel" class="hidden">
+                <h2 class="section-header">Panel de Ventas</h2>
+                <p>Bienvenida, <span id="seller-name-display"></span> (<span id="seller-email-display"></span>)</p>
+                <!-- Aquí irá el panel de ventas y comisiones -->
+            </div>
+        </div>
+    </div>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    let app, db;
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+    } catch (error) {
+        console.error("Error inicializando Firebase:", error);
+    }
+
+    const sellerRegisterForm = document.getElementById('seller-register-form');
+    const sellerRegisterMessage = document.getElementById('seller-register-message');
+    const salesPanel = document.getElementById('sales-panel');
+    const sellerNameDisplay = document.getElementById('seller-name-display');
+    const sellerEmailDisplay = document.getElementById('seller-email-display');
+
+    sellerRegisterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('seller-name').value.trim();
+        const email = document.getElementById('seller-email').value.trim();
+        const phone = document.getElementById('seller-phone').value.trim();
+        if (!name || !email || !phone) {
+            sellerRegisterMessage.textContent = "Completa todos los campos.";
+            sellerRegisterMessage.className = "notification-warning";
+            return;
+        }
+        try {
+            // Guardar vendedora en Firestore
+            const docRef = await addDoc(collection(db, "sellers"), {
+                name,
+                email,
+                phone,
+                registeredAt: Date.now()
+            });
+            sellerRegisterMessage.textContent = "Registro exitoso. ¡Bienvenida!";
+            sellerRegisterMessage.className = "notification-success";
+            sellerRegisterForm.classList.add('hidden');
+            salesPanel.classList.remove('hidden');
+            sellerNameDisplay.textContent = name;
+            sellerEmailDisplay.textContent = email;
+        } catch (err) {
+            sellerRegisterMessage.textContent = "Error al registrar. Intenta de nuevo.";
+            sellerRegisterMessage.className = "notification-error";
+        }
+    });
+    </script>
+</body>
+</html>

@@ -33,6 +33,7 @@
             <button id="show-campaign-stats-btn" class="button-secondary">
                 Estadísticas de Campañas
             </button>
+            <a href="ventas.html" class="button-secondary" style="display:inline-block; text-align:center; min-width:120px;">Ventas</a>
         </div>
 
         <div id="turn-management-section" class="turn-management-section">
@@ -50,8 +51,18 @@
                 <input type="time" id="turn-time" class="input-field">
             </div>
             <div class="mb-4">
-                <label for="turn-treatment" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Tratamiento:</label>
-                <input type="text" id="turn-treatment" class="input-field" placeholder="Ej: Depilación Láser Piernas">
+                <label for="turn-treatment" class="block text-gray-700 text-sm font-bold mb-2">Tratamiento:</label>
+                <select id="turn-treatment-select" class="input-field" style="margin-bottom:8px;">
+                    <option value="">Selecciona un tratamiento...</option>
+                    <option value="Depilación Láser">Depilación Láser</option>
+                    <option value="Medicina Estética">Medicina Estética</option>
+                    <option value="Masajes">Masajes</option>
+                    <option value="Manicuría">Manicuría</option>
+                    <option value="Radiofrecuencia">Radiofrecuencia</option>
+                    <option value="Cosmetología">Cosmetología</option>
+                    <option value="Otro">Otro (escribir abajo)</option>
+                </select>
+                <input type="text" id="turn-treatment" class="input-field" placeholder="Escribe otro tratamiento si no está en la lista">
             </div>
             <button id="generate-turn-link-btn" class="button-primary w-full">Generar Enlace de Turno</button>
 
@@ -121,14 +132,37 @@
         <div id="campaign-stats-section" class="campaign-stats-section hidden">
             <h2 class="section-header">Estadísticas de Campañas Le Bardol</h2>
             <p id="roulette-share-count-display">Cargando contador de compartidos de ruleta...</p>
+            <div class="mt-6">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lg font-bold">Jugadores de la Ruleta</h3>
+                    <button id="download-emails-btn" class="button-secondary" style="font-size:0.95em; padding:4px 12px;">Descargar emails CSV</button>
+                </div>
+                <div style="overflow-x:auto; max-width:100vw;">
+                    <table class="entries-table" style="min-width:340px; max-width:600px; margin:auto; font-size:0.95em;">
+                        <thead>
+                            <tr>
+                                <th style="padding:4px 8px;">Nombre</th>
+                                <th style="padding:4px 8px;">Teléfono</th>
+                                <th style="padding:4px 8px;">Email</th>
+                                <th style="padding:4px 8px;">Premio</th>
+                                <th style="padding:4px 8px;">Fecha/Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roulette-players-table-body">
+                            <!-- Aquí se mostrarán los datos de los jugadores -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { firebaseConfig, appId } from "./firebase-config.js"; // Import Firebase config
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { firebaseConfig, appId } from "./firebase-config.js"; // Import Firebase config
+    import { getRoulettePlayers } from "./js/roulettePlayers.js";
 
         // Aunque no usaremos Firestore, mantenemos la autenticación anónima para que la app se inicialice sin errores.
         let app, auth;
@@ -136,6 +170,14 @@
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             signInAnonymously(auth);
+            onAuthStateChanged(auth, (user) => {
+                const userIdDisplay = document.getElementById('user-id-display');
+                if (user && user.uid) {
+                    userIdDisplay.textContent = `ID de Usuario: ${user.uid}`;
+                } else {
+                    userIdDisplay.textContent = 'ID de Usuario: No disponible';
+                }
+            });
         } catch (error) {
             console.error("Error initializing Firebase:", error);
         }
@@ -143,12 +185,64 @@
         console.log("JavaScript is running!");
         
         document.addEventListener('DOMContentLoaded', async () => {
+            // --- Descargar emails CSV ---
+            function downloadEmailsCSV(players) {
+                const emails = players.map(p => p.email).filter(e => e && e !== '-');
+                if (emails.length === 0) {
+                    displayMessage("No hay emails para descargar.", "warning");
+                    return;
+                }
+                const csvContent = 'Email\n' + emails.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'emails_jugadores_ruleta.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
             console.log("DOM fully loaded and parsed. Initializing script...");
+            // Mostrar jugadores de la ruleta en estadísticas de campaña
+            async function renderRoulettePlayers() {
+                const tableBody = document.getElementById('roulette-players-table-body');
+                if (!tableBody) return;
+                tableBody.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
+                try {
+                    const players = await getRoulettePlayers();
+                    if (players.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="5">No hay registros de jugadores.</td></tr>';
+                        return;
+                    }
+                    tableBody.innerHTML = '';
+                    players.forEach(player => {
+                        const dateStr = player.timestamp ? new Date(player.timestamp).toLocaleString('es-AR') : '';
+                        tableBody.innerHTML += `<tr><td>${player.name}</td><td>${player.contact}</td><td>${player.email || '-'}</td><td>${player.prize || '-'}</td><td>${dateStr}</td></tr>`;
+                    });
+                    // Activar botón de descarga
+                    const downloadBtn = document.getElementById('download-emails-btn');
+                    if (downloadBtn) {
+                        downloadBtn.onclick = () => downloadEmailsCSV(players);
+                    }
+                } catch (err) {
+                    tableBody.innerHTML = '<tr><td colspan="5">Error al cargar los datos.</td></tr>';
+                }
+            }
+
+            // Cuando se muestra la sección de estadísticas, cargar los jugadores
+            const statsBtn = document.getElementById('show-campaign-stats-btn');
+            if (statsBtn) {
+                statsBtn.addEventListener('click', () => {
+                    setTimeout(renderRoulettePlayers, 300); // Espera a que la sección esté visible
+                });
+            }
 
             const turnClientNameInput = document.getElementById('turn-client-name');
             const turnDateInput = document.getElementById('turn-date');
             const turnTimeInput = document.getElementById('turn-time');
             const turnTreatmentInput = document.getElementById('turn-treatment');
+            const turnTreatmentSelect = document.getElementById('turn-treatment-select');
             const generateTurnLinkBtn = document.getElementById('generate-turn-link-btn');
             const generatedTurnLinkInfo = document.getElementById('generated-turn-link-info');
             const clientTurnLink = document.getElementById('client-turn-link');
@@ -205,7 +299,12 @@
                 const clientName = turnClientNameInput.value.trim();
                 const turnDate = turnDateInput.value;
                 const turnTime = turnTimeInput.value;
-                const turnTreatment = turnTreatmentInput.value.trim();
+                let turnTreatment = '';
+                if (turnTreatmentSelect.value && turnTreatmentSelect.value !== 'Otro') {
+                    turnTreatment = turnTreatmentSelect.value;
+                } else {
+                    turnTreatment = turnTreatmentInput.value.trim();
+                }
 
                 if (!clientName || !turnDate || !turnTime || !turnTreatment) {
                     displayMessage("Por favor, completa todos los campos del turno.", "warning");
@@ -248,9 +347,13 @@
                     displayMessage("Primero genera el enlace del turno.", "warning");
                     return;
                 }
-                
-                const formattedDate = new Date(turnDate).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${turnTime}.\n\nPor favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
+
+                // Unir fecha y hora para crear el objeto Date correctamente
+                const dateTimeString = turnDate + 'T' + turnTime;
+                const dateObj = new Date(dateTimeString);
+                const formattedDate = dateObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const formattedTime = dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                const whatsappMessage = `¡Hola ${clientName}!\n\nTe recordamos tu turno en Le Bardol para ${turnTreatment} el ${formattedDate} a las ${formattedTime}.\n\nPor favor, confirma o cancela tu turno aquí: ${turnLink}\n\n¡Además, juega y gana descuentos en nuestra ruleta! ✨`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
             });
 
@@ -308,12 +411,19 @@
             }
 
             // --- Navigation Event Listeners ---
-            document.getElementById('show-turn-management-btn').addEventListener('click', () => showSection('turn-management-section'));
-            document.getElementById('show-campaign-link-generator-btn').addEventListener('click', () => showSection('campaign-link-generator-section'));
-            document.getElementById('show-registered-entries-btn').addEventListener('click', () => showSection('registered-entries-section'));
-            document.getElementById('show-campaign-stats-btn').addEventListener('click', () => showSection('campaign-stats-section'));
-            
-            // Inicialización
+            const navButtons = [
+                { btn: 'show-turn-management-btn', section: 'turn-management-section' },
+                { btn: 'show-campaign-link-generator-btn', section: 'campaign-link-generator-section' },
+                { btn: 'show-registered-entries-btn', section: 'registered-entries-section' },
+                { btn: 'show-campaign-stats-btn', section: 'campaign-stats-section' }
+            ];
+            navButtons.forEach(({ btn, section }) => {
+                const button = document.getElementById(btn);
+                if (button) {
+                    button.addEventListener('click', () => showSection(section));
+                }
+            });
+            // Inicialización: mostrar la sección de turnos al cargar
             showSection('turn-management-section');
 
             // --- Notification System ---
