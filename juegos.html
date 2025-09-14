@@ -770,11 +770,13 @@
             </div>
     </div>
 
-    <audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-wheel-spin-1718.mp3" preload="auto"></audio>
+        <audio id="spinSound" src="redoblante.mp3" preload="auto"></audio>
+    <!-- Drumroll sound. User confirmed 'redoblante.mp3' is in the project root. -->
     <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-win-2010.mp3" preload="auto"></audio>
     <audio id="applauseSound" src="apalusos.mp3" preload="auto"></audio>
     <audio id="cardFlipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-1033.mp3" preload="auto"></audio>
     <audio id="cardWinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-game-tone-2323.mp3" preload="auto"></audio>
+    <audio id="gritosSound" src="gritos.mp3" preload="auto"></audio>
 
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -1044,90 +1046,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Estado de juego
         let canSpin = true;
+        let animationFinished = false;
 
         // Girar la ruleta
         function girarRuleta() {
             if (!canSpin) return;
             spinBtn.disabled = true;
             rouletteCanvasContainer.classList.add('spinning');
-            // Iniciar redoblante apenas hace clic
-            // Function to play sound and return a Promise that resolves when sound is ready or after a timeout
-            const playSpinSound = () => {
-                return new Promise(resolve => {
-                    const playAttempt = () => {
-                        spinSound.currentTime = 0;
-                        spinSound.play().then(() => {
-                            resolve(); // Sound started playing
-                        }).catch(e => {
-                            console.warn("Spin sound play failed, retrying or resolving after timeout:", e);
-                            // If play fails, try again after a short delay or just resolve to continue
-                            setTimeout(resolve, 100); // Resolve after 100ms even if play fails
-                        });
-                    };
+            spinSound.currentTime = 0; // Reset sound to start
+            spinSound.play(); // Play sound immediately
+            animationFinished = false; // Reset flag for new spin
 
-                    // Try playing immediately
-                    playAttempt();
+            const numSegments = prizes.length;
+            const angle = (2 * Math.PI) / numSegments;
+            const prizeIndex = Math.floor(Math.random() * numSegments);
+            animateSpin(prizeIndex, () => {
+                const prize = prizes[prizeIndex];
+                
+                if (userName) { // Only save if we have a user name
+                    saveLead(decodeURIComponent(userName), decodeURIComponent(userContact), prize);
+                }
 
-                    // Fallback: if sound doesn't play immediately, ensure it plays when ready
-                    spinSound.oncanplaythrough = () => {
-                        spinSound.oncanplaythrough = null; // Remove listener
-                        playAttempt(); // Try playing again if not already playing
-                        resolve();
-                    };
-                    spinSound.load(); // Ensure loading is initiated
-                });
-            };
-
-            playSpinSound().then(() => {
-                const numSegments = prizes.length;
-                const angle = (2 * Math.PI) / numSegments;
-                const prizeIndex = Math.floor(Math.random() * numSegments);
-                animateSpin(prizeIndex, () => {
-                    const prize = prizes[prizeIndex];
-                    
-                    if (userName) { // Only save if we have a user name
-                        saveLead(decodeURIComponent(userName), decodeURIComponent(userContact), prize);
-                    }
-
-                    resultMessage.innerHTML = `<span style='color:#e91e63; font-size:1.3rem; font-weight:900;'>${decodeURIComponent(userName)}: ¡Felicidades, ganaste ${prize}!</span>`;
-                    resultMessage.style.display = 'block';
-            // Mostrar botón Mercado Pago
-            let mpBtn = document.getElementById('mpPayBtn');
-            if (!mpBtn) {
-                resultMessage.insertAdjacentHTML('afterend', `<button id="mpPayBtn" class="btn btn-reserve" style="margin-top:18px;">💳 PAGA Y RESERVA TU TURNO AHORA</button>`);
-            } else {
-                mpBtn.style.display = 'block';
-            }
-                    // Al terminar el giro: sonido de victoria y aplausos y confetti
-                    winSound.currentTime = 0;
-                    winSound.play();
-                    const applauseSound = document.getElementById('applauseSound');
-                    if (applauseSound) {
-                        applauseSound.currentTime = 0;
-                        applauseSound.play();
-                    }
-                    if (window.confetti) {
-                        window.confetti({
-                            particleCount: 120,
-                            spread: 80,
-                            origin: { y: 0.6 }
-                        });
-                    }
-                    // Mostrar solo el botón de compartir
-                    shareBtn.style.display = 'block';
-                    playAgainBtn.style.display = 'none';
-                    rouletteCanvasContainer.classList.remove('spinning');
-                    canSpin = false;
-                    // Mostrar mensaje de compartir
-                    let shareInfoMsg = document.getElementById('shareInfoMsg');
-                    if (!shareInfoMsg) {
-                        shareBtn.insertAdjacentHTML('afterend', `<div id="shareInfoMsg" style="margin-top:12px; color:#e91e63; font-weight:600; text-align:center;">Para volver a tirar, compartí el juego con 5 amigos en WhatsApp.</div>`);
-                    } else {
-                        shareInfoMsg.style.display = 'block';
-                    }
-                });
+                resultMessage.innerHTML = `<span style='color:#e91e63; font-size:1.3rem; font-weight:900;'>${decodeURIComponent(userName)}: ¡Felicidades, ganaste ${prize}!</span>`;
+                resultMessage.style.display = 'block';
+        // Mostrar botón Mercado Pago
+        let mpBtn = document.getElementById('mpPayBtn');
+        if (!mpBtn) {
+            resultMessage.insertAdjacentHTML('afterend', `<button id="mpPayBtn" class="btn btn-reserve" style="margin-top:18px;">💳 PAGA Y RESERVA TU TURNO AHORA</button>`);
+        } else {
+            mpBtn.style.display = 'block';
+        }
+                animationFinished = true; // Set flag when animation finishes
+                // Check if spinSound has already ended
+                if (spinSound.paused || spinSound.ended) {
+                    playGritosAndConfetti();
+                }
+                
+                // Mostrar solo el botón de compartir
+                shareBtn.style.display = 'block';
+                playAgainBtn.style.display = 'none';
+                rouletteCanvasContainer.classList.remove('spinning');
+                canSpin = false;
+                // Mostrar mensaje de compartir
+                let shareInfoMsg = document.getElementById('shareInfoMsg');
+                if (!shareInfoMsg) {
+                    shareBtn.insertAdjacentHTML('afterend', `<div id="shareInfoMsg" style="margin-top:12px; color:#e91e63; font-weight:600; text-align:center;">Para volver a tirar, compartí el juego con 5 amigos en WhatsApp.</div>`);
+                } else {
+                    shareInfoMsg.style.display = 'block';
+                }
             });
         }
+
+        function playGritosAndConfetti() {
+            const gritosSound = document.getElementById('gritosSound');
+            if (gritosSound) {
+                gritosSound.currentTime = 0;
+                gritosSound.play();
+            }
+            setTimeout(() => {
+                winSound.currentTime = 0;
+                winSound.play();
+                const applauseSound = document.getElementById('applauseSound');
+                if (applauseSound) {
+                    applauseSound.currentTime = 0;
+                    applauseSound.play();
+                }
+                if (window.confetti) {
+                    window.confetti({
+                        particleCount: 120,
+                        spread: 80,
+                        origin: { y: 0.6 }
+                    });
+                }
+            }, 400); // Short wait for gritos to be heard first
+        }
+
+        spinSound.onended = () => {
+            if (animationFinished) {
+                playGritosAndConfetti();
+            }
+        };
 
         spinBtn.addEventListener('click', girarRuleta);
         rouletteCanvasContainer.addEventListener('click', girarRuleta);

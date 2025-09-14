@@ -6,6 +6,7 @@
     <title>Panel de Control Le Bardol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="font-body antialiased">
@@ -133,14 +134,14 @@
             <h2 class="section-header">Estadísticas de Campañas Le Bardol</h2>
             <p id="roulette-share-count-display">Cargando contador de compartidos de ruleta...</p>
             <div class="mt-6">
-                <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-bold">Jugadores de la Ruleta</h3>
-                    <button id="download-emails-btn" class="button-secondary" style="font-size:0.95em; padding:4px 12px;">Descargar emails CSV</button>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Jugadores de la Ruleta</h3>
                 </div>
                 <div style="overflow-x:auto; max-width:100vw;">
                     <table class="entries-table" style="min-width:340px; max-width:600px; margin:auto; font-size:0.95em;">
                         <thead>
                             <tr>
+                                <th style="padding:4px 8px;"><input type="checkbox" id="select-all-checkbox"></th>
                                 <th style="padding:4px 8px;">Nombre</th>
                                 <th style="padding:4px 8px;">Teléfono</th>
                                 <th style="padding:4px 8px;">Email</th>
@@ -153,6 +154,12 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="flex justify-end mt-4">
+                    <div class="flex space-x-2">
+                        <button id="delete-selected-btn" class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-3 rounded">Borrar Seleccionados</button>
+                        <button id="download-emails-btn" class="button-secondary text-xs font-semibold py-1 px-3 rounded">Descargar CSV</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -162,7 +169,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { firebaseConfig, appId } from "./firebase-config.js"; // Import Firebase config
-    import { getRoulettePlayers } from "./js/roulettePlayers.js";
+    import { getRoulettePlayers, deleteLead, deleteMultipleLeads } from "./js/roulettePlayers.js";
     import { getShareCount } from "./js/campaignStats.js";
 
         // Aunque no usaremos Firestore, mantenemos la autenticación anónima para que la app se inicialice sin errores.
@@ -222,17 +229,17 @@
             async function renderRoulettePlayers() {
                 const tableBody = document.getElementById('roulette-players-table-body');
                 if (!tableBody) return;
-                tableBody.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6">Cargando...</td></tr>';
                 try {
                     const players = await getRoulettePlayers();
                     if (players.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="5">No hay registros de jugadores.</td></tr>';
+                        tableBody.innerHTML = '<tr><td colspan="6">No hay registros de jugadores.</td></tr>';
                         return;
                     }
                     tableBody.innerHTML = '';
                     players.forEach(player => {
                         const dateStr = player.timestamp ? new Date(player.timestamp).toLocaleString('es-AR') : '';
-                        tableBody.innerHTML += `<tr><td>${player.name}</td><td>${player.contact}</td><td>${player.email || '-'}</td><td>${player.prize || '-'}</td><td>${dateStr}</td></tr>`;
+                        tableBody.innerHTML += `<tr><td><input type="checkbox" class="row-checkbox" data-id="${player.id}"></td><td>${player.name}</td><td>${player.contact}</td><td>${player.email || '-'}</td><td>${player.prize || '-'}</td><td>${dateStr}</td></tr>`;
                     });
                     // Activar botón de descarga
                     const downloadBtn = document.getElementById('download-emails-btn');
@@ -240,8 +247,42 @@
                         downloadBtn.onclick = () => downloadEmailsCSV(players);
                     }
                 } catch (err) {
-                    tableBody.innerHTML = '<tr><td colspan="5">Error al cargar los datos.</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="6">Error al cargar los datos.</td></tr>';
                 }
+            }
+
+            // Listener para "Select All"
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', (e) => {
+                    const checkboxes = document.querySelectorAll('.row-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = e.target.checked;
+                    });
+                });
+            }
+
+            // Listener para "Borrar Seleccionados"
+            const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+            if (deleteSelectedBtn) {
+                deleteSelectedBtn.addEventListener('click', async () => {
+                    const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+                    const idsToDelete = Array.from(checkboxes).map(cb => cb.dataset.id);
+                    if (idsToDelete.length === 0) {
+                        displayMessage('No hay registros seleccionados para borrar.', 'warning');
+                        return;
+                    }
+                    if (confirm(`¿Estás seguro de que quieres borrar ${idsToDelete.length} registros?`)) {
+                        try {
+                            await deleteMultipleLeads(idsToDelete);
+                            displayMessage('Registros borrados exitosamente.', 'success');
+                            renderRoulettePlayers(); // Refresh the table
+                        } catch (err) {
+                            displayMessage('Error al borrar los registros.', 'error');
+                            console.error(err);
+                        }
+                    }
+                });
             }
 
             // Cuando se muestra la sección de estadísticas, cargar los jugadores
