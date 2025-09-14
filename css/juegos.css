@@ -3,19 +3,19 @@
     .cards-container {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
-        max-width: 98vw;
+        max-width: 340px;
+        width: 100%;
         margin: 0 auto;
         justify-content: center;
         padding-bottom: 8px;
+        box-sizing: border-box;
     }
-    .card {
-        width: 22vw;
-        height: 34vw;
-        min-width: 70px;
-        min-height: 100px;
-        font-size: 0.85rem;
-        margin: 0 auto;
-    }
+        .card {
+            width: 60px;
+            height: 120px;
+            font-size: 0.80rem;
+            margin: 0 auto;
+        }
 }
 /* Mejoras para cartas en móviles */
 @media (max-width: 480px) {
