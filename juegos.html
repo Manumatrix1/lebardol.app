@@ -66,13 +66,6 @@
             text-align: center;
             width: 100%;
             animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-            word-break: break-word;
-        }
-        @media (max-width: 600px) {
-            .roulette-section .campaign-title {
-                font-size: 1.35rem;
-                line-height: 1.15;
-            }
         }
 
         @keyframes text-pop-up-top {
@@ -613,7 +606,7 @@
         </div>
 
         <div class="roulette-section" id="rouletteSection">
-            <h1 class="campaign-title">🎉 Gana zonas gratis<br>en Depilación Definitiva 🎁</h1>
+            <h1 class="campaign-title">🎉 Gana zonas gratis en Depilación Definitiva 🎁</h1>
             <p class="campaign-subtitle">Gana una zona gratis y más beneficios...</p>
             <div id="prizeCounter" class="prize-counter">💥 ¡Quedan solo 1000 premios disponibles!</div>
 
@@ -683,7 +676,6 @@
                 <i class="fab fa-whatsapp" style="font-size:1.3rem; color:#25D366;"></i>
                 3415 21 60 25
             </a>
-        </div>
         </div>
     </div>
 
@@ -855,7 +847,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     shareBtn.style.marginTop = '10px';
                     shareBtn.onclick = function() {
                         const juegoUrl = window.location.origin + '/bienvenidos.html';
-                        const msg = `¡Te invito a jugar las cartas mágicas de Le Bardol! 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}`;
+                        let nombre = decodeURIComponent(userName || '').trim();
+                        if (!nombre) nombre = 'un amigo';
+                        const imgUrl = 'https://i.imgur.com/11RstI1.png';
+                        const msg = `Hola! Soy ${nombre} y te invito a jugar a la ruleta mágica de Le Bardol 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}\nImagen: ${imgUrl}`;
                         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                         puedeReiniciar = true;
                         resetCardsBtn.style.display = 'inline-block';

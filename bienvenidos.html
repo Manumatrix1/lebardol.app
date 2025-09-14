@@ -35,14 +35,12 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:18px;">
-            <img src="jugaygana.png" alt="Jugá y ganá" style="max-width:320px; width:100%; height:auto; margin-bottom:12px; border-radius:24px; box-shadow:0 4px 24px #0002; display:block;">
-        </div>
-        <div id="contact-form-container">
-            <h1 class="font-bold text-3xl mb-4 text-center" style="font-family: 'The Seasons', serif; color: var(--accent-dark-green); letter-spacing:1px;">¡Juega y Gana!</h1>
+    <div class="container" style="max-width:430px; margin:0 auto; padding:24px 0;">
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <img src="jugaygana.png" alt="Juga y Gana" style="width:180px; max-width:90vw; margin-bottom:18px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.10);">
+            <h1 class="font-bold text-3xl mb-4 text-center" style="font-family: 'The Seasons', serif; color:#4E6C50; letter-spacing:1px;">¡Juga y Gana!</h1>
             <p class="mb-6 text-center" style="font-size:1.1rem; color:#4E6C50;">Completá tus datos para girar la ruleta y ganar premios exclusivos.</p>
-            <form id="roulette-form" class="flex flex-col gap-4" style="background:#F4EDE7; border-radius:16px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+            <form id="roulette-form" class="flex flex-col gap-4" style="background:#F4EDE7; border-radius:16px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.07); width:100%;">
                 <div style="display:flex; align-items:center; gap:10px;">
                     <i class="fas fa-user" style="font-size:1.3rem; color:#A3C1A1;"></i>
                     <input type="text" id="player-name" class="form-input" placeholder="Tu Nombre" required>
@@ -51,12 +49,9 @@
                     <i class="fas fa-envelope" style="font-size:1.3rem; color:#A3C1A1;"></i>
                     <input type="text" id="player-contact" class="form-input" placeholder="Mail o WhatsApp" required>
                 </div>
-                <button type="submit" class="btn" style="font-size:1.1rem; background:linear-gradient(135deg,#6bbf59 0%,#4E6C50 100%); color:#fff;">Empezar a Jugar</button>
+                <button type="submit" class="btn" style="background:#4E6C50; color:#fff; font-size:1.1rem; border-radius:8px; padding:12px 0; font-weight:600;">Empezar a Jugar</button>
             </form>
         </div>
-
-    <!-- Solo queda la ruleta -->
-        <!-- Sección inferior con íconos y nombres de redes/contacto -->
         <div class="social-links" style="margin-top:32px; display:flex; justify-content:center; gap:32px;">
             <a href="https://wa.me/5493415216025" target="_blank" class="social-link" style="text-decoration:none; color:#25D366; display:flex; flex-direction:column; align-items:center;">
                 <i class="fab fa-whatsapp" style="font-size:2.2rem;"></i>

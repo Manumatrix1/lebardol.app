@@ -4,41 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmar Turno Le Bardol</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Open Graph para vista previa en WhatsApp -->
+    <meta property="og:title" content="Confirmá tu turno en Le Bardol" />
+    <meta property="og:description" content="¡Gracias por elegirnos! Confirma o cancela tu turno y participa en nuestras promociones." />
+    <meta property="og:image" content="https://i.imgur.com/11RstI1.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lebardol.com/confirmacionturno.html" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <script>
-        // Configuración de Tailwind CSS
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        // Fuente principal delicada, con serifas elegantes
-                        body: ['"Playfair Display"', 'Georgia', 'serif'], 
-                        // Fuente de respaldo para elementos que necesiten más legibilidad o un estilo diferente
-                        sans: ['Inter', 'sans-serif'], 
-                    },
-                    colors: {
-                        // Paleta de colores inspirada en Le Bardol y estética
-                        'lb-purple': '#6a0572', 
-                        'lb-pink': '#e63946',
-                        'lb-light-pink': '#f9e6e6',
-                        'lb-darker-pink': '#d81b60', /* Nuevo rosa más oscuro */
-                        'lb-green': '#4caf50',
-                        'lb-red': '#f44336',
-                        'lb-blue': '#2196F3',
-                        'lb-text-dark': '#333333',
-                        'lb-text-light': '#666666',
-                    }
-                }
-            }
-        }
-    </script>
     <style>
+        /* Definición de colores de tu marca */
+        :root {
+            --bg-light: #F4EDE7;
+            --bg-card: #ffffff;
+            --text-dark: #4E6C50;
+            --accent-green: #A3C1A1;
+            --accent-dark-green: #4E6C50;
+            --btn-confirm-bg: #A3C1A1;
+            --btn-confirm-bg-hover: #4E6C50;
+            --btn-cancel-bg: #f44336;
+            --btn-cancel-bg-hover: #d32f2f;
+            --link-game-bg: #FFD700;
+            --link-game-color: #333333;
+        }
+
         body {
-            font-family: 'Playfair Display', Georgia, serif; /* Fuente principal para el cuerpo */
-            background: radial-gradient(circle at top left, #fff0f5 0%, #f9f0ff 100%); /* Gradiente suave de rosa claro a blanco */
-            color: #333333; /* Color de texto oscuro para legibilidad */
+            font-family: 'Playfair Display', Georgia, serif;
+            background: radial-gradient(circle at top left, var(--bg-light), #f9f0ff);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -50,102 +44,102 @@
         .container {
             max-width: 500px;
             width: 100%;
-            background: white;
+            background: var(--bg-card);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(106, 5, 114, 0.15); /* Sombra con tono púrpura */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             text-align: center;
-            border: 1px solid #f0e0f0; /* Borde sutil */
+            border: 1px solid var(--accent-green);
         }
         .logo-container {
             margin-bottom: 25px;
         }
         .logo-container img {
-            max-width: 200px; /* Tamaño adecuado para el logo */
+            max-width: 200px;
             height: auto;
-            border-radius: 10px; /* Bordes ligeramente redondeados para el logo */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Sombra suave para el logo */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
-        .greeting-header { /* Nuevo estilo para el saludo */
-            font-size: 3rem; /* Tamaño de fuente grande */
+        .greeting-header {
+            font-size: 3rem;
             font-weight: 700;
-            color: #6a0572; /* Púrpura para el saludo */
+            color: var(--accent-dark-green);
             margin-bottom: 15px;
             line-height: 1.2;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
-        .reminder-header { /* Nuevo estilo para el recordatorio */
-            font-size: 1.8rem; /* Tamaño de fuente para el recordatorio, un poco más sutil */
-            font-weight: 400; /* Más delgado para un efecto de "recuerdo" */
-            color: #6a0572; /* Color de texto más oscuro para el recordatorio */
+        .reminder-header {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--accent-dark-green);
             margin-bottom: 10px;
             line-height: 1.2;
-            text-shadow: none; /* Eliminar sombra de texto para mejor contraste */
-            background-color: #f9e6e6; /* Fondo rosa claro */
+            text-shadow: none;
+            background-color: var(--bg-light);
             padding: 5px 15px;
             border-radius: 8px;
-            display: inline-block; /* Para que el padding y background se apliquen correctamente */
-            border: 1px solid #e63946; /* Borde sutil para el recuadro */
+            display: inline-block;
+            border: 1px solid var(--accent-green);
         }
         .header {
-            font-size: 2.5rem; /* Tamaño de fuente más grande para el encabezado */
-            font-weight: 700; /* Negrita para el encabezado */
-            color: #d81b60; /* Rosa más oscuro para Le Bardol Estética Center */
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-dark-green);
             margin-bottom: 25px;
             line-height: 1.2;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Sombra de texto sutil */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
-        .header .subtitle-small { /* Estilo para "Estética Center" más pequeño */
-            font-size: 0.7em; /* Más pequeño que el texto principal del header */
-            font-weight: 400; /* Más delgado */
-            display: block; /* Para que aparezca en una nueva línea */
+        .header .subtitle-small {
+            font-size: 0.7em;
+            font-weight: 400;
+            display: block;
             margin-top: 5px;
-            color: #e63946; /* Un tono de rosa para el subtítulo */
+            color: var(--accent-green);
         }
         .turn-details p {
-            font-size: 1.2rem; /* Tamaño de fuente ligeramente más grande para los detalles */
+            font-size: 1.2rem;
             margin-bottom: 12px;
-            color: #333333;
+            color: var(--text-dark);
             line-height: 1.4;
         }
         .turn-details strong {
-            color: #e63946; /* Rosa para énfasis */
+            color: var(--accent-dark-green);
             font-weight: 700;
         }
         .button-group {
             margin-top: 35px;
             display: flex;
             flex-direction: column;
-            gap: 18px; /* Mayor espacio entre botones */
+            gap: 18px;
         }
         .btn {
             display: block;
             width: 100%;
-            padding: 18px; /* Mayor padding para botones más grandes */
-            border-radius: 12px; /* Bordes más redondeados */
-            font-size: 1.2rem; /* Tamaño de fuente más grande para botones */
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2rem;
             font-weight: bold;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
-            display: flex; /* Para centrar el ícono y texto */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px; /* Espacio entre ícono y texto */
+            gap: 10px;
         }
         .btn i {
-            font-size: 1.4rem; /* Tamaño de ícono */
+            font-size: 1.4rem;
         }
         .btn-confirm {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); /* Verde para confirmar */
+            background: linear-gradient(135deg, var(--btn-confirm-bg), var(--btn-confirm-bg-hover));
             color: white;
         }
         .btn-confirm:hover {
-            transform: translateY(-4px); /* Efecto de elevación al pasar el mouse */
-            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(78, 108, 80, 0.3);
         }
         .btn-cancel {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); /* Rojo para cancelar */
+            background: linear-gradient(135deg, var(--btn-cancel-bg), var(--btn-cancel-bg-hover));
             color: white;
         }
         .btn-cancel:hover {
@@ -153,17 +147,31 @@
             box-shadow: 0 8px 20px rgba(211, 47, 47, 0.3);
         }
         .btn-game {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); /* Azul para el juego */
-            color: white;
-            margin-top: 25px; /* Más espacio superior */
+            background: linear-gradient(135deg, #FFD700, #DAA520);
+            color: #333;
+            margin-top: 25px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            animation: pulse 1.5s infinite;
         }
         .btn-game:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
         }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+            }
+        }
         .footer-text {
             margin-top: 35px;
-            font-size: 1rem; /* Tamaño de fuente ligeramente más grande para el pie de página */
+            font-size: 1rem;
             color: #666666;
             line-height: 1.5;
         }
@@ -172,7 +180,7 @@
 <body>
     <div class="container">
         <div class="logo-container">
-            <img src="LOGO-01 como objeto inteligente-1 - copia.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/200x80/f9e6e6/6a0572?text=Le+Bardol';">
+            <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center">
         </div>
         <h1 class="greeting-header">Hola, ¿cómo estás?</h1>
         <h2 class="reminder-header">Recordatorio de Turno</h2>
@@ -221,7 +229,6 @@
             const time = urlParams.get('time');
             const treatment = urlParams.get('treatment');
             const turnId = urlParams.get('turnId');
-            const rouletteLink = urlParams.get('rouletteLink');
 
             // Display turn details
             if (clientName) clientNameDisplay.textContent = decodeURIComponent(clientName);
@@ -239,13 +246,13 @@
             const cancelMessage = `¡Hola! Soy ${decodeURIComponent(clientName)}. No podré asistir a mi turno para ${decodeURIComponent(treatment)} el ${new Date(decodeURIComponent(date)).toLocaleDateString()} a las ${decodeURIComponent(time)}. ID de Turno: ${decodeURIComponent(turnId)}`;
             cancelTurnBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(cancelMessage)}`;
 
-            // Set link to the game
-            if (rouletteLink) {
-                playGameBtn.href = decodeURIComponent(rouletteLink);
-            } else {
-                // Fallback if rouletteLink is not provided (should ideally always be provided)
-                playGameBtn.href = 'index.html'; 
-            }
+            // ** CÓDIGO CORREGIDO **
+            // Obtiene la ruta base del directorio actual para que el enlace siempre funcione
+            const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const fullPath = window.location.origin + currentPath;
+
+            // Enlace al juego de la ruleta (corregido)
+            playGameBtn.href = `${fullPath}/juegos.html`;
         });
     </script>
 </body>
