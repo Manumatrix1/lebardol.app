@@ -601,7 +601,7 @@
     <div class="container">
         <div class="whatsapp-logo-container">
             <a href="https://wa.me/5493415216025" target="_blank" aria-label="Contactar a Le Bardol Estética Center por WhatsApp">
-                      git pull          <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
+                <img src="logo lb negro.png" alt="Logo Le Bardol Estética Center" onerror="this.onerror=null;this.src='https://placehold.co/250x80/FFFFFF/000000?text=Le+Bardol';">
             </a>
         </div>
 
@@ -849,8 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const juegoUrl = window.location.origin + '/bienvenidos.html';
                         let nombre = decodeURIComponent(userName || '').trim();
                         if (!nombre) nombre = 'un amigo';
-                        const imgUrl = 'https://i.imgur.com/11RstI1.png';
-                        const msg = `Hola! Soy ${nombre} y te invito a jugar a la ruleta mágica de Le Bardol 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}\nImagen: ${imgUrl}`;
+                        const msg = `Hola! Soy ${nombre} y te invito a jugar a la ruleta mágica de Le Bardol 🎉\nYo ya jugué y gané premios. ¡Sumate!\n👉 ${juegoUrl}`;
                         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                         puedeReiniciar = true;
                         resetCardsBtn.style.display = 'inline-block';
