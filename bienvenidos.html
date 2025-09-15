@@ -16,8 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    /* Se eliminaron los estilos del juego de cartas */
-
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
@@ -30,11 +28,49 @@
             margin-bottom: 15px;
             font-size: 1rem;
         }
-
-        /* Se eliminaron todos los estilos del juego de cartas */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Compartí nuestro juego con 3 amigos y ganá premios y descuentos increíbles.</p>
+            <a href="https://api.whatsapp.com/send?text=¡Jugá y Ganá en Le Bardol!%20Participá en la ruleta y ganá premios, descuentos y diversión.%20https://lebardol.com/bienvenidos.html" target="_blank" class="btn" style="background:#25D366; color:#fff; font-size:1.1rem; border-radius:8px; padding:12px 20px; font-weight:600; margin-top:15px; display:inline-block;">Compartir en WhatsApp</a>
+        </div>
+    </div>
     <div class="container" style="max-width:430px; margin:0 auto; padding:24px 0;">
         <div style="display:flex; flex-direction:column; align-items:center;">
             <img src="jugaygana.png" alt="Juga y Gana" style="width:180px; max-width:90vw; margin-bottom:18px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.10);">
