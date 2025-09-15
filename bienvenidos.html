@@ -74,6 +74,9 @@
     <div class="container" style="max-width:430px; margin:0 auto; padding:24px 0;">
         <div style="display:flex; flex-direction:column; align-items:center;">
             <img src="jugaygana.png" alt="Juga y Gana" style="width:180px; max-width:90vw; margin-bottom:18px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.10);">
+        <div style="margin-bottom:10px; text-align:center;">
+            <span style="font-size:1.15rem; color:#e91e63; font-weight:700; background:#fffbe6; border-radius:8px; padding:6px 14px; box-shadow:0 2px 8px #e9b80011; display:inline-block;">¡Participá por descuentos y grandes premios!</span>
+        </div>
             <h1 class="font-bold text-3xl mb-4 text-center" style="font-family: 'The Seasons', serif; color:#4E6C50; letter-spacing:1px;">¡Juga y Gana!</h1>
             <p class="mb-6 text-center" style="font-size:1.1rem; color:#4E6C50;">Completá tus datos para girar la ruleta y ganar premios exclusivos.</p>
             <form id="roulette-form" class="flex flex-col gap-4" style="background:#F4EDE7; border-radius:16px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.07); width:100%;">
@@ -83,7 +86,11 @@
                 </div>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <i class="fas fa-envelope" style="font-size:1.3rem; color:#A3C1A1;"></i>
-                    <input type="text" id="player-contact" class="form-input" placeholder="Mail o WhatsApp" required>
+                    <input type="email" id="player-email" class="form-input" placeholder="Tu Mail" required>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="fab fa-whatsapp" style="font-size:1.3rem; color:#25D366;"></i>
+                    <input type="tel" id="player-whatsapp" class="form-input" placeholder="Tu WhatsApp" required>
                 </div>
                 <button type="submit" class="btn" style="background:#4E6C50; color:#fff; font-size:1.1rem; border-radius:8px; padding:12px 0; font-weight:600;">Empezar a Jugar</button>
             </form>
